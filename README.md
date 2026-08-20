@@ -4,7 +4,16 @@ Four parallel rebuilds of the [Exhale](https://exhale.bot) landing page, kept
 side by side so they can be compared directly. The production project
 (`exhale-onboarding`) is **not** touched by anything here.
 
-## Preview
+## Live
+
+Published with GitHub Pages from `main`, root folder:
+**https://grey-ai2025.github.io/exhale-landing-rebuild/**
+
+Because Pages serves from a subpath, every internal link is relative and the
+React build sets `base: '/exhale-landing-rebuild/react/'`. If the repo is ever
+renamed, update that base and rebuild.
+
+## Preview locally
 
 ```bash
 node serve.js       # http://localhost:4321
@@ -50,6 +59,12 @@ Each build documents its own reasoning inline:
 Copy throughout is lifted verbatim from the live site; the FAQ content comes
 from `/faqs`. The mock UI inside the scrollytelling section (inbox rows,
 calendar conflicts) is invented for illustration and is not real data.
+
+**Analytics does not fire on the published preview, deliberately.** The copied
+pages load GA4 from a root-absolute `/js/analytics.js`, which does not resolve
+under the Pages subpath. That is left broken on purpose: a design preview
+sending `page_view` events into the production property would corrupt the real
+site's data. The only 404s on the published site are those two scripts.
 
 Third-party endpoints referenced in the copied client code — the Typeform
 embed, the Cloudinary video, the GA4 measurement ID and the n8n form webhook —

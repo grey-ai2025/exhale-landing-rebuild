@@ -407,10 +407,10 @@ export default function App() {
             <a href="https://greyai.ai" target="_blank" rel="noopener">Grey Ai</a>
           </div>
           <nav className="footer-links" aria-label="Footer">
-            <a href="/onboarding">Beta sign-in</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
-            <a href="/apple/lab/">Motion lab</a>
+            <a href="https://exhale.bot/onboarding">Beta sign-in</a>
+            <a href="https://exhale.bot/privacy">Privacy</a>
+            <a href="https://exhale.bot/terms">Terms</a>
+            <a href="../apple/lab/">Motion lab</a>
           </nav>
         </div>
       </footer>
