@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/scrolly.css">
     <link rel="stylesheet" href="css/craft.css">
+    <link rel="stylesheet" href="css/chat.css">
 
     <script src="https://embed.typeform.com/next/embed.js"></script>
 </head>
@@ -276,10 +277,121 @@
             <div class="section-header reveal">
                 <h2 class="section-title">Meet Your AI<br><span class="no-italic"> Executive</span></h2>
             </div>
+            <!-- Phone and cards are one unit, not two visuals stacked: the card
+                 you are looking at is the section's only state, and it drives what
+                 the phone is saying. Same grammar as The Reality, where scroll
+                 position drives both halves. -->
+            <div class="capabilities">
+            <!-- The answer side of the lockscreen in The Reality: same phone,
+                 same brand, everything resolved. The conversation advances with
+                 the reader's scroll rather than on a timer, so a fast scroller
+                 can't arrive after it has already played out and a slow one
+                 never watches it sit finished.
+
+                 Each turn and each reply is a 0fr -> 1fr grid row with one
+                 overflow wrapper inside it — the same disclosure the FAQ and
+                 the notification stack use, which is what lets the thread
+                 unwind again when the reader scrolls back up. -->
+            <div class="chat reveal" data-chat>
+                <div class="phone chat-phone">
+                    <div class="phone-glow" aria-hidden="true"></div>
+
+                    <div class="phone-shell">
+                        <div class="phone-screen">
+                            <div class="phone-island" aria-hidden="true"></div>
+
+                            <div class="phone-status" aria-hidden="true">
+                                <span>7:47</span>
+                                <span class="phone-status-icons">
+                                    <span class="phone-cell"><span></span><span></span><span></span><span></span></span>
+                                    <span class="phone-battery"></span>
+                                </span>
+                            </div>
+
+                            <div class="chat-header">
+                                <span class="chat-avatar" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.2-3.4A7.9 7.9 0 0 1 4 12z"/>
+                                    </svg>
+                                </span>
+                                <span class="chat-name">Exhale</span>
+                                <span class="chat-live">Live</span>
+                            </div>
+
+                            <div class="chat-body" data-chat-body>
+                                <div class="chat-turn" data-turn="0">
+                                    <div class="chat-turn-inner">
+                                        <p class="chat-ask">What do I need to know today?</p>
+                                        <div class="chat-typing" aria-hidden="true"><span></span><span></span><span></span></div>
+                                        <div class="chat-reply">
+                                            <div class="chat-reply-inner">
+                                                <div class="chat-reply-card">
+                                                    <p class="chat-reply-intro">You have three things needing you today:</p>
+                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Ethan&rsquo;s field trip form</b> is due at <b>3pm</b>. Draft is ready to send.</p>
+                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Dad&rsquo;s cardiology</b> moved to <b>2:15</b>. I updated your calendar.</p>
+                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Board agenda</b> landed this morning. <b>4 items</b> need your input by <b>tomorrow</b>.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="chat-turn" data-turn="1">
+                                    <div class="chat-turn-inner">
+                                        <p class="chat-ask">Does Ethan&rsquo;s field trip conflict with anything Friday?</p>
+                                        <div class="chat-typing" aria-hidden="true"><span></span><span></span><span></span></div>
+                                        <div class="chat-reply">
+                                            <div class="chat-reply-inner">
+                                                <div class="chat-reply-card">
+                                                    <p class="chat-item"><b>Yes</b>. Your <b>board finance committee call</b> is at <b>2pm</b>, and the field trip pickup is at <b>2:30</b>.</p>
+                                                    <p class="chat-item">The <b>3:30 slot</b> is free for everyone on the committee.</p>
+                                                    <p class="chat-item">Want me to send the <b>reschedule</b>?</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="chat-turn" data-turn="2">
+                                    <div class="chat-turn-inner">
+                                        <p class="chat-ask">When is Dad&rsquo;s next specialist appointment?</p>
+                                        <div class="chat-typing" aria-hidden="true"><span></span><span></span><span></span></div>
+                                        <div class="chat-reply">
+                                            <div class="chat-reply-inner">
+                                                <div class="chat-reply-card">
+                                                    <p class="chat-item"><b>Cardiology with Dr. Martinez</b> on <b>Thursday, September 5th</b> at <b>2:15pm</b>.</p>
+                                                    <p class="chat-item">His care coordinator confirmed the appointment yesterday.</p>
+                                                    <p class="chat-item">Transport is arranged through the hospital&rsquo;s <b>patient shuttle</b>.</p>
+                                                    <p class="chat-item">I&rsquo;ll remind you the day before.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="chat-input" aria-hidden="true">
+                                <span class="chat-input-text">Ask Exhale anything&hellip;</span>
+                                <span class="chat-send">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <div class="phone-home" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="gallery reveal" data-gallery>
-                <div class="gallery-viewport" data-gallery-viewport tabindex="0" role="group" aria-label="Capabilities, scrollable">
-                    <div class="gallery-track" data-gallery-track>
+                <!-- A deck, not a rail. Velocity decides: a flick sends the top card
+                     away even if it barely moved, which is what keeps a swipe from
+                     feeling like it needs permission. -->
+                <div class="gallery-stack" data-deck tabindex="0" role="group"
+                     aria-roledescription="card deck"
+                     aria-label="Capabilities — flick or press the arrow keys for the next one">
                 <div class="feature-card" data-gallery-item>
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -291,9 +403,9 @@
                     <h3>Smart Email Search</h3>
                     <p>All your emails indexed and searchable. Find that trust update, gala invitation, or vet bill in seconds.</p>
                     <ul class="feature-list">
-                        <li>What did the estate attorney send about the trust update?</li>
-                        <li>What are the rules for the gala silent auction?</li>
-                        <li>When is the cat's next vet appointment?</li>
+                        <li><button type="button" class="feature-prompt" data-prompt="0.0">What did the estate attorney send about the trust update?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="0.1">What are the rules for the gala silent auction?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="0.2">When is the cat's next vet appointment?</button></li>
                     </ul>
                 </div>
 
@@ -308,9 +420,9 @@
                     <h3>Daily Briefings & Life Tracking</h3>
                     <p>Start each day knowing exactly what's happening — events, deadlines, school closures, care schedules, and action items delivered on demand.</p>
                     <ul class="feature-list">
-                        <li>What do I need to know today?</li>
-                        <li>Does Dad's home aide schedule conflict with his specialist appointment?</li>
-                        <li>What is due to the board committee this week?</li>
+                        <li><button type="button" class="feature-prompt" data-prompt="1.0">What do I need to know today?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="1.1">Does Dad's home aide schedule conflict with his specialist appointment?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="1.2">What is due to the board committee this week?</button></li>
                     </ul>
                 </div>
 
@@ -324,13 +436,21 @@
                     <h3>Task & Calendar Management</h3>
                     <p>Create events, set reminders, and send quick updates through natural conversation. Never forget to confirm a guest list, follow up with a care coordinator, or update the nanny.</p>
                     <ul class="feature-list">
-                        <li>Add the donor reception to the calendar</li>
-                        <li>Remind me to call Dad's care coordinator</li>
-                        <li>Text Charles I'm running late from the benefit dinner</li>
+                        <li><button type="button" class="feature-prompt" data-prompt="2.0">Add the donor reception to the calendar</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="2.1">Remind me to call Dad's care coordinator</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="2.2">Text Charles I'm running late from the benefit dinner</button></li>
                     </ul>
                 </div>
-                    </div>
+
                 </div>
+
+                <p class="deck-hint" data-deck-hint aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 6l-6 6 6 6"/>
+                    </svg>
+                    Flick for the next one
+                </p>
+            </div>
             </div>
         </div>
     </section>
@@ -509,6 +629,7 @@
     <script src="js/main.js"></script>
     <script src="js/gallery.js"></script>
     <script src="js/faq.js"></script>
+    <script src="js/chat.js"></script>
     <script src="js/scrolly.js"></script>
 </body>
 </html>

@@ -29,6 +29,10 @@
 }
 
 /* --- the phone ------------------------------------------------------------ */
+/* The shell, screen, island, status bar and home indicator are shared with the
+   chat phone in the capabilities section — the two are meant to read as the
+   same device, once buried and once answering. Only the height and what's on
+   the screen belong to a particular section. */
 .phone {
     --phone-bezel: #1c1c22;
     --phone-screen-top: #12141a;
@@ -40,8 +44,9 @@
 
     position: relative;
     width: 17.5rem;
-    height: 34rem;
 }
+
+.scrolly-canvas .phone { height: 34rem; }
 
 /* A lit screen at night is the whole point of the third step, so the wallpaper
    stays dark there rather than following the page into light mode. */
@@ -406,7 +411,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
 /* A phone taller than the viewport can't be pinned to the middle of it. */
 @media (max-height: 780px) {
     .scrolly-canvas { top: calc(50vh - 14rem); height: 28rem; }
-    .phone { transform: scale(0.82); transform-origin: top center; }
+    .scrolly-canvas .phone { transform: scale(0.82); transform-origin: top center; }
 }
 
 @media (max-width: 900px) {
@@ -451,7 +456,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
        6px on screen — the phone is only 280px wide to begin with, so it fits a
        phone at native size and it was the height that had to come down. The
        stack gets shorter instead, showing fewer cards at a readable size. */
-    .phone {
+    .scrolly-canvas .phone {
         transform: none;
         height: 22rem;
     }
@@ -468,7 +473,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
 
     /* Below this the 280px phone stops clearing the container padding. */
     @media (max-width: 380px) {
-        .phone { width: 15rem; }
+        .scrolly-canvas .phone { width: 15rem; }
     }
 
     /* A short phone in portrait — an SE, an 8 — has no room for both a 22rem
@@ -476,7 +481,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
        behind the pin. The phone gives up the height. */
     @media (max-height: 700px) {
         .scrolly-canvas { top: 1.5rem; height: 17rem; }
-        .phone { height: 17rem; }
+        .scrolly-canvas .phone { height: 17rem; }
         .phone-lock { top: 1.6rem; }
         .phone-clock { font-size: 2.1rem; }
         .phone-count { margin-top: 0.35rem; }
@@ -503,7 +508,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
        words. */
     @media (max-height: 620px) {
         .scrolly-canvas { top: 1.25rem; height: 13.5rem; }
-        .phone { height: 13.5rem; }
+        .scrolly-canvas .phone { height: 13.5rem; }
         .phone-lock { top: 1rem; }
         .phone-clock { font-size: 1.6rem; }
         .phone-date { font-size: 0.62rem; }

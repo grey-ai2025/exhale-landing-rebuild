@@ -2078,37 +2078,145 @@ body.light-mode input:focus-visible {
    =========================================== */
 .gallery { position: relative; }
 
-.gallery-viewport {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    /* Breathing room so card shadows aren't clipped by the scroll box. */
-    margin: -1rem;
-    padding: 1rem;
+/* A deck rather than a rail: the cards sit on top of each other and you send
+   the front one away. Depth is carried by the two behind it, so the stack
+   reads as a finite pile you're working through. */
+.gallery-stack {
+    position: relative;
+    height: 34rem;
+    /* Room for the depth offsets and the shadows beneath. */
+    padding-bottom: 2rem;
 }
 
-.gallery-viewport::-webkit-scrollbar { display: none; }
+.gallery-stack:focus { outline: none; }
 
-.gallery.is-dragging .gallery-viewport {
-    scroll-snap-type: none;
-    cursor: grabbing;
-    user-select: none;
-}
-
-.gallery-track {
-    display: flex;
-    gap: 2rem;
-    width: max-content;
+.gallery-stack:focus-visible {
+    outline: 2px solid var(--cyan-glow);
+    outline-offset: 12px;
+    border-radius: 28px;
 }
 
 .gallery .feature-card {
-    flex: 0 0 min(26rem, 80vw);
-    scroll-snap-align: start;
+    position: absolute;
+    /* The right edge is held back by the width of the fan, so the two cards
+       behind can peek out there without the deck growing or overflowing its
+       column. Without that peek the pile is invisible and nothing tells you
+       there is anything to swipe. */
+    inset: 0 2.25rem 0 0;
     display: flex;
     flex-direction: column;
+    /* Opaque, deliberately. The glass tint is fine on a rail where cards sit
+       side by side; in a pile you read straight through the front card to the
+       two behind it and every line of text doubles. The section colour under
+       the same tint keeps the look without the transparency. */
+    background-color: var(--bg-primary);
+    background-image: linear-gradient(var(--glass-bg), var(--glass-bg));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    /* The one being dragged is written to by JS every frame; the ones behind
+       it ease into their new depth when the deck advances. */
+    transition: transform 520ms var(--ease-drawer),
+                opacity 420ms var(--ease-out),
+                filter 420ms var(--ease-out);
+    will-change: transform;
+    touch-action: pan-y;   /* horizontal belongs to the deck, vertical to the page */
+}
+
+/* Depth. Each step back is smaller, dimmer and slightly out of focus — the
+   same recipe the scrollytelling scenes use for the cards you've passed. */
+.gallery .feature-card[data-depth="0"] {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    z-index: 3;
+    cursor: grab;
+}
+
+/* Fanned to the right and tilted a degree or two, the way a dealt hand sits.
+   Depth alone (straight down) hides them exactly behind the front card. */
+.gallery .feature-card[data-depth="1"] {
+    transform: translate3d(1.15rem, 0.6rem, 0) scale(0.975) rotate(1.1deg);
+    opacity: 0.75;
+    filter: blur(0.3px);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.gallery .feature-card[data-depth="2"] {
+    transform: translate3d(2.25rem, 1.2rem, 0) scale(0.95) rotate(2.2deg);
+    opacity: 0.45;
+    filter: blur(0.8px);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* The one-time nudge that shows the top card is loose. */
+.gallery .feature-card.is-nudging { transition: none; }
+
+/* --- the swipe affordance -------------------------------------------------- */
+.deck-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-top: 1.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: opacity 500ms var(--ease-out);
+}
+
+.deck-hint svg {
+    width: 15px;
+    height: 15px;
+    animation: deck-hint-nudge 2.4s var(--ease-in-out) infinite;
+}
+
+/* Once you've flicked one, you know. */
+.deck-hint.is-used { opacity: 0; pointer-events: none; }
+
+@keyframes deck-hint-nudge {
+    0%, 62%, 100% { transform: translateX(0); opacity: 0.75; }
+    76%           { transform: translateX(-4px); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .deck-hint svg { animation: none; }
+}
+
+/* Mid-gesture the card must not fight the pointer with a transition. */
+.gallery .feature-card.is-grabbing {
+    transition: none;
+    cursor: grabbing;
+    user-select: none;
+    z-index: 4;
+}
+
+/* Leaving the deck. */
+.gallery .feature-card.is-gone { transition: none; }
+
+/* The stack is one fixed height and every card fills it, so the deck doesn't
+   resize under your finger as it cycles. The value is the tallest card's
+   content at that width — verified, not guessed. */
+@media (max-width: 900px) {
+    .gallery-stack { height: 29rem; padding-bottom: 1.5rem; }
+
+    /* A narrower deck needs a shallower fan, but it still has to fan — scaled
+       straight down, the cards behind end up narrower than the front one and
+       the pile disappears entirely. */
+    .gallery .feature-card { inset: 0 1.75rem 0 0; }
+
+    .gallery .feature-card[data-depth="1"] {
+        transform: translate3d(0.85rem, 0.45rem, 0) scale(0.985) rotate(0.9deg);
+    }
+
+    .gallery .feature-card[data-depth="2"] {
+        transform: translate3d(1.7rem, 0.9rem, 0) scale(0.97) rotate(1.8deg);
+    }
+}
+
+@media (max-width: 400px) {
+    .gallery-stack { height: 31rem; }
 }
 
 /* A card you can grab shouldn't also lift away from the pointer. */
@@ -2140,10 +2248,6 @@ body.light-mode input:focus-visible {
 body.light-mode .gallery .feature-list li {
     background: rgba(13, 115, 119, 0.07);
     border-color: rgba(13, 115, 119, 0.14);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .gallery-viewport { cursor: grab; }
 }
 
 /* ===========================================
@@ -2375,4 +2479,10 @@ body.light-mode .faq-more-link {
 @media (max-width: 768px) {
     .faq-trigger { font-size: 1rem; gap: 1rem; }
     .faq-panel-inner p { padding-right: 1.5rem; }
+}
+
+body.light-mode .gallery .feature-card {
+    background-color: var(--gray-50);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7));
+    border-color: rgba(0, 0, 0, 0.07);
 }

@@ -1,0 +1,489 @@
+/* ===========================================
+   Meet Your AI Executive — the answer side
+
+   The same phone as The Reality, resolved: instead of a lockscreen filling up
+   with things nobody has handled, a conversation where each one comes back
+   answered. It reuses .phone / .phone-shell / .phone-screen from scrolly.css
+   so the two read as one device across the page.
+
+   The conversation is driven by scroll position (chat.js), not a timeline —
+   the reader sets the pace, and it runs backwards.
+   Loaded after scrolly.css.
+   =========================================== */
+/* Phone and cards side by side, because they are one instrument: the card you
+   are on is the state, the phone is the readout. Stacked, they read as two
+   unrelated visuals no matter how they are styled. */
+.capabilities {
+    display: grid;
+    /* The deck is capped rather than filling the column: a card that spans
+       800px reads as a panel, not as something you'd flick off a pile. */
+    grid-template-columns: 17.5rem minmax(0, 30rem);
+    justify-content: center;
+    gap: 3.5rem;
+    align-items: center;
+}
+
+.chat { display: flex; justify-content: center; }
+
+.chat-phone { height: 34rem; }
+
+/* --- header ---------------------------------------------------------------- */
+.chat-header {
+    position: absolute;
+    top: 2.6rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    border-bottom: 1px solid var(--phone-card-border);
+    z-index: 2;
+}
+
+.chat-avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: rgba(173, 251, 246, 0.16);
+    color: var(--cyan-glow);
+}
+
+.chat-avatar svg { width: 13px; height: 13px; }
+
+body.light-mode .chat-avatar {
+    background: rgba(13, 115, 119, 0.12);
+    color: var(--cyan-deep);
+}
+
+.chat-name {
+    flex: 1;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--cyan-glow);
+}
+
+body.light-mode .chat-name { color: var(--cyan-deep); }
+
+.chat-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid rgba(92, 236, 211, 0.28);
+    border-radius: 999px;
+    background: rgba(92, 236, 211, 0.08);
+    font-size: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--phone-ink-dim);
+}
+
+.chat-live::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--cyan-light);
+    box-shadow: 0 0 5px rgba(92, 236, 211, 0.9);
+    animation: chat-live-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes chat-live-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.45; }
+}
+
+/* --- conversation ---------------------------------------------------------- */
+.chat-body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5.4rem;
+    bottom: 4.4rem;
+    padding: 0 0.7rem;
+    display: flex;
+    flex-direction: column;
+    /* Bottom-anchored like a real thread: the newest turn sits at the bottom
+       and pushes the older ones up under the fade. */
+    justify-content: flex-end;
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, transparent 0, #000 2.5rem);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 2.5rem);
+    z-index: 2;
+}
+
+/* Same 0fr -> 1fr disclosure as the notification stack and the FAQ: the row
+   makes room for itself without JS measuring, and reverses on scroll-up. Each
+   one wraps its contents in a single overflow child — a grid row can only
+   collapse what sits in that one row. */
+.chat-turn,
+.chat-reply {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 520ms var(--ease-drawer);
+}
+
+.chat-turn.is-in { grid-template-rows: 1fr; }
+.chat-turn.has-reply .chat-reply { grid-template-rows: 1fr; }
+
+.chat-turn-inner,
+.chat-reply-inner { overflow: hidden; }
+
+.chat-turn-inner { display: flex; flex-direction: column; }
+
+/* The question, in the reader's own voice. */
+.chat-ask {
+    align-self: flex-end;
+    max-width: 84%;
+    margin-top: 0.5rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 16px 16px 4px 16px;
+    background: var(--cyan-light);
+    color: #0a0a0a;
+    font-size: 0.66rem;
+    font-weight: 500;
+    line-height: 1.35;
+    opacity: 0;
+    transform: translateY(6px) scale(0.94);
+    transform-origin: 100% 50%;
+    transition: opacity 300ms var(--ease-out), transform 420ms var(--ease-out);
+}
+
+.chat-turn.is-in .chat-ask {
+    opacity: 1;
+    transform: none;
+    transition-delay: 60ms;
+}
+
+/* Three dots for as long as it takes the answer to arrive. Removed from flow
+   once the reply lands so the thread doesn't keep a gap where it was. */
+.chat-typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: max-content;
+    margin-top: 0.5rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 16px 16px 16px 4px;
+    background: var(--phone-card);
+    border: 1px solid var(--phone-card-border);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
+}
+
+.chat-turn.is-thinking .chat-typing { opacity: 1; transform: none; }
+.chat-turn.has-reply .chat-typing { display: none; }
+
+.chat-typing span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--phone-ink-dim);
+    animation: chat-typing 1.15s ease-in-out infinite;
+}
+
+.chat-typing span:nth-child(2) { animation-delay: 0.14s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.28s; }
+
+@keyframes chat-typing {
+    0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+    30%           { opacity: 1;    transform: translateY(-2px); }
+}
+
+.chat-reply-card {
+    margin-top: 0.5rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 16px 16px 16px 4px;
+    background: var(--phone-card);
+    border: 1px solid var(--phone-card-border);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 320ms var(--ease-out), transform 420ms var(--ease-out);
+}
+
+.chat-turn.has-reply .chat-reply-card {
+    opacity: 1;
+    transform: none;
+    /* The words arrive after the bubble has made room for them. */
+    transition-delay: 110ms;
+}
+
+.chat-reply-intro {
+    font-size: 0.66rem;
+    line-height: 1.35;
+    color: var(--phone-ink);
+    margin-bottom: 0.3rem;
+}
+
+.chat-item {
+    font-size: 0.66rem;
+    line-height: 1.4;
+    color: var(--phone-ink);
+}
+
+.chat-item + .chat-item { margin-top: 0.25rem; }
+
+.chat-arrow {
+    color: var(--cyan-glow);
+    font-weight: 600;
+    margin-right: 0.2rem;
+}
+
+/* The specifics — a name, a time, a number — are what the assistant actually
+   resolved, so they carry the accent and nothing else does. */
+.chat-item b,
+.chat-reply-intro b {
+    font-weight: 600;
+    color: var(--cyan-glow);
+}
+
+body.light-mode .chat-arrow,
+body.light-mode .chat-item b,
+body.light-mode .chat-reply-intro b { color: var(--cyan-deep); }
+
+/* --- input bar ------------------------------------------------------------- */
+.chat-input {
+    position: absolute;
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+    border-radius: 15px;
+    background: var(--phone-card);
+    border: 1px solid var(--phone-card-border);
+    z-index: 2;
+}
+
+.chat-input-text {
+    flex: 1;
+    padding: 0.4rem 0;
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--phone-ink-dim);
+}
+
+.chat-send {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--cyan-light);
+    color: #0a0a0a;
+}
+
+.chat-send svg { width: 12px; height: 12px; }
+
+/* --- smaller screens ------------------------------------------------------- */
+@media (max-width: 900px) {
+    /* One cell, not one column. The phone pins above the cards it answers for,
+       so tapping a prompt can never send the answer off-screen — which is what
+       a plain stack does the moment you scroll down to reach a card. A grid
+       item can only stick inside its own grid area, so the two have to share
+       one; the gallery clears the phone with padding instead of a row. */
+    /* minmax(0, 1fr), never a bare 1fr: the gallery track is `width: max-content`,
+       so a column whose minimum is auto sizes itself to all three cards laid
+       end to end — about 1000px — and pushes the phone off the side of the
+       screen. Letting the column go to zero hands the overflow back to the
+       scroller, where it belongs. */
+    .capabilities { grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+    .chat,
+    .gallery { grid-area: 1 / 1; }
+
+    .chat {
+        position: sticky;
+        top: 3rem;
+        z-index: 2;
+        /* A readout, not a control — taps belong to the cards underneath. */
+        pointer-events: none;
+        padding-bottom: 0.75rem;
+        background: linear-gradient(180deg,
+            var(--bg-primary) 0, var(--bg-primary) 88%, transparent 100%);
+    }
+
+    /* Travels with the sticky phone, covering the gap above it. */
+    .chat::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        height: 3.5rem;
+        background: var(--bg-primary);
+    }
+
+    body.light-mode .chat {
+        background: linear-gradient(180deg,
+            var(--gray-50) 0, var(--gray-50) 88%, transparent 100%);
+    }
+
+    body.light-mode .chat::before { background: var(--gray-50); }
+
+    /* Only the newest exchange needs to be legible on a phone. */
+    .chat-phone { height: 20rem; }
+    .chat-header { top: 2.2rem; }
+    .chat-body {
+        top: 4.6rem;
+        bottom: 3.4rem;
+        mask-image: linear-gradient(to bottom, transparent 0, #000 1.75rem);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 1.75rem);
+    }
+    .chat-input { bottom: 1rem; }
+
+    .gallery { padding-top: 21.5rem; }
+}
+
+@media (max-width: 380px) {
+    .chat-phone { width: 15rem; }
+}
+
+@media (max-height: 700px) and (max-width: 900px) {
+    .chat { top: 2.5rem; }
+    .chat-phone { height: 17.5rem; }
+    .chat-body {
+        top: 4.2rem;
+        bottom: 3rem;
+        /* A shorter thread has no room to give a 28px fade — the question
+           itself would sit inside it. */
+        mask-image: linear-gradient(to bottom, transparent 0, #000 1rem);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 1rem);
+    }
+    .chat-input { bottom: 0.8rem; }
+    .gallery { padding-top: 19rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* No sliding, but the thread still fills in as you reach it. */
+    .chat-ask,
+    .chat-reply-card { transform: none; }
+}
+
+/* ===========================================
+   Capability cards on a phone
+
+   At full size a card ran 630px — three quarters of a 844px screen, so a
+   single card filled the viewport and the row read as one item rather than a
+   set you swipe. Every measurement below is proportional: the card keeps its
+   structure, it just stops shouting.
+   =========================================== */
+@media (max-width: 640px) {
+    .gallery .feature-card { padding: 1.5rem 1.375rem; }
+
+    .feature-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .feature-icon svg { width: 24px; height: 24px; }
+
+    .gallery .feature-card h3 {
+        font-size: 1.15rem;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .gallery .feature-card > p {
+        font-size: 0.875rem;
+        line-height: 1.55;
+    }
+
+    .gallery .feature-list {
+        padding-top: 1rem;
+        gap: 0.375rem;
+    }
+
+    .gallery .feature-list li {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+        line-height: 1.4;
+    }
+}
+
+/* ===========================================
+   The cards as controls
+
+   The example prompts were always written as things you would type. Making
+   them real buttons costs nothing in layout and turns the card from a
+   description of the product into the remote control for it.
+   =========================================== */
+.feature-prompt {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: color 200ms var(--ease-out);
+}
+
+.gallery .feature-list li {
+    padding: 0;
+    transition: background-color 240ms var(--ease-out),
+                border-color 240ms var(--ease-out),
+                transform 220ms var(--ease-out);
+}
+
+.gallery .feature-list li:has(.feature-prompt) { padding: 0; }
+
+.gallery .feature-list li .feature-prompt {
+    padding: 0.625rem 0.9375rem;
+}
+
+/* The prompt currently on screen in the phone. */
+.gallery .feature-list li.is-asking {
+    background: rgba(173, 251, 246, 0.2);
+    border-color: rgba(173, 251, 246, 0.4);
+}
+
+body.light-mode .gallery .feature-list li.is-asking {
+    background: rgba(13, 115, 119, 0.14);
+    border-color: rgba(13, 115, 119, 0.3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .gallery .feature-list li:hover {
+        border-color: rgba(173, 251, 246, 0.35);
+        transform: translateX(-2px);
+    }
+    body.light-mode .gallery .feature-list li:hover {
+        border-color: rgba(13, 115, 119, 0.28);
+    }
+}
+
+.feature-prompt:focus-visible {
+    outline: 2px solid var(--cyan-glow);
+    outline-offset: 3px;
+    border-radius: 12px;
+}
+
+
+/* At the narrowest widths the fan takes 28px off the card and the two longer
+   capability blurbs gain a line each. Tighten rather than grow the deck — the
+   whole section is already competing for a 568px-tall screen. */
+@media (max-width: 400px) {
+    .gallery .feature-card { padding: 1.25rem 1.125rem; }
+    .gallery .feature-card > p { font-size: 0.8125rem; line-height: 1.5; }
+    .gallery .feature-list { padding-top: 0.75rem; gap: 0.3rem; }
+    .gallery .feature-list li .feature-prompt { padding: 0.4rem 0.6rem; }
+    .gallery .feature-list li { font-size: 0.75rem; }
+    .feature-icon { width: 38px; height: 38px; margin-bottom: 0.75rem; }
+    .feature-icon svg { width: 21px; height: 21px; }
+}

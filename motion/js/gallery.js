@@ -1,9 +1,13 @@
 /**
- * Exhale — Capabilities Gallery
+ * Exhale — Capabilities deck
  *
- * Native scrolling already carries momentum and rubber-banding on touch, so
- * the pointer handler below only takes over for a mouse, where the platform
- * gives you nothing.
+ * A stack you flick through rather than a rail you scroll. The rule that makes
+ * it feel responsive is that **velocity decides, not distance**: a fast flick
+ * commits even if the card barely moved. Requiring a drag threshold is exactly
+ * what makes a swipe feel like it needs permission first.
+ *
+ * The front card is the section's state — the phone beside the deck shows that
+ * capability's conversation — so every change announces itself once, here.
  */
 (function () {
     'use strict';
@@ -31,7 +35,9 @@
             v += a * dt;
             x += v * dt;
 
-            if (Math.abs(x) < 0.35 && Math.abs(v) < 12) {
+            var eps = opts.epsilon || 0.35;
+            var vEps = opts.vEpsilon || 12;
+            if (Math.abs(x) < eps && Math.abs(v) < vEps) {
                 opts.onUpdate(target);
                 if (opts.onDone) opts.onDone();
                 return;
@@ -42,268 +48,312 @@
 
         frame = requestAnimationFrame(step);
 
-        return {
-            // Retarget without losing velocity — this is what keeps an
-            // interrupted gesture continuous instead of hitting a wall.
-            retarget: function (next) { x = target + x - next; target = next; },
-            stop: function () { if (frame) cancelAnimationFrame(frame); }
-        };
+        return { stop: function () { if (frame) cancelAnimationFrame(frame); } };
     }
 
-    // Where a flick comes to rest, using the same exponential decay as
-    // native scroll deceleration.
-    function projectMomentum(velocity) {
-        var d = 0.998;
-        return (velocity / 1000) * d / (1 - d);
-    }
+    /**
+     * A card leaving the deck is a one-way trip, so it gets a tween rather than
+     * a spring. A spring's tail is asymptotic: the card is off screen in 300ms
+     * but the integrator keeps chasing the last pixel for seconds, and the deck
+     * can't accept another flick until it lands. Duration scales with the
+     * throw — a hard flick should leave faster than a slow shove.
+     */
+    function tween(opts) {
+        var start = null;
+        var frame = null;
 
-    // Progressive resistance past a boundary — real things slow before they stop.
-    function rubberband(overshoot, dimension) {
-        var c = 0.55;
-        return (overshoot * dimension * c) / (dimension + c * Math.abs(overshoot));
+        function step(now) {
+            if (start === null) start = now;
+            var t = Math.min((now - start) / opts.duration, 1);
+            var eased = 1 - Math.pow(1 - t, 3);
+            opts.onUpdate(opts.from + (opts.to - opts.from) * eased);
+            if (t < 1) frame = requestAnimationFrame(step);
+            else if (opts.onDone) opts.onDone();
+        }
+
+        frame = requestAnimationFrame(step);
+        return { stop: function () { if (frame) cancelAnimationFrame(frame); } };
     }
 
     function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    /* Velocity-based commit: a flick should be enough, regardless of how far it
+       travelled. 0.11 px/ms is the threshold used across this project. */
+    function shouldCommit(distance, elapsedMs, threshold) {
+        var velocity = Math.abs(distance) / Math.max(elapsedMs, 1);
+        return Math.abs(distance) >= (threshold || 110) || velocity > 0.11;
+    }
 
     function initGallery() {
         var gallery = document.querySelector('[data-gallery]');
         if (!gallery) return;
 
-        var viewport = gallery.querySelector('[data-gallery-viewport]');
-        var track = gallery.querySelector('[data-gallery-track]');
-        var items = Array.prototype.slice.call(gallery.querySelectorAll('[data-gallery-item]'));
-        var dotsWrap = gallery.querySelector('[data-gallery-dots]');
-        var prevBtn = gallery.querySelector('[data-gallery-prev]');
-        var nextBtn = gallery.querySelector('[data-gallery-next]');
-        // Dots and arrows are optional chrome — the gallery is drag- and
-        // scroll-driven, so it has to keep working without them in the markup.
-        if (!viewport || !track || !items.length) return;
+        var stack = gallery.querySelector('[data-deck]');
+        var cards = Array.prototype.slice.call(gallery.querySelectorAll('[data-gallery-item]'));
+        if (!stack || cards.length < 2) return;
 
-        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        var snaps = [];
-        var maxScroll = 0;
-        var active = 0;
-        var lastPrevDisabled = null;
-        var lastNextDisabled = null;
-        var scrollSpring = null;
-        var bandSpring = null;
+        // order[0] is the card on top. Flicking moves the front card to the
+        // back, so the deck cycles rather than running out.
+        var order = cards.map(function (_, i) { return i; });
+        var busy = false;
 
-        function measure() {
-            var base = items[0].offsetLeft;
-            maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-            snaps = items.map(function (el) {
-                return clamp(el.offsetLeft - base, 0, maxScroll);
+        function paint() {
+            order.forEach(function (cardIndex, depth) {
+                var card = cards[cardIndex];
+                card.setAttribute('data-depth', String(Math.min(depth, 2)));
+                card.classList.toggle('is-active', depth === 0);
+                // Only the front card is reachable; the ones behind it are
+                // decoration until they come forward.
+                card.setAttribute('aria-hidden', depth === 0 ? 'false' : 'true');
+                card.querySelectorAll('button, a').forEach(function (el) {
+                    if (depth === 0) el.removeAttribute('tabindex');
+                    else el.setAttribute('tabindex', '-1');
+                });
+            });
+
+            gallery.dispatchEvent(new CustomEvent('gallery:change', {
+                bubbles: true,
+                detail: { index: order[0] }
+            }));
+        }
+
+        function setX(card, x, opacity) {
+            card.style.transform = x
+                ? 'translate3d(' + x + 'px, 0, 0) rotate(' + (x / 34).toFixed(2) + 'deg)'
+                : '';
+            card.style.opacity = opacity == null ? '' : String(opacity);
+        }
+
+        // Send the front card away and bring the next one forward.
+        function advance(direction, velocity) {
+            if (busy) return;
+            var card = cards[order[0]];
+            busy = true;
+
+            function land() {
+                card.classList.remove('is-gone', 'is-grabbing');
+                card.style.transform = '';
+                card.style.opacity = '';
+                order.push(order.shift());
+                paint();
+                busy = false;
+            }
+
+            if (reduced) { land(); return; }
+
+            var width = stack.offsetWidth || 320;
+            var to = direction * (width + 140);
+            var start = parseFloat(card.dataset.x || '0');
+
+            card.classList.add('is-gone');
+            tween({
+                from: start,
+                to: to,
+                duration: clamp(340 - Math.abs(velocity || 0) / 12, 190, 340),
+                onUpdate: function (x) {
+                    // Solid until it's genuinely on its way out — a card that
+                    // dims as it moves lets the pile beneath read through it.
+                    var past = Math.max(0, Math.abs(x) - width * 0.35);
+                    setX(card, x, Math.max(0, 1 - past / (width * 0.45)));
+                },
+                onDone: land
             });
         }
 
-        function nearestSnap(pos) {
-            var best = 0, bestDist = Infinity;
-            for (var i = 0; i < snaps.length; i++) {
-                var d = Math.abs(snaps[i] - pos);
-                if (d < bestDist) { bestDist = d; best = i; }
-            }
-            return best;
-        }
+        // Bring the last card back to the front, entering from the side it left.
+        function retreat() {
+            if (busy) return;
+            busy = true;
+            order.unshift(order.pop());
+            var card = cards[order[0]];
+            paint();
 
-        if (dotsWrap) {
-            items.forEach(function (item, i) {
-                var dot = document.createElement('button');
-                dot.type = 'button';
-                dot.className = 'gallery-dot';
-                var heading = item.querySelector('h3');
-                dot.setAttribute('aria-label', heading ? heading.textContent.trim() : 'Capability ' + (i + 1));
-                dot.appendChild(document.createElement('span')).className = 'gallery-dot-fill';
-                dot.addEventListener('click', function () { goTo(i); });
-                dotsWrap.appendChild(dot);
-            });
-        }
-        var dots = dotsWrap ? Array.prototype.slice.call(dotsWrap.children) : [];
+            if (reduced) { busy = false; return; }
 
-        function setActive(i) {
-            if (i === active) return;
-            active = i;
-            dots.forEach(function (d, n) {
-                d.classList.toggle('is-active', n === i);
-                d.setAttribute('aria-current', n === i ? 'true' : 'false');
-            });
-        }
+            var width = stack.offsetWidth || 320;
+            card.classList.add('is-gone');
+            setX(card, -(width + 140), 0);
 
-        // Called on every spring frame, so it must not write unless something
-        // actually changed. setActive already guards itself.
-        function syncControls() {
-            var atStart = viewport.scrollLeft <= 2;
-            var atEnd = viewport.scrollLeft >= maxScroll - 2;
-
-            if (prevBtn && atStart !== lastPrevDisabled) {
-                prevBtn.disabled = atStart;
-                lastPrevDisabled = atStart;
-            }
-            if (nextBtn && atEnd !== lastNextDisabled) {
-                nextBtn.disabled = atEnd;
-                lastNextDisabled = atEnd;
-            }
-
-            setActive(nearestSnap(viewport.scrollLeft));
-        }
-
-        function goTo(i, velocity) {
-            measure();
-            var target = clamp(snaps[clamp(i, 0, snaps.length - 1)], 0, maxScroll);
-
-            if (reduced.matches) {
-                if (scrollSpring) { scrollSpring.stop(); scrollSpring = null; }
-                viewport.scrollLeft = target;
-                viewport.style.scrollSnapType = '';
-                syncControls();
-                return;
-            }
-
-            // A spring already in flight keeps its velocity and simply takes a
-            // new target. Stopping and restarting at zero is the discontinuity
-            // you feel as a wall when pressing the arrow twice quickly.
-            if (scrollSpring && !velocity) {
-                scrollSpring.retarget(target);
-                syncControls();
-                return;
-            }
-            if (scrollSpring) { scrollSpring.stop(); scrollSpring = null; }
-
-            viewport.style.scrollSnapType = 'none';
-            scrollSpring = makeSpring({
-                from: viewport.scrollLeft,
-                to: target,
-                velocity: velocity || 0,
-                response: 0.44,
+            // Coming back is an arrival, so it settles rather than stopping —
+            // but with a looser epsilon than a short spring would need, or the
+            // last pixel of a 900px journey holds the deck for a second.
+            makeSpring({
+                from: -(width + 140),
+                to: 0,
+                response: 0.46,
                 damping: 1,
-                onUpdate: function (v) { viewport.scrollLeft = v; syncControls(); },
+                epsilon: 1.5,
+                vEpsilon: 60,
+                onUpdate: function (x) {
+                    setX(card, x, Math.min(1, 1 - Math.abs(x) / (width * 0.9)));
+                },
                 onDone: function () {
-                    scrollSpring = null;
-                    viewport.style.scrollSnapType = '';
-                    syncControls();
+                    card.classList.remove('is-gone');
+                    card.style.transform = '';
+                    card.style.opacity = '';
+                    busy = false;
                 }
             });
         }
 
-        if (prevBtn) prevBtn.addEventListener('click', function () { goTo(active - 1); });
-        if (nextBtn) nextBtn.addEventListener('click', function () { goTo(active + 1); });
+        /* --- the gesture ---------------------------------------------------- */
+        var dragging = false, pointerId = null, startX = 0, startT = 0, dx = 0;
+        var moved = 0, pressed = null, springBack = null;
 
-        viewport.addEventListener('keydown', function (e) {
-            if (e.key === 'ArrowRight') { e.preventDefault(); goTo(active + 1); }
-            else if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(active - 1); }
-        });
-
-        viewport.addEventListener('scroll', function () {
-            if (!scrollSpring) syncControls();
-        }, { passive: true });
-
-        var dragging = false, pointerId = null, startX = 0, startScroll = 0, moved = 0, band = 0;
-        var history = [];
-
-        function setBand(px) {
-            band = px;
-            track.style.transform = px ? 'translate3d(' + px + 'px,0,0)' : '';
-        }
-
-        viewport.addEventListener('pointerdown', function (e) {
-            if (e.pointerType !== 'mouse' || e.button !== 0) return;
-            measure();
-            if (maxScroll <= 0) return;
+        stack.addEventListener('pointerdown', function (e) {
+            if (busy || e.button > 0) return;
+            var card = cards[order[0]];
+            if (!card.contains(e.target)) return;
 
             dragging = true;
             pointerId = e.pointerId;
             startX = e.clientX;
-            startScroll = viewport.scrollLeft;
+            startT = e.timeStamp;
+            dx = 0;
             moved = 0;
-            history = [{ x: e.clientX, t: e.timeStamp }];
+            // A tap that lands on a prompt has to survive the pointer capture
+            // below, which retargets the click to the capturing element.
+            pressed = e.target.closest ? e.target.closest('button, a, [role="button"]') : null;
 
-            if (scrollSpring) { scrollSpring.stop(); scrollSpring = null; }
-            if (bandSpring) { bandSpring.stop(); bandSpring = null; }
-
-            viewport.setPointerCapture(e.pointerId);
-            gallery.classList.add('is-dragging');
-            viewport.style.scrollSnapType = 'none';
+            if (springBack) { springBack.stop(); springBack = null; }
+            card.setPointerCapture(e.pointerId);
+            card.classList.add('is-grabbing');
         });
 
-        viewport.addEventListener('pointermove', function (e) {
+        stack.addEventListener('pointermove', function (e) {
             if (!dragging || e.pointerId !== pointerId) return;
+            var card = cards[order[0]];
 
-            var dx = e.clientX - startX;
+            dx = e.clientX - startX;
             moved = Math.max(moved, Math.abs(dx));
-
-            history.push({ x: e.clientX, t: e.timeStamp });
-            if (history.length > 6) history.shift();
-
-            var wanted = startScroll - dx;
-            var clamped = clamp(wanted, 0, maxScroll);
-            viewport.scrollLeft = clamped;
-
-            // Past an edge the content keeps following the pointer, just less
-            // and less — a hard stop reads as frozen.
-            var overshoot = wanted - clamped;
-            setBand(overshoot ? -rubberband(overshoot, viewport.clientWidth) : 0);
+            card.dataset.x = String(dx);
+            setX(card, dx);
         });
 
         function endDrag(e) {
             if (!dragging || (e && e.pointerId !== pointerId)) return;
             dragging = false;
-            gallery.classList.remove('is-dragging');
-            try { viewport.releasePointerCapture(pointerId); } catch (err) {}
+
+            var card = cards[order[0]];
+            try { card.releasePointerCapture(pointerId); } catch (err) {}
             pointerId = null;
+            card.classList.remove('is-grabbing');
 
-            // Velocity from the tail of the move history, in px/s.
-            var velocity = 0;
-            if (history.length > 1) {
-                var a = history[0];
-                var b = history[history.length - 1];
-                var dt = b.t - a.t;
-                if (dt > 0) velocity = ((b.x - a.x) / dt) * 1000;
-            }
-            var scrollVelocity = -velocity; // dragging left increases scrollLeft
+            var elapsed = (e ? e.timeStamp : startT) - startT;
+            var velocity = (dx / Math.max(elapsed, 1)) * 1000;   // px/s for the spring
+            card.dataset.x = String(dx);
 
-            if (band) {
-                bandSpring = makeSpring({
-                    from: band, to: 0, response: 0.35, damping: 1,
-                    onUpdate: setBand,
-                    onDone: function () { bandSpring = null; setBand(0); }
-                });
+            if (dx !== 0 && shouldCommit(dx, elapsed)) {
+                advance(dx > 0 ? 1 : -1, velocity);
+                return;
             }
 
-            // Land where the flick was going, not where the pointer let go.
-            var projected = viewport.scrollLeft + projectMomentum(scrollVelocity);
-            goTo(nearestSnap(clamp(projected, 0, maxScroll)), scrollVelocity);
+            // Not enough — it comes back, carrying whatever speed it had.
+            if (reduced) { setX(card, 0); card.dataset.x = '0'; return; }
+            springBack = makeSpring({
+                from: dx,
+                to: 0,
+                velocity: velocity,
+                response: 0.4,
+                damping: 0.82,   // a little overshoot: it snaps back, not eases back
+                onUpdate: function (x) { setX(card, x); },
+                onDone: function () {
+                    setX(card, 0);
+                    card.dataset.x = '0';
+                    springBack = null;
+                }
+            });
         }
 
-        viewport.addEventListener('pointerup', endDrag);
-        viewport.addEventListener('pointercancel', endDrag);
+        stack.addEventListener('pointerup', endDrag);
+        stack.addEventListener('pointercancel', endDrag);
 
-        // A drag that ends on a link shouldn't also count as a click.
-        viewport.addEventListener('click', function (e) {
-            if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
+        // Pointer capture retargets the click to the card, so a tap on a prompt
+        // inside would otherwise never reach it. A real drag eats the click.
+        stack.addEventListener('click', function (e) {
+            if (moved > 6) {
+                e.preventDefault();
+                e.stopPropagation();
+                moved = 0;
+                pressed = null;
+                return;
+            }
             moved = 0;
+            if (pressed && e.target !== pressed) {
+                var target = pressed;
+                pressed = null;
+                target.click();
+            }
         }, true);
 
-        viewport.addEventListener('dragstart', function (e) { e.preventDefault(); });
+        stack.addEventListener('dragstart', function (e) { e.preventDefault(); });
 
-        var resizeTimer;
-        window.addEventListener('resize', function () {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () { measure(); syncControls(); }, 150);
+        stack.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                advance(1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                retreat();
+            }
         });
 
-        measure();
-        active = -1;   // force the first sync to paint the indicators
-        lastPrevDisabled = null;
-        lastNextDisabled = null;
-        syncControls();
+        /* --- the affordance -------------------------------------------------
+           A fanned pile says "there are more"; it doesn't say "this one moves".
+           So the first time the deck is on screen and still untouched, the top
+           card pulls a few pixels toward the exit and springs back — the same
+           gesture the reader would make, performed once. */
+        var hint = gallery.querySelector('[data-deck-hint]');
+        var touched = false;
+
+        function markTouched() {
+            if (touched) return;
+            touched = true;
+            if (hint) hint.classList.add('is-used');
+        }
+
+        function nudge() {
+            if (touched || busy || reduced) return;
+            var card = cards[order[0]];
+            card.classList.add('is-nudging');
+            makeSpring({
+                from: 0,
+                to: 0,
+                velocity: -260,     // a push, not a move to somewhere
+                response: 0.55,
+                damping: 0.55,      // loose enough to swing back and settle
+                onUpdate: function (x) { if (!touched) setX(card, x); },
+                onDone: function () {
+                    card.classList.remove('is-nudging');
+                    if (!touched) setX(card, 0);
+                }
+            });
+        }
+
+        stack.addEventListener('pointerdown', markTouched);
+        stack.addEventListener('keydown', markTouched);
+
+        if ('IntersectionObserver' in window) {
+            var seen = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    seen.disconnect();
+                    setTimeout(nudge, 900);
+                });
+            }, { threshold: 0.55 });
+            seen.observe(stack);
+        }
+
+        paint();
     }
 
     /**
-     * The gallery cannot use a scroll-driven timeline: `.gallery-viewport`
-     * scrolls horizontally and `.feature-card` is `overflow: hidden`, and
-     * either becomes the scroll container for a `view()` timeline inside it,
-     * which freezes the animation at one end. So the card wipes and the icon
-     * line-draw in craft.css are driven by this class instead.
+     * The deck cannot use a scroll-driven timeline: `.feature-card` is
+     * `overflow: hidden`, which becomes the scroll container for a `view()`
+     * timeline inside it and freezes the animation at one end. So the card
+     * wipes and the icon line-draw in craft.css are driven by this class.
      */
     function initGalleryReveal() {
         var gallery = document.querySelector('[data-gallery]');
