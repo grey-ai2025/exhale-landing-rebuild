@@ -1,8 +1,10 @@
 /* ===========================================
-   The Reality — pinned canvas, scrolling copy
+   The Reality — pinned lockscreen, scrolling copy
 
-   The visual stays put while the explanations move past it, so each pain
-   point gets its own frame instead of four identical cards in a grid.
+   One phone stays pinned while the four explanations move past it, and each
+   one adds to the notification stack. The visual is a single object being
+   buried rather than four separate cards crossfading, so scroll progress and
+   accumulating load are the same movement.
    Loaded after styles.css; nothing here is shared with the other pages.
    =========================================== */
 .scrolly {
@@ -20,239 +22,358 @@
 
 .scrolly-canvas {
     position: sticky;
-    top: calc(50vh - 13rem);   /* centres a 26rem canvas in the viewport */
-    height: 26rem;
+    top: calc(50vh - 17rem);   /* centres a 34rem phone in the viewport */
+    height: 34rem;
+    display: flex;
+    justify-content: center;
 }
 
-.scene {
+/* --- the phone ------------------------------------------------------------ */
+.phone {
+    --phone-bezel: #1c1c22;
+    --phone-screen-top: #12141a;
+    --phone-screen-bottom: #07080b;
+    --phone-ink: #f5f5f5;
+    --phone-ink-dim: rgba(245, 245, 245, 0.55);
+    --phone-card: rgba(255, 255, 255, 0.09);
+    --phone-card-border: rgba(255, 255, 255, 0.12);
+
+    position: relative;
+    width: 17.5rem;
+    height: 34rem;
+}
+
+/* A lit screen at night is the whole point of the third step, so the wallpaper
+   stays dark there rather than following the page into light mode. */
+body.light-mode .phone:not(.is-night) {
+    --phone-bezel: #d8dcE0;
+    --phone-screen-top: #eef1f4;
+    --phone-screen-bottom: #dde3e8;
+    --phone-ink: #171717;
+    --phone-ink-dim: rgba(23, 23, 23, 0.5);
+    --phone-card: rgba(255, 255, 255, 0.75);
+    --phone-card-border: rgba(0, 0, 0, 0.07);
+}
+
+/* 3:47 AM: colder, dimmer, and still the brightest thing in the room. */
+.phone.is-night {
+    --phone-screen-top: #0b1119;
+    --phone-screen-bottom: #05070b;
+}
+
+/* The sprite is a definitions block, not a drawing. */
+.phone-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.phone-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150%;
+    height: 85%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at center,
+        rgba(92, 236, 211, 0.16) 0%,
+        rgba(173, 251, 246, 0.07) 38%,
+        transparent 70%);
+    pointer-events: none;
+    transition: opacity 600ms var(--ease-out);
+}
+
+body.light-mode .phone-glow { opacity: 0.45; }
+
+.phone-shell {
     position: absolute;
     inset: 0;
-    display: flex;
-    opacity: 0;
-    /* Waiting just above the canvas, not a full canvas-height away. A 416px
-       journey while translucent reads as lag; a short drop reads as arrival. */
-    transform: translateY(-35%);
-    /* Blur bridges the two states. Without it you see two distinct cards
-       overlapping mid-fade; with it the eye reads one card transforming. */
-    filter: blur(6px);
-    transition: opacity 320ms var(--ease-out),
-                transform 320ms var(--ease-out),
-                filter 320ms var(--ease-out);
+    border: 6px solid var(--phone-bezel);
+    border-radius: 40px;
+    background: var(--phone-bezel);
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(120, 120, 135, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    transition: border-color 600ms var(--ease-out);
 }
 
-.scene.is-active { opacity: 1; transform: none; filter: blur(0); }
+body.light-mode .phone-shell { box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.06); }
 
-/* Receded, and slightly out of focus — depth of field does the same job
-   as the scale: it reads as sitting behind, not merely dimmed. */
-.scene.is-past { opacity: 0.4; transform: scale(0.9); filter: blur(2px); }
-
-.scene-icon {
-    width: 34px;
-    height: 34px;
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(173, 251, 246, 0.2) 0%, rgba(50, 224, 196, 0.1) 100%);
-    color: var(--cyan-glow);
-}
-
-body.light-mode .scene-icon {
-    background: linear-gradient(135deg, var(--cyan-pale) 0%, rgba(50, 224, 196, 0.2) 100%);
-    color: var(--cyan-deep);
-}
-
-.scene-icon svg { width: 18px; height: 18px; }
-
-/* --- shared mock surface -------------------------------------------------- */
-.mock {
-    flex: 1;
-    padding: 1.25rem;
-    border-radius: 18px;
-    /* Opaque, deliberately. A translucent card lets the receded ones show
-       through it, and the crossfade then reads as two overlapping ghosts
-       rather than one card replacing another. The section background under
-       a glass tint keeps the look without the see-through. */
-    background-color: var(--bg-secondary);
-    background-image: linear-gradient(var(--glass-bg), var(--glass-bg));
-    border: 1px solid var(--glass-border);
-    display: flex;
-    flex-direction: column;
+.phone-screen {
+    position: absolute;
+    inset: 0;
+    border-radius: 34px;
     overflow: hidden;
+    background: linear-gradient(180deg, var(--phone-screen-top) 0%, var(--phone-screen-bottom) 100%);
+    transition: background 600ms var(--ease-out);
 }
 
-body.light-mode .mock {
-    background-color: var(--white);
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7));
-    border-color: rgba(0, 0, 0, 0.06);
-    box-shadow: var(--shadow-md);
+.phone-island {
+    position: absolute;
+    left: 50%;
+    top: 9px;
+    width: 84px;
+    height: 20px;
+    transform: translateX(-50%);
+    background: #000;
+    border-radius: 12px;
+    z-index: 3;
 }
 
-.mock-bar {
+/* --- status bar ----------------------------------------------------------- */
+.phone-status {
+    position: absolute;
+    top: 14px;
+    left: 0;
+    right: 0;
     display: flex;
     align-items: center;
-    gap: 0.625rem;
-    padding-bottom: 0.75rem;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid var(--glass-border);
+    justify-content: space-between;
+    padding: 0 20px;
+    color: var(--phone-ink);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    z-index: 2;
 }
 
-.mock-bar-title {
-    margin-right: auto;
+.phone-status-icons { display: flex; align-items: center; gap: 5px; }
+.phone-cell { display: flex; align-items: flex-end; gap: 1.5px; }
+.phone-cell span { width: 2px; background: currentColor; border-radius: 1px; }
+.phone-cell span:nth-child(1) { height: 3px; }
+.phone-cell span:nth-child(2) { height: 5px; }
+.phone-cell span:nth-child(3) { height: 7px; }
+.phone-cell span:nth-child(4) { height: 9px; }
+
+.phone-battery {
+    position: relative;
+    width: 17px;
+    height: 9px;
+    border: 1px solid currentColor;
+    border-radius: 2.5px;
+    opacity: 0.7;
+}
+
+.phone-battery::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    right: 60%;   /* the battery is not the story, but it isn't full either */
+    background: currentColor;
+    border-radius: 1px;
+}
+
+/* --- clock block ---------------------------------------------------------- */
+.phone-lock {
+    position: absolute;
+    top: 3.4rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: var(--phone-ink);
+    z-index: 2;
+}
+
+.phone-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--phone-ink-dim);
+}
+
+.phone-clock {
     font-family: var(--font-serif);
-    font-size: 1.05rem;
-    color: var(--text-primary);
+    font-size: 3.5rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
 }
 
-.mock-badge {
+.phone-clock em {
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: 0.95rem;
+    margin-left: 0.35rem;
+    color: var(--phone-ink-dim);
+}
+
+/* The count is the number the reader is meant to feel, so it gets the one
+   piece of chrome on the screen. */
+.phone-count {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: var(--phone-card);
+    border: 1px solid var(--phone-card-border);
     font-size: 0.68rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 0.25rem 0.55rem;
-    border-radius: 999px;
-    background: rgba(173, 251, 246, 0.12);
-    color: var(--cyan-glow);
+    color: var(--phone-ink-dim);
+    transition: color 500ms var(--ease-out), border-color 500ms var(--ease-out);
 }
 
-.mock-badge-warn { background: rgba(212, 168, 87, 0.18); color: var(--gold-light); }
+.phone-count [data-phone-count] {
+    font-variant-numeric: tabular-nums;   /* no width jitter while it counts */
+    font-weight: 600;
+    color: var(--phone-ink);
+}
 
-body.light-mode .mock-badge { background: rgba(13, 115, 119, 0.1); color: var(--cyan-deep); }
-body.light-mode .mock-badge-warn { background: rgba(212, 168, 87, 0.22); color: #8a6a20; }
+/* Past the point where a person could plausibly catch up. */
+.phone.is-buried .phone-count {
+    color: var(--gold-light);
+    border-color: rgba(212, 168, 87, 0.35);
+}
 
-/* --- 1. Inbox: the one that matters, buried in the ones that do not ------- */
-.mock-list { display: flex; flex-direction: column; gap: 0.4rem; list-style: none; }
+.phone.is-buried .phone-count [data-phone-count] { color: var(--gold-light); }
 
-.mock-list li {
+/* Swapped text leaves before it arrives, rather than cutting. */
+.phone-date,
+.phone-clock span,
+.phone-status-time {
+    display: inline-block;
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+.is-swapping { opacity: 0; transform: translateY(-4px); }
+
+/* --- the stack ------------------------------------------------------------ */
+.phone-stack {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 12.5rem;
+    bottom: 1.9rem;
+    padding: 0 0.7rem;
+    margin: 0;
+    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
-    padding: 0.45rem 0.6rem;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    opacity: 0.5;
-}
-
-.mock-list li.is-flagged {
-    opacity: 1;
-    background: rgba(173, 251, 246, 0.1);
-    box-shadow: inset 0 0 0 1px rgba(173, 251, 246, 0.3);
-}
-
-body.light-mode .mock-list li { background: rgba(0, 0, 0, 0.03); }
-
-body.light-mode .mock-list li.is-flagged {
-    background: rgba(13, 115, 119, 0.08);
-    box-shadow: inset 0 0 0 1px rgba(13, 115, 119, 0.25);
-}
-
-.mock-from { font-size: 0.7rem; color: var(--text-muted); }
-
-.mock-subject {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
+    /* Bottom-anchored: a new notification takes its place at the bottom and
+       pushes the older ones up under the fade, exactly as a real lockscreen
+       does. No FLIP needed — the layout does it. */
+    justify-content: flex-end;
     overflow: hidden;
-    text-overflow: ellipsis;
+    mask-image: linear-gradient(to bottom, transparent 0, #000 3.5rem);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 3.5rem);
+    z-index: 2;
 }
 
-.mock-list li.is-flagged .mock-subject { color: var(--text-primary); }
-
-/* --- 2. Day: three things at once, all of them yours ---------------------- */
-.mock-body { flex: 1; position: relative; display: flex; flex-direction: column; }
-.mock-night-body { align-items: center; justify-content: center; gap: 1.1rem; }
-.mock-split-body { flex-direction: row; gap: 1rem; }
-
-.mock-grid {
+/* 0fr -> 1fr makes room for the card without measuring it, and reverses
+   cleanly when the reader scrolls back up. The gap lives inside the inner
+   element so a collapsed row leaves no space behind. */
+.phone-notif {
     display: grid;
-    grid-template-columns: 3rem 1fr;
-    align-items: center;
-    row-gap: 2rem;
-    column-gap: 0.75rem;
-    margin-top: 0.25rem;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 520ms var(--ease-drawer);
 }
 
-.mock-hour { font-size: 0.68rem; color: var(--text-muted); }
-.mock-line { height: 1px; background: var(--glass-border); }
+.phone-notif.is-in { grid-template-rows: 1fr; }
 
-.mock-event {
-    position: absolute;
-    right: 0;
-    padding: 0.4rem 0.6rem;
-    border-radius: 8px;
-    font-size: 0.76rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.phone-notif-inner { overflow: hidden; padding-top: 0.45rem; }
+
+.phone-notif-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 13px;
+    background: var(--phone-card);
+    border: 1px solid var(--phone-card-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+    transform-origin: 50% 100%;
+    transition: opacity 300ms var(--ease-out),
+                transform 460ms var(--ease-out);
 }
 
-.mock-event-1 { top: 1.9rem; left: 4.1rem; background: rgba(173, 251, 246, 0.18); color: var(--cyan-glow); }
-.mock-event-2 { top: 3.1rem; left: 6.1rem; background: rgba(212, 168, 87, 0.2); color: var(--gold-light); }
-.mock-event-3 { top: 4.3rem; left: 8.1rem; background: rgba(255, 255, 255, 0.12); color: var(--text-primary); }
-
-body.light-mode .mock-event-1 { background: rgba(13, 115, 119, 0.14); color: var(--cyan-deep); }
-body.light-mode .mock-event-2 { background: rgba(212, 168, 87, 0.28); color: #8a6a20; }
-body.light-mode .mock-event-3 { background: rgba(0, 0, 0, 0.08); color: var(--text-primary); }
-
-/* --- 3. Night: the questions arrive whether or not you are awake ---------- */
-.mock-clock {
-    font-family: var(--font-serif);
-    font-size: 2.75rem;
-    line-height: 1;
-    color: var(--text-primary);
+.phone-notif.is-in .phone-notif-card {
+    opacity: 1;
+    transform: none;
+    /* The card arrives after the room has been made for it. */
+    transition-delay: 90ms;
 }
 
-.mock-clock span { font-size: 0.95rem; margin-left: 0.35rem; color: var(--text-muted); }
-
-.mock-thoughts { display: flex; flex-direction: column; gap: 0.45rem; width: 100%; }
-
-.mock-thoughts span {
-    padding: 0.5rem 0.75rem;
-    border-radius: 14px 14px 14px 4px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    font-size: 0.8rem;
-    font-style: italic;
-    color: var(--text-secondary);
-}
-
-body.light-mode .mock-thoughts span { background: rgba(0, 0, 0, 0.03); }
-
-/* --- 4. Split: the asymmetry, stated as a diagram ------------------------- */
-.mock-col { flex: 1; display: flex; flex-direction: column; gap: 0.45rem; }
-
-.mock-col-label {
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    margin-bottom: 0.25rem;
-}
-
-.mock-chip {
-    padding: 0.45rem 0.6rem;
-    border-radius: 9px;
-    font-size: 0.76rem;
-    background: rgba(173, 251, 246, 0.12);
+.phone-notif-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    border-radius: 5px;
+    background: rgba(173, 251, 246, 0.16);
     color: var(--cyan-glow);
 }
 
-body.light-mode .mock-chip { background: rgba(13, 115, 119, 0.1); color: var(--cyan-deep); }
-
-.mock-chip-empty { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
-body.light-mode .mock-chip-empty { background: rgba(0, 0, 0, 0.04); }
-
-.mock-gap {
-    flex: 1;
-    min-height: 4.5rem;
-    display: grid;
-    place-items: center;
-    border: 1px dashed var(--glass-border);
-    border-radius: 9px;
-    color: var(--text-muted);
+.phone-notif-icon svg {
+    width: 11px;
+    height: 11px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-body.light-mode .mock-gap { border-color: var(--gray-300); }
+body.light-mode .phone:not(.is-night) .phone-notif-icon {
+    background: rgba(13, 115, 119, 0.12);
+    color: var(--cyan-deep);
+}
+
+.phone-notif-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.05rem; }
+
+.phone-notif-from {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--phone-ink);
+}
+
+.phone-notif-body {
+    font-size: 0.68rem;
+    line-height: 1.35;
+    color: var(--phone-ink-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.phone-notif-time {
+    flex: none;
+    font-size: 0.6rem;
+    color: var(--phone-ink-dim);
+    padding-top: 0.1rem;
+}
+
+/* The one that actually matters, sized exactly like the newsletter above it. */
+.phone-notif.is-urgent .phone-notif-card {
+    background: rgba(173, 251, 246, 0.13);
+    border-color: rgba(173, 251, 246, 0.3);
+}
+
+body.light-mode .phone:not(.is-night) .phone-notif.is-urgent .phone-notif-card {
+    background: rgba(13, 115, 119, 0.09);
+    border-color: rgba(13, 115, 119, 0.24);
+}
+
+.phone-notif.is-warn .phone-notif-icon { background: rgba(212, 168, 87, 0.2); color: var(--gold-light); }
+.phone-notif.is-warn .phone-notif-body { color: var(--gold-light); }
+
+body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-body { color: #8a6a20; }
+body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
+    background: rgba(212, 168, 87, 0.28);
+    color: #8a6a20;
+}
+
+.phone-home {
+    position: absolute;
+    left: 50%;
+    bottom: 0.5rem;
+    transform: translateX(-50%);
+    width: 6.5rem;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--phone-ink);
+    opacity: 0.35;
+    z-index: 2;
+}
 
 /* --- the copy column ------------------------------------------------------ */
 .scrolly-copy { display: flex; flex-direction: column; }
@@ -282,15 +403,70 @@ body.light-mode .mock-gap { border-color: var(--gray-300); }
     line-height: 1.8;
 }
 
+/* A phone taller than the viewport can't be pinned to the middle of it. */
+@media (max-height: 780px) {
+    .scrolly-canvas { top: calc(50vh - 14rem); height: 28rem; }
+    .phone { transform: scale(0.82); transform-origin: top center; }
+}
+
 @media (max-width: 900px) {
-    .scrolly { grid-template-columns: 1fr; gap: 1.5rem; }
-    .scrolly-canvas { top: 5rem; height: 20rem; }
-    .scrolly-step { min-height: 70vh; }
+    .scrolly { grid-template-columns: 1fr; gap: 0; }
+
+    /* One column, one cell: the media and the copy are stacked on top of each
+       other rather than given a row each. A grid item can only stick inside
+       its own grid area, so a row of its own would leave the phone nothing to
+       travel through — it would scroll away before the first step and do all
+       of its accumulating off screen. */
+    .scrolly-media,
+    .scrolly-copy { grid-area: 1 / 1; }
+
+    .scrolly-media { pointer-events: none; z-index: 2; }
+
+    .scrolly-canvas {
+        top: 2.5rem;
+        height: 19.5rem;
+        /* The copy scrolls up behind the phone. This is where it goes quiet. */
+        background: linear-gradient(180deg,
+            var(--bg-secondary) 0, var(--bg-secondary) 86%, transparent 100%);
+    }
+
+    /* Sticky travels with the canvas, so the scrim above it does too. */
+    .scrolly-canvas::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        height: 4rem;
+        background: var(--bg-secondary);
+    }
+
+    body.light-mode .scrolly-canvas {
+        background: linear-gradient(180deg, var(--white) 0, var(--white) 86%, transparent 100%);
+    }
+
+    body.light-mode .scrolly-canvas::before { background: var(--white); }
+
+    .phone { transform: scale(0.55); transform-origin: top center; }
+
+    /* Clears the pinned phone so the first step isn't hidden under it. */
+    .scrolly-copy { padding-top: 20.5rem; }
+
+    /* Bottom-aligned, not centred: a step goes active as it crosses the middle
+       of the viewport, and the phone owns the top of it. Anchoring the text low
+       in its own block puts it below the phone at exactly that moment. */
+    .scrolly-step {
+        min-height: 68vh;
+        justify-content: flex-end;
+        padding-bottom: 7vh;
+    }
+
     .scrolly-step h3 { font-size: 1.45rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
     /* Dimming still marks the active step, just less harshly. */
     .scrolly-step { opacity: 0.55; }
-    .scene.is-past { transform: none; }
+    /* Notifications appear in place: the count still climbs, nothing slides. */
+    .phone-notif-card { transform: none; }
 }

@@ -75,7 +75,9 @@
         var dotsWrap = gallery.querySelector('[data-gallery-dots]');
         var prevBtn = gallery.querySelector('[data-gallery-prev]');
         var nextBtn = gallery.querySelector('[data-gallery-next]');
-        if (!viewport || !track || !items.length || !dotsWrap) return;
+        // Dots and arrows are optional chrome — the gallery is drag- and
+        // scroll-driven, so it has to keep working without them in the markup.
+        if (!viewport || !track || !items.length) return;
 
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -104,17 +106,19 @@
             return best;
         }
 
-        items.forEach(function (item, i) {
-            var dot = document.createElement('button');
-            dot.type = 'button';
-            dot.className = 'gallery-dot';
-            var heading = item.querySelector('h3');
-            dot.setAttribute('aria-label', heading ? heading.textContent.trim() : 'Capability ' + (i + 1));
-            dot.appendChild(document.createElement('span')).className = 'gallery-dot-fill';
-            dot.addEventListener('click', function () { goTo(i); });
-            dotsWrap.appendChild(dot);
-        });
-        var dots = Array.prototype.slice.call(dotsWrap.children);
+        if (dotsWrap) {
+            items.forEach(function (item, i) {
+                var dot = document.createElement('button');
+                dot.type = 'button';
+                dot.className = 'gallery-dot';
+                var heading = item.querySelector('h3');
+                dot.setAttribute('aria-label', heading ? heading.textContent.trim() : 'Capability ' + (i + 1));
+                dot.appendChild(document.createElement('span')).className = 'gallery-dot-fill';
+                dot.addEventListener('click', function () { goTo(i); });
+                dotsWrap.appendChild(dot);
+            });
+        }
+        var dots = dotsWrap ? Array.prototype.slice.call(dotsWrap.children) : [];
 
         function setActive(i) {
             if (i === active) return;

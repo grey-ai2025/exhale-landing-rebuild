@@ -19,8 +19,7 @@
    than a compositor one — acceptable here because these are 18-32px icons
    animating once, and there is no transform equivalent for drawing a line.
    ------------------------------------------------------------------------- */
-.feature-icon svg > *,
-.scene-icon svg > * {
+.feature-icon svg > * {
     stroke-dasharray: 100;
     stroke-dashoffset: 0;   /* resting state: fully drawn */
 }
@@ -32,20 +31,6 @@
 }
 
 .gallery.revealed .feature-icon svg > * { stroke-dashoffset: 0; }
-
-/* Scene icons draw when their scene becomes the active one. */
-.scene .scene-icon svg > * {
-    stroke-dashoffset: 100;
-    transition: stroke-dashoffset 700ms var(--ease-out) 140ms;
-}
-
-.scene.is-active .scene-icon svg > * { stroke-dashoffset: 0; }
-
-/* A scene scrolled past shouldn't redraw as it recedes. */
-.scene.is-past .scene-icon svg > * {
-    stroke-dashoffset: 0;
-    transition: none;
-}
 
 /* -------------------------------------------------------------------------
    2. clip-path wipes
@@ -108,9 +93,7 @@
    ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
     .feature-icon svg > *,
-    .scene-icon svg > *,
-    .gallery .feature-icon svg > *,
-    .scene .scene-icon svg > * {
+    .gallery .feature-icon svg > * {
         stroke-dashoffset: 0;
         transition: none;
     }

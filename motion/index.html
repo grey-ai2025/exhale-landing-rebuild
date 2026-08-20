@@ -97,104 +97,147 @@
             <div class="scrolly" data-scrolly>
                 <div class="scrolly-media">
                     <div class="scrolly-canvas">
-                    <div class="scene" data-scene>
-                        <div class="mock mock-inbox">
-                            <div class="mock-bar">
-                                <span class="scene-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="2" y="4" width="20" height="16" rx="2" pathLength="100"/>
-                                    <path d="M22 6L12 13L2 6" pathLength="100"/>
-                                    </svg>
-                                </span>
-                                <span class="mock-bar-title">Inbox</span>
-                                <span class="mock-badge">247 unread</span>
-                            </div>
-                            <ul class="mock-list">
-                                <li><span class="mock-from">Oakwood Elementary</span><span class="mock-subject">Spring newsletter &mdash; 14 updates inside</span></li>
-                                <li><span class="mock-from">PTA Committee</span><span class="mock-subject">Re: Re: Re: volunteer slots</span></li>
-                                <li class="is-flagged"><span class="mock-from">Dr. Levin&rsquo;s office</span><span class="mock-subject">Appointment moved to Thursday 9:15</span></li>
-                                <li><span class="mock-from">Riverside Vet</span><span class="mock-subject">Your reminder: annual vaccination</span></li>
-                                <li><span class="mock-from">Board secretary</span><span class="mock-subject">Papers for Tuesday</span></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <!-- The lockscreen you are scrolling past.
 
-                    <div class="scene" data-scene>
-                        <div class="mock mock-day">
-                            <div class="mock-bar">
-                                <span class="scene-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" pathLength="100"/>
-                                    <path d="M16 2v4M8 2v4M3 10h18" pathLength="100"/>
-                                    <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" pathLength="100"/>
-                                    </svg>
-                                </span>
-                                <span class="mock-bar-title">Thursday</span>
-                                <span class="mock-badge mock-badge-warn">3 conflicts</span>
-                            </div>
-                            <div class="mock-body mock-day-body">
-                                <div class="mock-grid">
-                                    <span class="mock-hour">2 PM</span><span class="mock-line"></span>
-                                    <span class="mock-hour">3 PM</span><span class="mock-line"></span>
-                                    <span class="mock-hour">4 PM</span><span class="mock-line"></span>
-                                    <span class="mock-hour">5 PM</span><span class="mock-line"></span>
-                                </div>
-                                <div class="mock-event mock-event-1">Board call</div>
-                                <div class="mock-event mock-event-2">Pickup &mdash; Maya</div>
-                                <div class="mock-event mock-event-3">Dad: cardiology</div>
-                            </div>
-                        </div>
-                    </div>
+                         Nothing here is ever dismissed: each step of the copy
+                         adds to the stack and the counter only climbs, so the
+                         pile-up is paced by the reader's own scrolling rather
+                         than by a timer that would desync from it. Driven from
+                         scrolly.js, which means it runs backwards too. -->
+                    <div class="phone" data-phone>
+                        <svg class="phone-sprite" aria-hidden="true" focusable="false">
+                            <symbol id="i-mail" viewBox="0 0 24 24">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <path d="M22 6L12 13L2 6"/>
+                            </symbol>
+                            <symbol id="i-cal" viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                <path d="M16 2v4M8 2v4M3 10h18"/>
+                            </symbol>
+                            <symbol id="i-msg" viewBox="0 0 24 24">
+                                <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 20.5l1.5-4.4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/>
+                            </symbol>
+                        </svg>
 
-                    <div class="scene" data-scene>
-                        <div class="mock mock-night">
-                            <div class="mock-bar">
-                                <span class="scene-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2a8 8 0 0 1 8 8c0 5.25-8 12-8 12S4 15.25 4 10a8 8 0 0 1 8-8z" pathLength="100"/>
-                                    <circle cx="12" cy="10" r="3" pathLength="100"/>
-                                    <path d="M9.5 6.5L12 4l2.5 2.5" pathLength="100"/>
-                                    </svg>
-                                </span>
-                                <span class="mock-bar-title">Tonight</span>
-                                <span class="mock-badge">3 open loops</span>
-                            </div>
-                            <div class="mock-body mock-night-body">
-                                <div class="mock-clock">3:47<span>AM</span></div>
-                                <div class="mock-thoughts">
-                                    <span>Is there school tomorrow?</span>
-                                    <span>When&rsquo;s Dad&rsquo;s cardiology appointment?</span>
-                                    <span>Did we confirm the speaker?</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <div class="phone-glow" aria-hidden="true"></div>
 
-                    <div class="scene" data-scene>
-                        <div class="mock mock-split">
-                            <div class="mock-bar">
-                                <span class="scene-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" pathLength="100"/>
-                                    <path d="M12 6v6l4 2" pathLength="100"/>
-                                    </svg>
-                                </span>
-                                <span class="mock-bar-title">Support systems</span>
-                                <span class="mock-badge mock-badge-warn">1 gap</span>
-                            </div>
-                            <div class="mock-body mock-split-body">
-                                <div class="mock-col">
-                                    <span class="mock-col-label">Work</span>
-                                    <span class="mock-chip">Executive assistant</span>
-                                    <span class="mock-chip">Project manager</span>
-                                    <span class="mock-chip">Ops systems</span>
-                                    <span class="mock-chip">Reporting</span>
+                        <div class="phone-shell">
+                            <div class="phone-screen">
+                                <div class="phone-island" aria-hidden="true"></div>
+
+                                <div class="phone-status" aria-hidden="true">
+                                    <span class="phone-status-time" data-phone-status-time>7:12</span>
+                                    <span class="phone-status-icons">
+                                        <span class="phone-cell"><span></span><span></span><span></span><span></span></span>
+                                        <span class="phone-battery"></span>
+                                    </span>
                                 </div>
-                                <div class="mock-col">
-                                    <span class="mock-col-label">Home</span>
-                                    <span class="mock-chip mock-chip-empty">Group texts</span>
-                                    <span class="mock-gap">&mdash;</span>
+
+                                <div class="phone-lock">
+                                    <p class="phone-date" data-phone-date>Thursday, September 4</p>
+                                    <p class="phone-clock"><span data-phone-clock>7:12</span><em data-phone-meridiem>AM</em></p>
+                                    <p class="phone-count" data-phone-count-wrap><span data-phone-count>3</span> notifications</p>
                                 </div>
+
+                                <ul class="phone-stack">
+                                    <li class="phone-notif" data-notif-step="0">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-mail"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Oakwood Elementary</span>
+                                                <span class="phone-notif-body">Spring newsletter &mdash; 14 updates inside</span>
+                                            </span>
+                                            <span class="phone-notif-time">7:02</span>
+                                        </div></div>
+                                    </li>
+                                    <li class="phone-notif" data-notif-step="0">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-mail"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">PTA Committee</span>
+                                                <span class="phone-notif-body">Re: Re: Re: volunteer slots</span>
+                                            </span>
+                                            <span class="phone-notif-time">7:06</span>
+                                        </div></div>
+                                    </li>
+                                    <li class="phone-notif" data-notif-step="0">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-mail"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Riverside Vet</span>
+                                                <span class="phone-notif-body">Reminder: annual vaccination due</span>
+                                            </span>
+                                            <span class="phone-notif-time">7:11</span>
+                                        </div></div>
+                                    </li>
+
+                                    <!-- The one that actually matters arrives in the same
+                                         stack as the newsletters, at the same size. -->
+                                    <li class="phone-notif is-urgent" data-notif-step="1">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-cal"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Dr. Levin&rsquo;s office</span>
+                                                <span class="phone-notif-body">Appointment moved to Thursday 9:15</span>
+                                            </span>
+                                            <span class="phone-notif-time">1:58</span>
+                                        </div></div>
+                                    </li>
+                                    <li class="phone-notif is-warn" data-notif-step="1">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-cal"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Calendar</span>
+                                                <span class="phone-notif-body">Board call overlaps Maya&rsquo;s pickup</span>
+                                            </span>
+                                            <span class="phone-notif-time">2:03</span>
+                                        </div></div>
+                                    </li>
+
+                                    <li class="phone-notif" data-notif-step="2">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-mail"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Oakwood Elementary</span>
+                                                <span class="phone-notif-body">Early dismissal tomorrow</span>
+                                            </span>
+                                            <span class="phone-notif-time">11:58</span>
+                                        </div></div>
+                                    </li>
+                                    <li class="phone-notif" data-notif-step="2">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-msg"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Dad&rsquo;s home aide</span>
+                                                <span class="phone-notif-body">Can we talk about Thursday?</span>
+                                            </span>
+                                            <span class="phone-notif-time">1:12</span>
+                                        </div></div>
+                                    </li>
+
+                                    <li class="phone-notif" data-notif-step="3">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-mail"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Board secretary</span>
+                                                <span class="phone-notif-body">Papers for Tuesday</span>
+                                            </span>
+                                            <span class="phone-notif-time">6:41</span>
+                                        </div></div>
+                                    </li>
+                                    <li class="phone-notif" data-notif-step="3">
+                                        <div class="phone-notif-inner"><div class="phone-notif-card">
+                                            <span class="phone-notif-icon" aria-hidden="true"><svg><use href="#i-msg"/></svg></span>
+                                            <span class="phone-notif-text">
+                                                <span class="phone-notif-from">Nanny</span>
+                                                <span class="phone-notif-body">Running 20 minutes late</span>
+                                            </span>
+                                            <span class="phone-notif-time">6:55</span>
+                                        </div></div>
+                                    </li>
+                                </ul>
+
+                                <div class="phone-home" aria-hidden="true"></div>
                             </div>
                         </div>
                     </div>
@@ -288,18 +331,6 @@
                 </div>
                     </div>
                 </div>
-
-                <div class="gallery-controls">
-                    <div class="gallery-dots" data-gallery-dots></div>
-                    <div class="gallery-arrows">
-                        <button class="gallery-arrow" type="button" data-gallery-prev aria-label="Previous capability">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
-                        </button>
-                        <button class="gallery-arrow" type="button" data-gallery-next aria-label="Next capability">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -353,6 +384,70 @@
             </div>
 
             <p class="bespoke-note reveal">Not a product. A service relationship.</p>
+        </div>
+    </section>
+
+
+<!-- FAQ Section -->
+<!-- Three questions here, the rest on exhale.bot/faqs. The ones kept are the
+     trust questions people ask before they connect an inbox. -->
+    <section id="faq" data-ga-name="FAQ" class="faq">
+        <div class="section-container">
+            <div class="section-header reveal">
+                <p class="section-eyebrow">Questions</p>
+                <h2 class="section-title">The ones people<br><span class="no-italic">actually ask</span></h2>
+            </div>
+
+            <div class="faq-list reveal" data-accordion>
+                <div class="faq-item">
+                    <h3 class="faq-heading">
+                        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-panel-1" id="faq-trigger-1">
+                            <span class="faq-label">Google says the app isn&rsquo;t verified. Should I be worried?</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
+                        </button>
+                    </h3>
+                    <div class="faq-panel" id="faq-panel-1" role="region" aria-labelledby="faq-trigger-1">
+                        <div class="faq-panel-inner">
+                            <p>No. Exhale is in Google&rsquo;s verification review, which takes several weeks for any app that reads email. Until it clears, Google shows a caution screen for apps it hasn&rsquo;t finished reviewing &mdash; it reflects our review status, not anything about your account&rsquo;s safety. Choose Advanced, then Continue. You can disconnect at any time from your Google account settings.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-heading">
+                        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-panel-2" id="faq-trigger-2">
+                            <span class="faq-label">What can Exhale actually see within my inbox?</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
+                        </button>
+                    </h3>
+                    <div class="faq-panel" id="faq-panel-2" role="region" aria-labelledby="faq-trigger-2">
+                        <div class="faq-panel-inner">
+                            <p>Only the Gmail labels you pick during setup. You choose them, and you can change them whenever you like. Exhale doesn&rsquo;t read the rest of your inbox.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-heading">
+                        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">
+                            <span class="faq-label">Can Exhale send an email as me?</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
+                        </button>
+                    </h3>
+                    <div class="faq-panel" id="faq-panel-3" role="region" aria-labelledby="faq-trigger-3">
+                        <div class="faq-panel-inner">
+                            <p>No. Exhale&rsquo;s access to Gmail is read-only. It cannot send, reply, delete, or change a single message.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-more reveal">
+                <a class="faq-more-link" href="https://exhale.bot/faqs">
+                    See all questions
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12.5 5.5L19 12l-6.5 6.5"/></svg>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -412,6 +507,7 @@
 
     <script src="js/main.js"></script>
     <script src="js/gallery.js"></script>
+    <script src="js/faq.js"></script>
     <script src="js/scrolly.js"></script>
 </body>
 </html>

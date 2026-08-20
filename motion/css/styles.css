@@ -2126,79 +2126,8 @@ body.light-mode .gallery .feature-list li {
     border-color: rgba(13, 115, 119, 0.14);
 }
 
-.gallery-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-.gallery-dots { display: flex; gap: 0.5rem; }
-
-.gallery-dot {
-    display: grid;
-    place-items: center;
-    width: 22px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    background: none;
-    cursor: pointer;
-}
-
-.gallery-dot-fill {
-    width: 100%;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--glass-border);
-    /* scaleX, not width — width would relayout every sibling dot per frame */
-    transform: scaleX(0.36);
-    transition: transform 320ms var(--ease-out), background-color 240ms ease;
-}
-
-.gallery-dot.is-active .gallery-dot-fill {
-    background: var(--cyan-glow);
-    transform: scaleX(1);
-}
-
-body.light-mode .gallery-dot-fill { background: var(--gray-300); }
-body.light-mode .gallery-dot.is-active .gallery-dot-fill { background: var(--cyan-deep); }
-
-.gallery-arrows { display: flex; gap: 0.5rem; }
-
-.gallery-arrow {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    cursor: pointer;
-    color: var(--text-secondary);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    transition: transform 160ms var(--ease-out), opacity 200ms ease,
-                color 200ms ease, border-color 200ms ease;
-}
-
-.gallery-arrow svg { width: 20px; height: 20px; }
-.gallery-arrow:active { transform: scale(0.92); }
-.gallery-arrow[disabled] { opacity: 0.3; cursor: default; }
-
-body.light-mode .gallery-arrow {
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: var(--shadow-sm);
-}
-
 @media (hover: hover) and (pointer: fine) {
     .gallery-viewport { cursor: grab; }
-    .gallery-arrow:not([disabled]):hover {
-        color: var(--text-primary);
-        border-color: rgba(173, 251, 246, 0.35);
-    }
 }
 
 /* ===========================================
@@ -2249,4 +2178,175 @@ body.light-mode .step {
     /* No room to stagger on a phone. */
     .step:nth-child(2),
     .step:nth-child(3) { margin-left: 0; }
+}
+
+/* ===========================================
+   FAQ — three questions, then the full page
+   A disclosure list rather than a card grid: an answer should open where
+   the question sits, not somewhere else on the page.
+   =========================================== */
+.faq {
+    padding: var(--section-padding) 0;
+    background: var(--bg-secondary);
+    position: relative;
+    z-index: 1;
+}
+
+body.light-mode .faq { background: var(--white); }
+
+.section-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.faq-list {
+    max-width: 44rem;
+    margin: 0 auto;
+    border-top: 1px solid var(--glass-border);
+}
+
+.faq-item { border-bottom: 1px solid var(--glass-border); }
+
+body.light-mode .faq-list,
+body.light-mode .faq-item { border-color: rgba(13, 115, 119, 0.14); }
+
+.faq-heading { margin: 0; font-weight: inherit; }
+
+.faq-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: 100%;
+    padding: 1.5rem 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--text-primary);
+    transition: color 240ms var(--ease-out);
+}
+
+.faq-item.is-open .faq-trigger { color: var(--accent); }
+
+@media (hover: hover) and (pointer: fine) {
+    .faq-trigger:hover { color: var(--accent); }
+}
+
+/* The plus is drawn, not typed, so one stroke can rotate away into a minus. */
+.faq-icon {
+    position: relative;
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+}
+
+.faq-icon::before,
+.faq-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+    transition: transform 420ms var(--ease-drawer), opacity 260ms var(--ease-out);
+}
+
+.faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+
+.faq-item.is-open .faq-icon { color: var(--accent); }
+/* The vertical stroke turns into the horizontal one rather than vanishing. */
+.faq-item.is-open .faq-icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+
+/* 0fr -> 1fr animates to the content's own height without measuring it in JS,
+   and stays interruptible: click again mid-open and it reverses from where
+   it is instead of snapping. */
+.faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 460ms var(--ease-drawer);
+}
+
+.faq-item.is-open .faq-panel { grid-template-rows: 1fr; }
+
+.faq-panel-inner {
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 260ms var(--ease-out);
+}
+
+.faq-item.is-open .faq-panel-inner {
+    opacity: 1;
+    /* Text arrives after the room has been made for it. */
+    transition-delay: 120ms;
+}
+
+.faq-panel-inner p {
+    padding: 0 3rem 1.75rem 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.faq-more {
+    max-width: 44rem;
+    margin: 2.5rem auto 0;
+    text-align: center;
+}
+
+.faq-more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: transform 200ms var(--ease-out), color 200ms ease,
+                border-color 200ms ease, background-color 200ms ease;
+}
+
+.faq-more-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 320ms var(--ease-out);
+}
+
+.faq-more-link:active { transform: scale(0.97); }
+
+body.light-mode .faq-more-link {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(13, 115, 119, 0.18);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .faq-more-link:hover {
+        color: var(--accent);
+        border-color: rgba(173, 251, 246, 0.35);
+    }
+    /* The arrow leads by a few pixels — the link already points somewhere. */
+    .faq-more-link:hover svg { transform: translateX(3px); }
+}
+
+@media (max-width: 768px) {
+    .faq-trigger { font-size: 1rem; gap: 1rem; }
+    .faq-panel-inner p { padding-right: 1.5rem; }
 }
