@@ -424,7 +424,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
 
     .scrolly-canvas {
         top: 2.5rem;
-        height: 19.5rem;
+        height: 22rem;
         /* The copy scrolls up behind the phone. This is where it goes quiet. */
         background: linear-gradient(180deg,
             var(--bg-secondary) 0, var(--bg-secondary) 86%, transparent 100%);
@@ -447,10 +447,71 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
 
     body.light-mode .scrolly-canvas::before { background: var(--white); }
 
-    .phone { transform: scale(0.55); transform-origin: top center; }
+    /* Not scaled. A 0.55 scale multiplied the notification type down to about
+       6px on screen — the phone is only 280px wide to begin with, so it fits a
+       phone at native size and it was the height that had to come down. The
+       stack gets shorter instead, showing fewer cards at a readable size. */
+    .phone {
+        transform: none;
+        height: 22rem;
+    }
+
+    .phone-lock { top: 2.2rem; }
+    .phone-clock { font-size: 2.8rem; }
+    .phone-stack { top: 9.5rem; }
 
     /* Clears the pinned phone so the first step isn't hidden under it. */
-    .scrolly-copy { padding-top: 20.5rem; }
+    .scrolly-copy { padding-top: 23rem; }
+
+    /* At 150% the halo reached past the edge of a phone screen. */
+    .phone-glow { width: 120%; }
+
+    /* Below this the 280px phone stops clearing the container padding. */
+    @media (max-width: 380px) {
+        .phone { width: 15rem; }
+    }
+
+    /* A short phone in portrait — an SE, an 8 — has no room for both a 22rem
+       lockscreen and a paragraph beneath it, and the copy ended up scrolling
+       behind the pin. The phone gives up the height. */
+    @media (max-height: 700px) {
+        .scrolly-canvas { top: 1.5rem; height: 17rem; }
+        .phone { height: 17rem; }
+        .phone-lock { top: 1.6rem; }
+        .phone-clock { font-size: 2.1rem; }
+        .phone-count { margin-top: 0.35rem; }
+        .phone-stack {
+            top: 8.1rem;
+            mask-image: linear-gradient(to bottom, transparent 0, #000 2rem);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 2rem);
+        }
+        /* Compact enough that whole cards still land in the shorter stack
+           instead of every one of them straddling the fade. */
+        .phone-notif-inner { padding-top: 0.35rem; }
+        .phone-notif-card { padding: 0.4rem 0.5rem; gap: 0.4rem; }
+        .phone-notif-from { font-size: 0.62rem; }
+        .phone-notif-body { font-size: 0.64rem; line-height: 1.3; }
+        .phone-notif-time { font-size: 0.56rem; }
+        .phone-notif-icon { width: 16px; height: 16px; }
+
+        .scrolly-copy { padding-top: 18rem; }
+        .scrolly-step { min-height: 74vh; }
+    }
+
+    /* Shorter still — an SE in portrait is 568px tall. Two cards and the count
+       are enough to carry the pile-up; the rest of the screen belongs to the
+       words. */
+    @media (max-height: 620px) {
+        .scrolly-canvas { top: 1.25rem; height: 13.5rem; }
+        .phone { height: 13.5rem; }
+        .phone-lock { top: 1rem; }
+        .phone-clock { font-size: 1.6rem; }
+        .phone-date { font-size: 0.62rem; }
+        .phone-count { margin-top: 0.3rem; }
+        .phone-stack { top: 6.6rem; bottom: 1.5rem; }
+        .phone-home { bottom: 0.35rem; }
+        .scrolly-copy { padding-top: 14.5rem; }
+    }
 
     /* Bottom-aligned, not centred: a step goes active as it crosses the middle
        of the viewport, and the phone owns the top of it. Anchoring the text low

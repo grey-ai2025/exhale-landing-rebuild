@@ -325,6 +325,17 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* The clamp floor above is 4rem, which with 0.35em of tracking holds the
+   wordmark at a fixed 372px however narrow the screen gets — on a 320px phone
+   that cut both E's off, and dragged the whole hero block out with it. Below
+   the width where 4rem still fits, size it from the viewport instead. */
+@media (max-width: 440px) {
+    .hero-content h1 {
+        font-size: clamp(2.5rem, 13.5vw, 4rem);
+        letter-spacing: 0.3em;
+    }
+}
+
 .logo-e {
     position: relative;
     text-shadow:
@@ -1144,32 +1155,38 @@ body.light-mode .step {
     border-color: rgba(173, 251, 246, 0.3);
 }
 
+/* A quiet marker, not a badge: the number counts the steps, it doesn't
+   compete with the heading beside it. */
 .step-number {
     position: relative;
-    z-index: 1;      /* the rail passes behind the numbers */
-    width: 60px;
-    height: 60px;
-    min-width: 60px;
-    background: linear-gradient(135deg, var(--cyan-glow), var(--cyan-medium));
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--black);
-    box-shadow: 0 8px 32px rgba(173, 251, 246, 0.3);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
 }
 
 body.light-mode .step-number {
-    background: linear-gradient(135deg, var(--cyan-deep), var(--cyan-medium));
-    color: var(--white);
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(13, 115, 119, 0.18);
+    color: var(--cyan-deep);
 }
 
 .step-content h3 {
-    font-family: var(--font-serif);
-    font-size: 1.35rem;
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.28;
+    letter-spacing: -0.014em;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
 }
@@ -1198,8 +1215,11 @@ body.light-mode .step-number {
 .bespoke::before {
     content: '';
     position: absolute;
-    width: 500px;
-    height: 500px;
+    /* `clip-path` on the section hides the overhang but doesn't remove it from
+       layout, so a fixed 500px ring kept the document 90px wider than a 320px
+       phone. Capped to the viewport it stays inside and reads better small. */
+    width: min(500px, 88vw);
+    height: min(500px, 88vw);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -1463,6 +1483,16 @@ body.light-mode .footer {
     gap: 1rem;
 }
 
+/* Same fixed-tracking problem as the hero: the row is an intrinsic 411px and
+   never wraps, so on any phone narrower than that the E and the AI were cut
+   off at the edges. */
+@media (max-width: 460px) {
+    .footer-brand { flex-wrap: wrap; gap: 0.625rem; }
+    .footer-logo { font-size: 1.5rem; letter-spacing: 0.26em; }
+    .footer-by { font-size: 0.875rem; }
+    .footer-grey-logo { height: 2rem; }
+}
+
 .footer-logo {
     font-family: var(--font-serif);
     font-size: 2rem;
@@ -1625,16 +1655,6 @@ body.light-mode .cursor-glow {
         margin-top: 8px;
     }
 
-    .step {
-        flex-direction: column;
-        text-align: center;
-        align-items: center;
-    }
-
-    .steps::before {
-        display: none;
-    }
-
     .typeform-wrapper {
         border-radius: 16px;
         padding: 1rem;
@@ -1677,10 +1697,6 @@ body.light-mode .cursor-glow {
 
     .feature-card {
         padding: 2rem;
-    }
-
-    .step {
-        padding: 1.5rem;
     }
 }
 
@@ -2131,16 +2147,38 @@ body.light-mode .gallery .feature-list li {
 }
 
 /* ===========================================
-   How It Works — rail instead of stacked cards
+   How It Works — a left-aligned list, not a centred statement
+
+   The one section on the page that reads as instructions rather than as a
+   claim, so it sets flush left as a numbered list you scan, with the numbers
+   doing the sequencing that the old horizontal stagger used to. The title
+   stays in the page serif — the layout is the exception here, the type is not.
    =========================================== */
+.how-it-works .section-header {
+    text-align: left;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.how-it-works .section-eyebrow { margin-bottom: 0.875rem; }
+
+.how-it-works .section-title {
+    font-size: clamp(2.25rem, 5.2vw, 3.5rem);
+    line-height: 1.1;
+    text-wrap: balance;
+}
+
+/* The flourish centres itself under a centred title; there is nothing for it
+   to sit under here, and the eyebrow already marks the section. */
+.how-it-works .section-title::after { display: none; }
+
 .steps { gap: 0; }
 
 .step {
     position: relative;
     display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 2rem;
-    padding: 0 0 3rem;
+    grid-template-columns: 2.75rem 1fr;
+    gap: clamp(1.25rem, 3vw, 2rem);
+    padding: 0 0 clamp(2.25rem, 4vw, 3.25rem);
     background: none;
     border: 0;
     border-radius: 0;
@@ -2157,27 +2195,15 @@ body.light-mode .step {
 .step:hover { transform: none; border-color: transparent; }
 
 /* Optically align the heading with the centre of the number. */
-.step-content h3 { padding-top: 0.875rem; }
+.step-content h3 { padding-top: 0.4375rem; }
 
-/* Horizontal stagger: each step starts further right than the one above, so
-   the sequence is carried by position instead of a drawn connector. The text
-   block keeps a fixed width and only its origin moves — a stagger, not a taper. */
-.steps { max-width: 56rem; }
-.step-content { max-width: 40rem; }
-
-.step:nth-child(2) { margin-left: 3rem; }
-.step:nth-child(3) { margin-left: 6rem; }
+/* Flush left under the title rather than centred in the container — the list
+   and the heading share one edge. */
+.steps { max-width: 46rem; margin: 0; }
 
 @media (max-width: 768px) {
-    .step {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        gap: 1.25rem;
-    }
-    .step-content h3 { padding-top: 0; }
-    /* No room to stagger on a phone. */
-    .step:nth-child(2),
-    .step:nth-child(3) { margin-left: 0; }
+    /* The marker is small enough to keep its column on a phone. */
+    .step { gap: 1rem; }
 }
 
 /* ===========================================
