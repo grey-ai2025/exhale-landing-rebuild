@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion lab — Exhale</title>
+<meta name="description" content="Every motion technique from the animation skills, isolated, interactive, with its exact recipe values.">
+<meta name="robots" content="noindex">
+
+<link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/landing.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="lab.css">
+
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js');
+  try {
+    var saved = localStorage.getItem('theme');
+    root.dataset.theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  } catch (e) { root.dataset.theme = 'dark'; }
+})();
+</script>
+</head>
+<body class="lab">
+
+<header class="lab-head">
+  <div class="container">
+    <a class="lab-back" href="../">&larr; Exhale</a>
+    <h1>Motion lab</h1>
+    <p class="lab-sub">
+      Every technique the animation skills teach, isolated and interactive, with the exact
+      values each recipe specifies. Nothing here is decoration for its own sake — the point
+      is to show what each tool is <em>for</em>, and where it stops being appropriate.
+    </p>
+    <p class="lab-note" id="motionState"></p>
+  </div>
+</header>
+
+<main class="container lab-grid">
+
+  <!-- 1 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Easing: built-in vs custom</h2>
+    <p class="demo-why">
+      The single highest-leverage change in most codebases. Built-in easings are too weak —
+      they lack the early acceleration that makes motion feel intentional. Both bars below
+      run for the same 600ms.
+    </p>
+    <div class="ease-track"><span class="ease-dot" data-ease="builtin"></span><em>ease-out</em></div>
+    <div class="ease-track"><span class="ease-dot" data-ease="custom"></span><em>cubic-bezier(0.23, 1, 0.32, 1)</em></div>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="ease">Run both</button>
+    <code class="recipe">--ease-out: cubic-bezier(0.23, 1, 0.32, 1)</code>
+  </section>
+
+  <!-- 2 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Spring parameters</h2>
+    <p class="demo-why">
+      Apple's two-value parameterisation — a damping ratio and a response time — instead of
+      mass, stiffness and damping. Damping 1.0 is critically damped: no overshoot. Add bounce
+      only when a gesture carried momentum into the motion.
+    </p>
+    <div class="spring-stage"><span class="spring-ball" id="springBall"></span></div>
+    <label class="ctl">Bounce <input type="range" id="springBounce" min="0" max="0.6" step="0.05" value="0"><output id="springBounceOut">0</output></label>
+    <label class="ctl">Duration <input type="range" id="springDur" min="0.2" max="1.2" step="0.05" value="0.4"><output id="springDurOut">0.4s</output></label>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="spring">Throw it</button>
+    <code class="recipe">{ type: "spring", bounce: 0, duration: 0.4 }</code>
+  </section>
+
+  <!-- 3 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Stagger</h2>
+    <p class="demo-why">
+      30–80ms between items. Longer reads as slow; simultaneous reads as a jump cut. Stagger
+      is decorative, so it must never block interaction while it plays.
+    </p>
+    <div class="stagger-row" id="staggerRow">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-quiet btn-sm" type="button" data-run="stagger-none">All at once</button>
+      <button class="btn btn-quiet btn-sm" type="button" data-run="stagger">Staggered 60ms</button>
+    </div>
+    <code class="recipe">delay: stagger(0.06)</code>
+  </section>
+
+  <!-- 4 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Tab indicator, clipped</h2>
+    <p class="demo-why">
+      The list is rendered twice. The copy is styled as the active state and clipped to the
+      active tab, so the text and background change in perfect sync. Timing two separate
+      colour transitions can never achieve this.
+    </p>
+    <div class="tabs" id="clipTabs">
+      <div class="tabs-row">
+        <button type="button">Email</button><button type="button">Calendar</button><button type="button">Tasks</button>
+      </div>
+      <div class="tabs-row tabs-active" aria-hidden="true">
+        <button type="button" tabindex="-1">Email</button><button type="button" tabindex="-1">Calendar</button><button type="button" tabindex="-1">Tasks</button>
+      </div>
+    </div>
+    <code class="recipe">clip-path: inset(0 60% 0 20%) &middot; 250ms var(--ease-in-out)</code>
+  </section>
+
+  <!-- 5 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Squash &amp; stretch</h2>
+    <p class="demo-why">
+      Anticipation, then deformation under load, then follow-through. Weight is communicated
+      by how a thing deforms, not by how far it travels.
+    </p>
+    <div class="drop-stage"><span class="drop-ball" id="dropBall"></span><span class="drop-floor"></span></div>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="drop">Drop</button>
+    <code class="recipe">anticipate &minus;8px &rarr; fall &rarr; scale(1.25, 0.75) &rarr; settle</code>
+  </section>
+
+  <!-- 6 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Number ticker</h2>
+    <p class="demo-why">
+      Tabular figures are not optional. Without them every digit change shifts the layout and
+      the eye follows the jitter instead of the value.
+    </p>
+    <div class="ticker-row">
+      <span class="ticker" id="tickerGood">0</span><em>tabular-nums</em>
+    </div>
+    <div class="ticker-row">
+      <span class="ticker is-proportional" id="tickerBad">0</span><em>proportional — watch it shuffle</em>
+    </div>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="ticker">Count</button>
+    <code class="recipe">font-variant-numeric: tabular-nums</code>
+  </section>
+
+  <!-- 7 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>3D flip</h2>
+    <p class="demo-why">
+      <code>rotateY</code> with <code>transform-style: preserve-3d</code> and a perspective on
+      the parent. A lower perspective value exaggerates the depth, as though the viewer were
+      closer.
+    </p>
+    <div class="flip-stage"><div class="flip-card" id="flipCard">
+      <div class="flip-face flip-front">Ask</div>
+      <div class="flip-face flip-back">Answer</div>
+    </div></div>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="flip">Flip</button>
+    <code class="recipe">perspective: 800px &middot; rotateY(180deg) &middot; preserve-3d</code>
+  </section>
+
+  <!-- 8 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Typewriter</h2>
+    <p class="demo-why">
+      Character-by-character reveal. Legitimate for a first-run moment; a liability anywhere
+      people need to read the same string twice. Respects reduced motion by appearing whole.
+    </p>
+    <p class="typed" id="typed" aria-live="polite"></p>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="type">Type</button>
+    <code class="recipe">~28ms per character, cursor blink 1s steps(2)</code>
+  </section>
+
+  <!-- 9 ------------------------------------------------------------------ -->
+  <section class="demo">
+    <h2>Drag to dismiss</h2>
+    <p class="demo-why">
+      Velocity decides, not distance. A quick flick should be enough even if the card barely
+      moved — requiring a threshold makes the gesture feel unresponsive.
+    </p>
+    <div class="dismiss-stage"><div class="dismiss-card" id="dismissCard">Flick me sideways</div></div>
+    <p class="readout" id="dismissRead">velocity: —</p>
+    <code class="recipe">Math.abs(distance) / elapsedMs &gt; 0.11 &rarr; dismiss</code>
+  </section>
+
+  <!-- 10 ----------------------------------------------------------------- -->
+  <section class="demo">
+    <h2>WAAPI</h2>
+    <p class="demo-why">
+      <code>element.animate()</code> — JavaScript control with CSS performance. Hardware
+      accelerated, interruptible, and no library required.
+    </p>
+    <div class="waapi-stage"><span class="waapi-box" id="waapiBox"></span></div>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="waapi">Reveal</button>
+    <code class="recipe">el.animate([{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0 0)'}], …)</code>
+  </section>
+
+  <!-- 11 ----------------------------------------------------------------- -->
+  <section class="demo">
+    <h2>@starting-style</h2>
+    <p class="demo-why">
+      Entry animation with no JavaScript and no mounted flag. The browser interpolates from
+      the starting style the first time the element is rendered.
+    </p>
+    <div class="start-stage" id="startStage"></div>
+    <button class="btn btn-quiet btn-sm" type="button" data-run="starting">Add one</button>
+    <code class="recipe">@starting-style { opacity: 0; transform: scale(0.95) }</code>
+  </section>
+
+  <!-- 12 ----------------------------------------------------------------- -->
+  <section class="demo">
+    <h2>Motion blur</h2>
+    <p class="demo-why">
+      For very fast motion, a subtle blur encodes speed better than a hard sharp streak. Keep
+      it under 20px — heavy blur is expensive, especially in Safari.
+    </p>
+    <div class="blur-stage"><span class="blur-box" id="blurBox"></span></div>
+    <div class="btn-row">
+      <button class="btn btn-quiet btn-sm" type="button" data-run="blur-off">Without</button>
+      <button class="btn btn-quiet btn-sm" type="button" data-run="blur-on">With blur</button>
+    </div>
+    <code class="recipe">filter: blur(0 &rarr; 3px &rarr; 0) across the travel</code>
+  </section>
+
+</main>
+
+<footer class="lab-foot">
+  <div class="container">
+    <p>
+      Techniques used on the landing page itself — drawer with drag-to-dismiss, origin-aware
+      popover, tooltips with skip-delay, hold-to-confirm, toast, accordion, before/after
+      slider, marquee, skeleton, line drawing, pointer parallax and the gallery's momentum
+      projection — are demonstrated <a href="../">in place</a> rather than in isolation.
+    </p>
+  </div>
+</footer>
+
+<script src="../vendor/motion.js"></script>
+<script src="../js/motion-core.js"></script>
+<script src="lab.js"></script>
+</body>
+</html>

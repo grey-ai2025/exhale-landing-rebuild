@@ -1,0 +1,487 @@
+/* ==========================================================================
+   Components — recipe values, not improvised ones.
+
+   Durations follow the skill's table: press 100-160ms, tooltip 125-200ms,
+   dropdown 150-250ms, modal/drawer 200-500ms. Curves are the three strong
+   custom easings from landing.css. Nothing enters from scale(0); everything
+   exits the way it entered; reduced motion and pointer gating ship with each
+   component rather than being bolted on.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Toast
+   -------------------------------------------------------------------------- */
+.toast-host {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    translate: -50% 0;
+    z-index: 300;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1.125rem;
+    border-radius: 999px;
+    background: var(--glass-tint);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    box-shadow: inset 0 1px 0 var(--spec-hi), var(--glass-lift);
+    color: var(--text);
+    font-size: 0.9375rem;
+    cursor: grab;
+    touch-action: pan-y;
+    /* Enters from below and leaves the same way — the direction is what makes
+       swipe-to-dismiss feel obvious. Transitions, not keyframes: toasts are
+       added rapidly and must retarget rather than restart. */
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 320ms var(--ease-out),
+                transform 320ms var(--ease-out);
+}
+
+.toast.is-in { opacity: 1; transform: translateY(0); }
+
+.toast-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    flex: none;
+}
+
+/* --------------------------------------------------------------------------
+   Tooltip — 125-200ms band
+   -------------------------------------------------------------------------- */
+.tooltip {
+    position: fixed;
+    z-index: 320;
+    translate: -50% -100%;
+    padding: 0.375rem 0.625rem;
+    border-radius: var(--r-sm);
+    background: var(--text);
+    color: var(--bg);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    pointer-events: none;
+    /* Never from scale(0) — 0.96 keeps it a shape that was always there. */
+    opacity: 0;
+    transform: scale(0.96);
+    transform-origin: bottom center;
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+.tooltip.is-open { opacity: 1; transform: scale(1); }
+
+/* Once one tooltip is open, its neighbours appear instantly. Skipping both
+   the delay and the animation is what makes a toolbar feel fast. */
+.tooltip[data-instant] { transition-duration: 0ms; }
+
+/* --------------------------------------------------------------------------
+   Popover — 150-250ms band, origin at the trigger
+   -------------------------------------------------------------------------- */
+.popover {
+    position: fixed;
+    z-index: 310;
+    min-width: 17rem;
+    padding: 1rem;
+    border-radius: var(--r-lg);
+    background: var(--glass-tint);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    box-shadow: inset 0 1px 0 var(--spec-hi), var(--glass-lift);
+    /* transform-origin is set from JS to the trigger's corner. A popover that
+       scales from its own centre has no spatial relationship to what opened it. */
+    opacity: 0;
+    transform: scale(0.95);
+    visibility: hidden;
+    transition: opacity 220ms var(--ease-out),
+                transform 220ms var(--ease-out),
+                visibility 0s linear 220ms;
+}
+
+.popover.is-open {
+    opacity: 1;
+    transform: scale(1);
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.popover-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.75rem;
+}
+
+.popover-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    font-size: 0.9375rem;
+    color: var(--text-2);
+}
+
+/* --------------------------------------------------------------------------
+   Modal — 200-500ms band. Centred, because it is anchored to nothing.
+   -------------------------------------------------------------------------- */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 340;
+    display: grid;
+    place-items: center;
+    padding: var(--gutter);
+    /* Dim to focus: a blocking task pushes everything else back. */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 320ms var(--ease-out), visibility 0s linear 320ms;
+}
+
+.modal.is-open { opacity: 1; visibility: visible; transition-delay: 0s; }
+
+.modal-panel {
+    width: min(34rem, 100%);
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border-radius: var(--r-xl);
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-card);
+    /* Modals are the documented exception to the origin rule. */
+    transform-origin: center;
+    transform: scale(0.96) translateY(8px);
+    transition: transform 320ms var(--ease-out);
+}
+
+.modal.is-open .modal-panel { transform: scale(1) translateY(0); }
+
+.modal-panel h3 { margin-bottom: 0.75rem; }
+.modal-panel p { color: var(--text-2); margin-bottom: 0.875rem; }
+
+/* --------------------------------------------------------------------------
+   Drawer / bottom sheet — the gesture surface
+   -------------------------------------------------------------------------- */
+.drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 330;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 420ms var(--ease-drawer), visibility 0s linear 420ms;
+}
+
+.drawer.is-open { opacity: 1; visibility: visible; transition-delay: 0s; }
+
+.drawer-sheet {
+    width: min(40rem, 100%);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-bottom: 0;
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.4);
+    /* translateY in percent: moves by its own height whatever the content. */
+    transform: translateY(100%);
+    transition: transform 420ms var(--ease-drawer);
+    will-change: transform;
+}
+
+.drawer.is-open .drawer-sheet { transform: translateY(0); }
+
+.drawer-handle {
+    padding: 0.875rem 0 0.5rem;
+    display: grid;
+    place-items: center;
+    cursor: grab;
+    touch-action: none;
+    flex: none;
+}
+
+.drawer-handle::before {
+    content: "";
+    width: 2.5rem;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: var(--hairline-hi);
+    transition: transform 160ms var(--ease-out), background-color 160ms ease;
+}
+
+/* Squash on grab — the handle deforms slightly under the finger, which is
+   what tells you it is the thing being held. */
+.drawer-handle:active::before { transform: scaleX(1.25) scaleY(0.75); background: var(--accent); }
+
+.drawer-body { overflow-y: auto; padding: 0 clamp(1rem, 4vw, 2rem) 2rem; }
+.drawer-head { padding: 0 clamp(1rem, 4vw, 2rem) 1rem; }
+
+/* --------------------------------------------------------------------------
+   Accordion
+   -------------------------------------------------------------------------- */
+.acc-item { border-bottom: 1px solid var(--hairline); }
+
+.acc-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.125rem 0;
+    text-align: left;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: color 200ms ease;
+}
+
+.acc-icon {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    position: relative;
+}
+.acc-icon::before,
+.acc-icon::after {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--text-3);
+    transition: transform 240ms var(--ease-out);
+}
+.acc-icon::after { transform: rotate(90deg); }
+.acc-item.is-open .acc-icon::after { transform: rotate(0deg); }
+
+.acc-panel {
+    height: 0;
+    overflow: hidden;
+    /* Opacity trails height slightly, so text never appears before there is
+       room for it. This pairing is trial and error, not formula. */
+    opacity: 0;
+    transition: height 280ms var(--ease-out), opacity 200ms ease;
+}
+
+.acc-item.is-open .acc-panel { opacity: 1; transition: height 280ms var(--ease-out), opacity 240ms ease 80ms; }
+.acc-panel p { padding-bottom: 1.25rem; color: var(--text-2); max-width: 60ch; }
+
+/* --------------------------------------------------------------------------
+   Hold to confirm — asymmetric on purpose
+   -------------------------------------------------------------------------- */
+.hold-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.125rem;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    color: var(--text-2);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: transform 160ms var(--ease-out), color 200ms ease;
+}
+
+.hold-btn:active { transform: scale(0.97); }
+
+.hold-fill {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+    /* Release is snappy; the press is slow and deliberate. linear is correct
+       here — a progress fill should not ease. */
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 200ms var(--ease-out);
+}
+
+.hold-btn.is-holding .hold-fill { clip-path: inset(0 0 0 0); transition: clip-path 2s linear; }
+.hold-btn.is-done { color: var(--accent); border-color: var(--accent); }
+.hold-label { position: relative; z-index: 1; }
+
+/* --------------------------------------------------------------------------
+   Before / after comparison
+   -------------------------------------------------------------------------- */
+.compare {
+    position: relative;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    border: 1px solid var(--hairline);
+    background: var(--bg-elev);
+    user-select: none;
+}
+
+.compare-pane { padding: clamp(1.25rem, 3vw, 2rem); }
+.compare-after { position: absolute; inset: 0; background: var(--bg-elev); }
+
+.compare-label {
+    display: inline-block;
+    margin-bottom: 0.875rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+}
+
+.compare-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2.5rem;
+    translate: -50% 0;
+    display: grid;
+    place-items: center;
+    cursor: ew-resize;
+    touch-action: none;
+    background: none;
+    border: 0;
+    z-index: 2;
+}
+
+.compare-handle::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    opacity: 0.85;
+}
+
+.compare-grip {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: var(--glass-tint);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    box-shadow: inset 0 1px 0 var(--spec-hi), var(--glass-lift);
+    color: var(--text);
+    transition: transform 160ms var(--ease-out);
+}
+
+.compare.is-dragging .compare-grip { transform: scale(1.1); }
+
+/* --------------------------------------------------------------------------
+   Marquee — the one place linear and infinite are correct
+   -------------------------------------------------------------------------- */
+.marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee-track {
+    display: flex;
+    gap: 2.5rem;
+    width: max-content;
+    animation: marquee 38s linear infinite;
+}
+
+/* Pausing on hover is what separates a marquee from a nuisance. */
+@media (hover: hover) and (pointer: fine) {
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+}
+
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--text-3);
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Skeleton / shimmer — shown only while something is genuinely loading
+   -------------------------------------------------------------------------- */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r-md);
+    background: var(--surface);
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, var(--surface-hi), transparent);
+    animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer { to { transform: translateX(100%); } }
+
+.skeleton-line { height: 0.875rem; border-radius: 999px; background: var(--surface-hi); margin-bottom: 0.75rem; }
+.skeleton-line:nth-child(2) { width: 78%; }
+.skeleton-line:nth-child(3) { width: 55%; }
+
+/* --------------------------------------------------------------------------
+   Accessibility preferences
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    /* Gentler, not zero: surfaces still fade so state changes stay legible,
+       but nothing slides, scales, or loops. */
+    .toast,
+    .tooltip,
+    .popover,
+    .modal-panel,
+    .drawer-sheet {
+        transition-property: opacity, visibility !important;
+        transition-duration: 200ms !important;
+        transform: none !important;
+    }
+
+    .toast.is-in,
+    .modal.is-open .modal-panel,
+    .drawer.is-open .drawer-sheet { transform: none !important; }
+
+    .marquee-track,
+    .skeleton::after { animation: none !important; }
+
+    .skeleton::after { opacity: 0.4; transform: none; }
+    .hold-btn.is-holding .hold-fill { transition-duration: 2s !important; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .toast,
+    .popover,
+    .compare-grip {
+        background: var(--bg-elev);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: 1px solid var(--hairline);
+    }
+    .modal { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(0, 0, 0, 0.72); }
+}

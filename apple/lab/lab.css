@@ -1,0 +1,332 @@
+/* ==========================================================================
+   Motion lab — deliberately plain chrome so the demos are what you look at.
+   ========================================================================== */
+
+.lab { padding-bottom: 4rem; }
+
+.lab-head {
+  padding-block: clamp(3rem, 8vw, 5rem) 2.5rem;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 2.5rem;
+}
+
+.lab-back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--text-3);
+  transition: color 200ms ease;
+}
+
+.lab-head h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+}
+
+.lab-sub { max-width: 56ch; color: var(--text-2); font-size: 1.0625rem; line-height: 1.6; }
+.lab-sub em { color: var(--text); font-style: italic; }
+
+.lab-note {
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.demo {
+  padding: 1.5rem;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.demo h2 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.demo-why {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+.demo-why code {
+  font-size: 0.9em;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: var(--surface-hi);
+}
+
+.recipe {
+  margin-top: auto;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  border: 1px solid var(--hairline);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.ctl {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  color: var(--text-2);
+}
+.ctl input { flex: 1; accent-color: var(--accent); }
+.ctl output { font-variant-numeric: tabular-nums; color: var(--text); min-width: 2.5rem; }
+
+.readout {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+/* --- stages ------------------------------------------------------------- */
+.spring-stage,
+.drop-stage,
+.flip-stage,
+.dismiss-stage,
+.waapi-stage,
+.blur-stage,
+.start-stage {
+  position: relative;
+  border-radius: var(--r-md);
+  background: var(--bg);
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+}
+
+/* 1. Easing */
+.ease-track {
+  position: relative;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.ease-track em {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  font-style: normal;
+  color: var(--text-3);
+  margin-left: auto;
+}
+.ease-dot {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: var(--accent);
+  flex: none;
+}
+
+/* 2. Spring */
+.spring-stage { height: 5rem; }
+.spring-ball {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  translate: 0 -50%;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+/* 3. Stagger */
+.stagger-row { display: flex; gap: 0.5rem; }
+.stagger-row span {
+  flex: 1;
+  height: 3rem;
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+  border: 1px solid var(--hairline);
+}
+
+/* 4. Tabs */
+.tabs { position: relative; border-radius: 999px; background: var(--bg); padding: 0.25rem; overflow: hidden; }
+.tabs-row { display: flex; }
+.tabs-row button {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--text-3);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tabs-active {
+  position: absolute;
+  inset: 0.25rem;
+  background: var(--accent);
+  border-radius: 999px;
+  /* The clip is what moves — one element revealing, not two colours racing. */
+  clip-path: inset(0 66.6% 0 0 round 999px);
+  transition: clip-path 250ms var(--ease-in-out);
+  pointer-events: none;
+}
+.tabs-active button { color: var(--accent-ink); font-weight: 500; }
+
+/* 5. Squash & stretch */
+.drop-stage { height: 7rem; }
+.drop-ball {
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  translate: -50% 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: var(--accent);
+  transform-origin: center bottom;
+}
+.drop-floor { position: absolute; left: 1rem; right: 1rem; bottom: 0.75rem; height: 1px; background: var(--hairline-hi); }
+
+/* 6. Ticker */
+.ticker-row { display: flex; align-items: baseline; gap: 0.75rem; }
+.ticker {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  min-width: 5ch;
+}
+.ticker.is-proportional { font-variant-numeric: proportional-nums; }
+.ticker-row em { font-size: 0.75rem; font-style: normal; color: var(--text-3); }
+
+/* 7. 3D flip */
+.flip-stage { height: 7rem; display: grid; place-items: center; perspective: 800px; }
+.flip-card {
+  position: relative;
+  width: 8rem;
+  height: 4.5rem;
+  transform-style: preserve-3d;
+  transition: transform 520ms var(--ease-in-out);
+}
+.flip-card.is-flipped { transform: rotateY(180deg); }
+.flip-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-md);
+  backface-visibility: hidden;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.flip-front { background: var(--surface-hi); color: var(--text); border: 1px solid var(--hairline); }
+.flip-back { background: var(--accent); color: var(--accent-ink); transform: rotateY(180deg); }
+
+/* 8. Typewriter */
+.typed {
+  min-height: 3.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+.typed::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  translate: 0 0.15em;
+  background: var(--accent);
+  animation: caret 1s steps(2) infinite;
+}
+.typed.is-done::after { animation: none; opacity: 0; }
+@keyframes caret { 50% { opacity: 0; } }
+
+/* 9. Drag to dismiss */
+.dismiss-stage { height: 6rem; display: grid; place-items: center; }
+.dismiss-card {
+  padding: 0.875rem 1.25rem;
+  border-radius: var(--r-md);
+  background: var(--surface-hi);
+  border: 1px solid var(--hairline);
+  font-size: 0.9375rem;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+/* 10. WAAPI */
+.waapi-stage { height: 6rem; display: grid; place-items: center; }
+.waapi-box {
+  width: 70%;
+  height: 3rem;
+  border-radius: var(--r-sm);
+  background: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
+}
+
+/* 11. @starting-style */
+.start-stage { min-height: 6rem; padding: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-content: flex-start; }
+.start-chip {
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  border: 1px solid var(--hairline);
+  font-size: 0.8125rem;
+  color: var(--text);
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 260ms var(--ease-out), transform 260ms var(--ease-out);
+}
+@starting-style {
+  .start-chip { opacity: 0; transform: scale(0.95); }
+}
+
+/* 12. Motion blur */
+.blur-stage { height: 5rem; }
+.blur-box {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  translate: 0 -50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+}
+
+.lab-foot {
+  margin-top: 3rem;
+  padding-block: 2rem;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.875rem;
+  color: var(--text-3);
+}
+.lab-foot p { max-width: 70ch; line-height: 1.6; }
+.lab-foot a { color: var(--accent); }
+
+@media (hover: hover) and (pointer: fine) {
+  .lab-back:hover { color: var(--text); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs-active { transition-duration: 1ms; }
+  .flip-card { transition-duration: 1ms; }
+  .typed::after { animation: none; }
+  .start-chip { transition-duration: 1ms; }
+}

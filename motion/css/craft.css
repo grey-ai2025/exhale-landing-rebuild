@@ -1,0 +1,123 @@
+/* ===========================================
+   Craft pass — line drawing and clip-path wipes
+
+   Two techniques from the animation skill the page wasn't using.
+   Loaded after styles.css.
+
+   Note on mechanism: anything inside the capability gallery is class-driven,
+   not scroll-driven. `.gallery-viewport` scrolls horizontally and
+   `.feature-card` is `overflow: hidden`, and either of those becomes the
+   scroll container for a `view()` timeline beneath it — which pins the
+   animation at one end forever. An IntersectionObserver in gallery.js adds
+   `.revealed` instead.
+   =========================================== */
+
+/* -------------------------------------------------------------------------
+   1. Line drawing
+   Every shape carries pathLength="100", so one dash length draws them all
+   regardless of real geometry. stroke-dashoffset is a paint property rather
+   than a compositor one — acceptable here because these are 18-32px icons
+   animating once, and there is no transform equivalent for drawing a line.
+   ------------------------------------------------------------------------- */
+.feature-icon svg > *,
+.scene-icon svg > * {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;   /* resting state: fully drawn */
+}
+
+/* Capability icons draw once their card has been uncovered. */
+.gallery .feature-icon svg > * {
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 800ms var(--ease-out) 260ms;
+}
+
+.gallery.revealed .feature-icon svg > * { stroke-dashoffset: 0; }
+
+/* Scene icons draw when their scene becomes the active one. */
+.scene .scene-icon svg > * {
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 700ms var(--ease-out) 140ms;
+}
+
+.scene.is-active .scene-icon svg > * { stroke-dashoffset: 0; }
+
+/* A scene scrolled past shouldn't redraw as it recedes. */
+.scene.is-past .scene-icon svg > * {
+    stroke-dashoffset: 0;
+    transition: none;
+}
+
+/* -------------------------------------------------------------------------
+   2. clip-path wipes
+   The skill's own scroll-reveal recipe: content is uncovered rather than
+   faded in. clip-path is the sanctioned fourth GPU-friendly property.
+   ------------------------------------------------------------------------- */
+.video-container.reveal {
+    clip-path: inset(0 0 100% 0 round 24px);
+    transition: clip-path 600ms var(--ease-in-out),
+                opacity 600ms var(--ease-out);
+}
+
+.video-container.revealed { clip-path: inset(0 0 0 0 round 24px); }
+
+/* Cards are uncovered in sequence. They share a vertical position, so the
+   cascade is a transition-delay rather than an offset scroll range. */
+.gallery .feature-card {
+    clip-path: inset(0 0 100% 0 round 24px);
+    transition: clip-path 650ms var(--ease-in-out);
+}
+
+.gallery.revealed .feature-card { clip-path: inset(0 0 0 0 round 24px); }
+
+.gallery .feature-card:nth-child(1) { transition-delay: 0ms; }
+.gallery .feature-card:nth-child(2) { transition-delay: 70ms; }
+.gallery .feature-card:nth-child(3) { transition-delay: 140ms; }
+
+@media (max-width: 768px) {
+    .video-container.reveal { clip-path: inset(0 0 100% 0 round 16px); }
+    .video-container.revealed { clip-path: inset(0 0 0 0 round 16px); }
+}
+
+/* -------------------------------------------------------------------------
+   Scroll-driven version — only for the film, whose ancestors don't scroll.
+   ------------------------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+
+    .video-container.reveal {
+        transition: none;
+        animation-name: sd-wipe;
+        animation-range: entry 10% cover 30%;
+    }
+
+    /* transform must be in here. The base state carries scale(0.94) from the
+       settle animation this replaced, and a property absent from the keyframes
+       is never animated — it just sits at its base value forever. */
+    @keyframes sd-wipe {
+        to {
+            opacity: 1;
+            transform: scale(1);
+            clip-path: inset(0 0 0 0 round 24px);
+        }
+    }
+}
+}
+
+/* -------------------------------------------------------------------------
+   Reduced motion: nothing left half-drawn or half-uncovered.
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .feature-icon svg > *,
+    .scene-icon svg > *,
+    .gallery .feature-icon svg > *,
+    .scene .scene-icon svg > * {
+        stroke-dashoffset: 0;
+        transition: none;
+    }
+
+    .video-container.reveal,
+    .gallery .feature-card {
+        clip-path: none;
+        transition: none;
+    }
+}

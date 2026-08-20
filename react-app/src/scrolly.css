@@ -1,0 +1,287 @@
+/* ==========================================================================
+   The Reality — pinned canvas, scrolling copy.
+
+   Ported from the vanilla working copy and retinted to this build's tokens.
+   State lives on data attributes rather than classes, since React owns it.
+   ========================================================================== */
+
+.scrolly {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  /* Both columns stretch to the row height. A sticky element can only travel
+     as far as its parent is tall — `align-items: start` would collapse the
+     media column to the canvas height and the pin would last zero pixels. */
+  align-items: stretch;
+}
+
+.scrolly-media { position: relative; height: 100%; }
+
+.scrolly-canvas {
+  position: sticky;
+  top: calc(50vh - 13rem);   /* centres a 26rem canvas in the viewport */
+  height: 26rem;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  opacity: 0;
+  /* Waiting just above the canvas, not a full canvas-height away. A long
+     journey while translucent reads as lag; a short drop reads as arrival. */
+  transform: translateY(-35%);
+  /* Blur bridges the two states. Without it you see two distinct cards
+     overlapping mid-fade; with it the eye reads one card transforming. */
+  filter: blur(6px);
+  transition: opacity 320ms var(--ease-out),
+              transform 320ms var(--ease-out),
+              filter 320ms var(--ease-out);
+}
+
+.scene[data-state='active'] { opacity: 1; transform: none; filter: blur(0); }
+
+/* Receded and slightly out of focus — depth of field does the same job as the
+   scale: it reads as sitting behind, not merely dimmed. */
+.scene[data-state='past'] { opacity: 0.4; transform: scale(0.9); filter: blur(2px); }
+
+.scene-icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.scene-icon svg { width: 18px; height: 18px; }
+
+/* --- the card ------------------------------------------------------------ */
+.mock {
+  flex: 1;
+  padding: 1.25rem;
+  border-radius: 18px;
+  /* Opaque, deliberately. A translucent card lets the receded ones show
+     through, and the crossfade then reads as two overlapping ghosts rather
+     than one card replacing another. */
+  background-color: var(--bg-elev);
+  background-image: linear-gradient(var(--surface), var(--surface));
+  border: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mock-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.mock-bar-title { margin-right: auto; font-size: 1.05rem; font-weight: 600; color: var(--text); }
+
+.mock-badge {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.mock-badge[data-tone='warn'] { background: rgba(212, 168, 87, 0.18); color: #d9ab5c; }
+
+/* --- 1. Inbox: the one that matters, buried in the ones that do not ------ */
+.mock-list { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.mock-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 10px;
+  background: var(--surface);
+  opacity: 0.5;
+}
+.mock-list li[data-flagged] {
+  opacity: 1;
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.mock-from { font-size: 0.7rem; color: var(--text-3); }
+.mock-subject {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mock-list li[data-flagged] .mock-subject { color: var(--text); }
+
+/* --- 2. Day: three things at once, all of them yours --------------------- */
+.mock-body { flex: 1; position: relative; display: flex; flex-direction: column; }
+
+.mock-grid {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  align-items: center;
+  row-gap: 2rem;
+  column-gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+.mock-hour { font-size: 0.68rem; color: var(--text-3); }
+.mock-line { height: 1px; background: var(--hairline); }
+
+.mock-event {
+  position: absolute;
+  right: 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mock-event[data-n='1'] { top: 1.9rem; left: 4.1rem; background: var(--accent-soft); color: var(--accent); }
+.mock-event[data-n='2'] { top: 3.1rem; left: 6.1rem; background: rgba(212, 168, 87, 0.2); color: #d9ab5c; }
+.mock-event[data-n='3'] { top: 4.3rem; left: 8.1rem; background: var(--surface-hi); color: var(--text); }
+
+/* --- 3. Night: the questions arrive whether or not you are awake --------- */
+.mock-night-body { align-items: center; justify-content: center; gap: 1.1rem; }
+
+.mock-clock { font-size: 2.75rem; line-height: 1; font-weight: 300; color: var(--text); font-variant-numeric: tabular-nums; }
+.mock-clock span { font-size: 0.95rem; margin-left: 0.35rem; color: var(--text-3); }
+
+.mock-thoughts { display: flex; flex-direction: column; gap: 0.45rem; width: 100%; }
+.mock-thoughts span {
+  padding: 0.5rem 0.75rem;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-2);
+}
+
+/* --- 4. Split: the asymmetry, stated as a diagram ------------------------ */
+.mock-split-body { flex-direction: row; gap: 1rem; }
+.mock-col { flex: 1; display: flex; flex-direction: column; gap: 0.45rem; }
+.mock-col-label {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  margin-bottom: 0.25rem;
+}
+.mock-chip { padding: 0.45rem 0.6rem; border-radius: 9px; font-size: 0.76rem; background: var(--accent-soft); color: var(--accent); }
+.mock-chip[data-empty] { background: var(--surface); color: var(--text-3); }
+.mock-gap {
+  flex: 1;
+  min-height: 4.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--hairline-hi);
+  border-radius: 9px;
+  color: var(--text-3);
+}
+
+/* --- the copy column ----------------------------------------------------- */
+.scrolly-copy { display: flex; flex-direction: column; }
+
+.scrolly-step {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0.25;
+  transition: opacity 400ms var(--ease-out);
+}
+.scrolly-step[data-active] { opacity: 1; }
+
+.scrolly-step h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+.scrolly-step p { color: var(--text-2); font-size: 1.05rem; line-height: 1.8; }
+
+@media (max-width: 900px) {
+  .scrolly { grid-template-columns: 1fr; gap: 1.5rem; }
+  .scrolly-canvas { top: 5rem; height: 20rem; }
+  .scrolly-step { min-height: 70vh; }
+  .scrolly-step h3 { font-size: 1.45rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Dimming still marks the active step, just less harshly. */
+  .scrolly-step { opacity: 0.55; }
+  .scene[data-state='past'] { transform: none; }
+  .scene { transition-duration: 200ms; }
+}
+
+/* ==========================================================================
+   Capabilities — a grid that becomes a rail only when it has to.
+   ========================================================================== */
+
+.gallery-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  /* Resets width: max-content from the old rail markup, where the track sat
+     inside a separate scrolling viewport. Left in place it sizes to content,
+     so the rail below never scrolls and the page overflows sideways instead. */
+  width: auto;
+  padding-inline: 0;
+}
+
+/* Cards are uncovered rather than faded in. */
+.gallery .feature {
+  clip-path: inset(0 0 100% 0 round 22px);
+  transition: clip-path 650ms var(--ease-in-out);
+}
+.gallery[data-revealed] .feature { clip-path: inset(0 0 0 0 round 22px); }
+
+/* They arrive together, so the cascade is a delay. */
+.gallery .feature:nth-child(1) { transition-delay: 0ms; }
+.gallery .feature:nth-child(2) { transition-delay: 70ms; }
+.gallery .feature:nth-child(3) { transition-delay: 140ms; }
+
+/* Line drawing. pathLength="100" normalises every shape to a 0-100 dash
+   space, so one rule draws them all regardless of real geometry. */
+.gallery .card-icon svg > * {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset 800ms var(--ease-out) 260ms;
+}
+.gallery[data-revealed] .card-icon svg > * { stroke-dashoffset: 0; }
+
+/* Below the breakpoint the cards no longer fit, so it becomes a snap rail.
+   Native scrolling only — touch already has momentum and rubber-banding, and
+   a swipe needs no chrome to explain it. */
+@media (max-width: 900px) {
+  .gallery-track {
+    display: flex;
+    width: auto;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+  }
+  .gallery-track::-webkit-scrollbar { display: none; }
+  .gallery .feature { flex: 0 0 min(22rem, 84vw); scroll-snap-align: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery .feature { clip-path: none; transition: none; }
+  .gallery .card-icon svg > * { stroke-dashoffset: 0; transition: none; }
+}

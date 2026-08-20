@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Local scratch
+*.log
+.DS_Store
+Thumbs.db
+
+# Vite cache
+react-app/.vite/
+react-app/node_modules/
+
+# The built React output IS committed — it is the deployable artifact and
+# there is no CI to rebuild it. Regenerate with: cd react-app && npm run build

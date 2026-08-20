@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exhale by Grey Ai — The AI executive for executive parents</title>
+<meta name="description" content="Exhale is a bespoke, managed AI system that runs your family's email, calendars, and commitments — so the most important part of your life finally has infrastructure.">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)">
+
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/components.css">
+
+<!-- Theme resolves before first paint so a light-mode visitor never sees a dark flash. -->
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js');
+  try {
+    var saved = localStorage.getItem('theme');
+    var light = window.matchMedia('(prefers-color-scheme: light)').matches;
+    root.dataset.theme = saved || (light ? 'light' : 'dark');
+  } catch (e) {
+    root.dataset.theme = 'dark';
+  }
+})();
+</script>
+
+<script src="js/analytics.js" defer></script>
+<script src="js/section-analytics.js" defer></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#hero">
+      <span class="wordmark">EXHALE</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#pain-points">The reality</a>
+      <a href="#features">Capabilities</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" type="button" data-tip="Switch appearance" aria-label="Switch appearance">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" pathLength="100"/>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" pathLength="100"/>
+          <path d="M12 2v2.2M12 19.8V22M4.22 4.22l1.56 1.56M18.22 18.22l1.56 1.56M2 12h2.2M19.8 12H22M4.22 19.78l1.56-1.56M18.22 5.78l1.56-1.56" pathLength="100"/>
+        </svg>
+      </button>
+
+      <button class="icon-btn" type="button" data-popover-trigger="prefsPopover" data-tip="Preferences"
+              aria-label="Preferences" aria-expanded="false" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h8M16 18h4" pathLength="100"/>
+          <circle cx="16" cy="6" r="2" pathLength="100"/><circle cx="10" cy="12" r="2" pathLength="100"/><circle cx="14" cy="18" r="2" pathLength="100"/>
+        </svg>
+      </button>
+
+      <a class="nav-signin" href="/onboarding">Beta sign-in</a>
+      <button class="btn btn-primary btn-sm" type="button" data-drawer-trigger="signupDrawer">Sign up</button>
+    </div>
+  </div>
+</header>
+
+<!-- Popover: origin-aware, grows from the control that opened it -->
+<div class="popover" id="prefsPopover" role="dialog" aria-label="Preferences">
+  <p class="popover-title">Preferences</p>
+  <div class="popover-row">
+    <span>Appearance</span>
+    <span id="prefTheme">System</span>
+  </div>
+  <div class="popover-row">
+    <span>Motion</span>
+    <span id="prefMotion">Full</span>
+  </div>
+  <div class="popover-row">
+    <span>Saved locally</span>
+    <button class="hold-btn" type="button" data-hold data-hold-confirm="Reset saved preferences?">
+      <span class="hold-fill" aria-hidden="true"></span>
+      <span class="hold-label">Hold to reset</span>
+    </button>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ============================ Hero ============================ -->
+<section id="hero" class="hero" data-ga-name="Hero">
+  <div class="hero-atmosphere" aria-hidden="true" data-parallax>
+    <span class="bloom bloom-a"></span>
+    <span class="bloom bloom-b"></span>
+  </div>
+
+  <div class="container hero-inner">
+    <p class="hero-eyebrow" data-load="1">
+      by <a href="https://greyai.ai" target="_blank" rel="noopener">Grey Ai</a>
+    </p>
+
+    <h1 class="hero-wordmark" data-load="2"><span class="glyph-e">E</span>XHALE</h1>
+
+    <p class="hero-tagline" data-load="3">The AI executive for executive parents</p>
+
+    <div class="hero-actions" data-load="4">
+      <button class="btn btn-primary" type="button" data-drawer-trigger="signupDrawer">Sign up for beta</button>
+      <a class="btn btn-quiet" href="#video">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        See it in action
+      </a>
+    </div>
+
+    <p class="hero-note" data-load="5">Free while in beta</p>
+  </div>
+
+  <a class="scroll-cue" href="#video" data-load="6" aria-label="Scroll to see Exhale in action">
+    <span class="scroll-cue-track"><span class="scroll-cue-dot"></span></span>
+  </a>
+</section>
+
+<!-- ============================ Marquee ============================ -->
+<section class="strip" aria-label="What Exhale watches">
+  <div class="marquee">
+    <div class="marquee-track" data-marquee>
+      <!-- Duplicated once for a seamless loop; JS keeps the copies in sync. -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Video ============================ -->
+<section id="video" class="video" data-ga-name="Video Showcase">
+  <div class="container">
+    <figure class="video-figure reveal">
+      <div class="video-frame">
+        <video id="filmVideo" playsinline autoplay muted loop preload="metadata">
+          <source src="https://res.cloudinary.com/dnv13bm7j/video/upload/v1775854440/EXHALE_smm_j6p4cj.webm" type="video/webm">
+          <source src="https://res.cloudinary.com/dnv13bm7j/video/upload/v1775854440/EXHALE_smm_j6p4cj.mp4" type="video/mp4">
+        </video>
+        <button class="video-btn" id="videoBtn" type="button" aria-label="Pause video">
+          <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="4.5" width="3.6" height="15" rx="1.2"/><rect x="13.9" y="4.5" width="3.6" height="15" rx="1.2"/></svg>
+        </button>
+      </div>
+      <figcaption class="video-caption">See Exhale in action</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================ Pain points ============================ -->
+<section id="pain-points" class="section pain" data-ga-name="Pain Points">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">The problem</p>
+      <h2 class="section-title">The reality</h2>
+    </header>
+
+    <div class="pain-grid">
+      <article class="card reveal">
+        <span class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" pathLength="100"/><path d="M21 7L12 13.2 3 7" pathLength="100"/>
+          </svg>
+        </span>
+        <h3>Email Overload</h3>
+        <p>Newsletters, vet appointments, caregiver updates, event invitations, board communications. Critical information buried in an endless stream of messages from teachers, coaches, doctors, and committee members.</p>
+      </article>
+
+      <article class="card reveal">
+        <span class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4.5" width="18" height="17" rx="2.5" pathLength="100"/><path d="M16 2.5v4M8 2.5v4M3 10h18" pathLength="100"/>
+          </svg>
+        </span>
+        <h3>Calendar Chaos</h3>
+        <p>Multiple kids, aging parents, grooming schedules, galas, board meetings. One missed update means a scramble to rearrange your day or not being present when it matters most — at home and at work.</p>
+      </article>
+
+      <article class="card reveal">
+        <span class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.5a8 8 0 0 1 8 8c0 5.25-8 11.5-8 11.5S4 15.75 4 10.5a8 8 0 0 1 8-8z" pathLength="100"/><circle cx="12" cy="10.2" r="2.8" pathLength="100"/>
+          </svg>
+        </span>
+        <h3>Mental Load</h3>
+        <p>&ldquo;Is there school tomorrow?&rdquo; &ldquo;When&rsquo;s Dad&rsquo;s cardiology appointment?&rdquo; &ldquo;Did we confirm the speaker for the fundraiser?&rdquo; Questions that interrupt your focus and fragment your day.</p>
+      </article>
+
+      <article class="card card-wide reveal">
+        <span class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.2" pathLength="100"/><path d="M12 6.4V12l4 2.2" pathLength="100"/>
+          </svg>
+        </span>
+        <div class="card-wide-body">
+          <h3>No Infrastructure at Home</h3>
+          <p>You have EAs, project managers, and systems keeping your professional life on track. But your personal life &mdash; just as complex, just as consequential &mdash; runs on memory and group texts.</p>
+          <p class="card-lead">Exhale changes that. One AI system that runs your home life leaner and smarter than most enterprise operations.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Before / after ============================ -->
+<section id="compare" class="section" data-ga-name="Before After">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">The difference</p>
+      <h2 class="section-title">Same Thursday, twice</h2>
+      <p class="section-sub">Drag to move between what arrives and what you actually need.</p>
+    </header>
+
+    <div class="compare reveal" data-compare>
+      <div class="compare-pane">
+        <span class="compare-label">What arrives</span>
+        <ul class="raw-list">
+          <li><span>Oakwood Elementary</span> Spring newsletter — 14 updates inside</li>
+          <li><span>PTA Committee</span> Re: Re: Re: volunteer slots</li>
+          <li><span>Dr. Levin&rsquo;s office</span> Appointment moved to Thursday 9:15</li>
+          <li><span>Riverside Vet</span> Your reminder: annual vaccination</li>
+          <li><span>Board secretary</span> Papers for Tuesday</li>
+          <li><span>Oakwood Elementary</span> Field trip consent form — due Friday</li>
+        </ul>
+      </div>
+
+      <div class="compare-pane compare-after">
+        <span class="compare-label">What you need</span>
+        <ul class="brief-list">
+          <li><strong>9:15</strong> Dr. Levin moved — clears your 9:30</li>
+          <li><strong>Friday</strong> Field trip consent, not yet signed</li>
+          <li><strong>Tuesday</strong> Board papers, 40 pages</li>
+        </ul>
+        <p class="brief-note">Three things. The other eleven can wait.</p>
+      </div>
+
+      <button class="compare-handle" type="button" role="slider"
+              aria-label="Compare what arrives with what you need"
+              aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+        <span class="compare-grip" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l-4 6 4 6M15 6l4 6-4 6"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Features ============================ -->
+<section id="features" class="section features" data-ga-name="Features">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">Capabilities</p>
+      <h2 class="section-title">Meet your AI executive</h2>
+    </header>
+  </div>
+
+  <div class="gallery reveal" data-gallery>
+    <div class="gallery-viewport" data-gallery-viewport tabindex="0" role="group" aria-label="Capabilities, scrollable">
+      <div class="gallery-track" data-gallery-track>
+
+        <article class="feature" data-gallery-item>
+          <span class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" pathLength="100"/><path d="M21 7L12 13.2 3 7" pathLength="100"/>
+            </svg>
+          </span>
+          <h3>Smart Email Search</h3>
+          <p>All your emails indexed and searchable. Find that trust update, gala invitation, or vet bill in seconds.</p>
+          <ul class="asks">
+            <li>What did the estate attorney send about the trust update?</li>
+            <li>What are the rules for the gala silent auction?</li>
+            <li>When is the cat&rsquo;s next vet appointment?</li>
+          </ul>
+        </article>
+
+        <article class="feature" data-gallery-item>
+          <span class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z" pathLength="100"/>
+              <path d="M14 2.5V8h5.5" pathLength="100"/><path d="M8 13.2h8M8 16.8h5.5" pathLength="100"/>
+            </svg>
+          </span>
+          <h3>Daily Briefings &amp; Life Tracking</h3>
+          <p>Start each day knowing exactly what&rsquo;s happening &mdash; events, deadlines, school closures, care schedules, and action items delivered on demand.</p>
+          <ul class="asks">
+            <li>What do I need to know today?</li>
+            <li>Does Dad&rsquo;s home aide schedule conflict with his specialist appointment?</li>
+            <li>What is due to the board committee this week?</li>
+          </ul>
+        </article>
+
+        <article class="feature" data-gallery-item>
+          <span class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11.6l2.8 2.8L21.5 4.6" pathLength="100"/>
+              <path d="M20.5 12.4V19a2 2 0 0 1-2 2H5.5a2 2 0 0 1-2-2V5.5a2 2 0 0 1 2-2h10.2" pathLength="100"/>
+            </svg>
+          </span>
+          <h3>Task &amp; Calendar Management</h3>
+          <p>Create events, set reminders, and send quick updates through natural conversation. Never forget to confirm a guest list, follow up with a care coordinator, or update the nanny.</p>
+          <ul class="asks">
+            <li>Add the donor reception to the calendar</li>
+            <li>Remind me to call Dad&rsquo;s care coordinator</li>
+            <li>Text Charles I&rsquo;m running late from the benefit dinner</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="container gallery-controls">
+      <div class="gallery-dots" data-gallery-dots></div>
+      <div class="gallery-arrows">
+        <button class="gallery-arrow" type="button" data-gallery-prev data-tip="Previous" aria-label="Previous capability">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+        </button>
+        <button class="gallery-arrow" type="button" data-gallery-next data-tip="Next" aria-label="Next capability">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ How it works ============================ -->
+<section id="how-it-works" class="section how" data-ga-name="How It Works">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">How it works</p>
+      <h2 class="section-title">Built around your life</h2>
+    </header>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h3>We map your world together</h3>
+          <p>You set up a few simple automations so your important emails and updates flow to one central place. We take it from there &mdash; connecting your communication channels and configuring Exhale around your life.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h3>Ask anything, anytime</h3>
+          <p>Message Exhale like you&rsquo;d text a trusted assistant. Plain language questions get instant answers pulled from your own information &mdash; emails, schedules, and websites all in one place.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h3>We keep it running</h3>
+          <p>Your life changes &mdash; new schools, new caregivers, new commitments. We update Exhale continuously so it always reflects how you actually live. You never manage the system. We do.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ Bespoke ============================ -->
+<section id="bespoke" class="bespoke" data-ga-name="Bespoke">
+  <div class="container bespoke-inner">
+    <h2 class="bespoke-title reveal">Bespoke. Managed. <em>Yours.</em></h2>
+    <div class="bespoke-body reveal">
+      <p>Exhale isn&rsquo;t an app you download. It&rsquo;s a system we build and manage specifically for your life &mdash; your family, your caregivers, your calendars, your commitments.</p>
+      <p>Our team handles the build, the integrations, and the ongoing updates so Exhale always reflects how you actually live.</p>
+    </div>
+    <p class="bespoke-note reveal">Not a product. A service relationship.</p>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section id="faq" class="section" data-ga-name="FAQ">
+  <div class="container faq-inner">
+    <header class="section-head reveal">
+      <p class="eyebrow">Questions</p>
+      <h2 class="section-title">The ones people actually ask</h2>
+    </header>
+
+    <div class="acc reveal" data-accordion>
+      <div class="acc-item">
+        <button class="acc-trigger" type="button" aria-expanded="false">
+          Google says the app isn&rsquo;t verified. Should I be worried?
+          <span class="acc-icon" aria-hidden="true"></span>
+        </button>
+        <div class="acc-panel"><p>No. Exhale is in Google&rsquo;s verification review, which takes several weeks for any app that reads email. Until it clears, Google shows a caution screen for apps it hasn&rsquo;t finished reviewing &mdash; it reflects our review status, not anything about your account&rsquo;s safety. Choose Advanced, then Continue. You can disconnect at any time from your Google account settings.</p></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" type="button" aria-expanded="false">
+          What can Exhale actually see within my inbox?
+          <span class="acc-icon" aria-hidden="true"></span>
+        </button>
+        <div class="acc-panel"><p>Only the Gmail labels you pick during setup. You choose them, and you can change them whenever you like. Exhale doesn&rsquo;t read the rest of your inbox.</p></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" type="button" aria-expanded="false">
+          Can Exhale send an email as me?
+          <span class="acc-icon" aria-hidden="true"></span>
+        </button>
+        <div class="acc-panel"><p>No. Exhale&rsquo;s access to Gmail is read-only. It cannot send, reply, delete, or change a single message.</p></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" type="button" aria-expanded="false">
+          Do you use my family&rsquo;s data to train AI models?
+          <span class="acc-icon" aria-hidden="true"></span>
+        </button>
+        <div class="acc-panel"><p>No. Your email and calendar data is used to run your assistant and nothing else. We don&rsquo;t sell it, we don&rsquo;t share it for advertising, and we don&rsquo;t train models on it.</p></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" type="button" aria-expanded="false">
+          What does it cost?
+          <span class="acc-icon" aria-hidden="true"></span>
+        </button>
+        <div class="acc-panel"><p>Nothing while we&rsquo;re in beta. If that changes, you&rsquo;ll hear it from us before it happens, not from a charge.</p></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" type="button" aria-expanded="false">
+          Do I need Gmail?
+          <span class="acc-icon" aria-hidden="true"></span>
+        </button>
+        <div class="acc-panel"><p>Yes, for now. Exhale connects to Gmail and Google Calendar. Other providers aren&rsquo;t supported yet.</p></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" type="button" aria-expanded="false">
+          How do I disconnect?
+          <span class="acc-icon" aria-hidden="true"></span>
+        </button>
+        <div class="acc-panel"><p>Revoke Exhale from your Google account settings, or email us and we&rsquo;ll do it. Access stops immediately.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CTA ============================ -->
+<section id="typeform-section" class="section cta" data-ga-name="Sign Up">
+  <div class="container">
+    <header class="section-head cta-head reveal">
+      <h2 class="section-title">Ready to <em>exhale?</em></h2>
+      <p class="section-sub">Finally, infrastructure for the most important part of your life.</p>
+      <div class="cta-actions">
+        <button class="btn btn-primary" type="button" data-drawer-trigger="signupDrawer">Sign up for the beta</button>
+      </div>
+      <p class="cta-note">Free while in beta</p>
+    </header>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="wordmark">EXHALE</span>
+      <span class="footer-by">by</span>
+      <a href="https://greyai.ai" target="_blank" rel="noopener">
+        <img class="footer-logo" src="https://res.cloudinary.com/dayr3egl3/image/upload/v1787079668/Grey_logo_for_exhale_zzvyld.png" alt="Grey Ai" width="72" height="24" loading="lazy">
+      </a>
+    </div>
+
+    <nav class="footer-links" aria-label="Footer">
+      <a href="/onboarding">Beta sign-in</a>
+      <button class="linkish" type="button" data-modal-trigger="dataModal">How your data is handled</button>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="lab/">Motion lab</a>
+    </nav>
+
+    <div class="footer-social">
+      <a href="https://www.instagram.com/exhale.bot" target="_blank" rel="noopener" data-tip="Instagram" aria-label="Exhale on Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.6 6.5h.01"/>
+        </svg>
+      </a>
+      <a href="https://www.facebook.com/people/Exhale-by-Grey-AI/61591642507203/" target="_blank" rel="noopener" data-tip="Facebook" aria-label="Exhale on Facebook">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 2.5h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4v-3a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================ Overlays ============================ -->
+
+<!-- Drawer: the sign-up surface. Drag the handle to dismiss. -->
+<div class="drawer" id="signupDrawer" role="dialog" aria-modal="true" aria-label="Sign up for the beta">
+  <div class="drawer-sheet">
+    <div class="drawer-handle" aria-hidden="true"></div>
+    <div class="drawer-head">
+      <h3>Sign up for the beta</h3>
+      <p class="drawer-sub">Free while in beta. Drag down or press Escape to close.</p>
+    </div>
+    <div class="drawer-body">
+      <!-- Skeleton shows only until the embed reports ready. -->
+      <div class="skeleton" id="formSkeleton" style="padding:1.25rem">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line"></div>
+      </div>
+      <div class="typeform-shell" id="typeformShell" hidden>
+        <div data-tf-live="01KCSRGA2N1VAMCM729CFEZPKZ"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: centred, because it is anchored to nothing. -->
+<div class="modal" id="dataModal" role="dialog" aria-modal="true" aria-labelledby="dataModalTitle">
+  <div class="modal-panel">
+    <h3 id="dataModalTitle">How your data is handled</h3>
+    <p>Only the Gmail labels you pick during setup. You choose them, and you can change them whenever you like. Exhale doesn&rsquo;t read the rest of your inbox.</p>
+    <p>Exhale&rsquo;s access to Gmail is read-only. It cannot send, reply, delete, or change a single message.</p>
+    <p>Your email and calendar data is used to run your assistant and nothing else. We don&rsquo;t sell it, we don&rsquo;t share it for advertising, and we don&rsquo;t train models on it.</p>
+    <div class="modal-actions">
+      <a class="btn btn-quiet btn-sm" href="/privacy">Read the full policy</a>
+      <button class="btn btn-primary btn-sm" type="button" data-modal-close>Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/motion.js"></script>
+<script src="js/motion-core.js"></script>
+<script src="js/components.js"></script>
+<script src="js/landing.js"></script>
+</body>
+</html>
