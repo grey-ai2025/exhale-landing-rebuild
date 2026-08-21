@@ -265,14 +265,20 @@
          a reader who wants it can have it immediately. -->
     <section id="compare" data-ga-name="Before After" class="compare-section">
         <div class="section-container">
+            <!-- The heading rides inside the pin, not beside it. Two sticky
+                 elements in one container release at different points — the
+                 taller one lets go first — so a heading pinned separately
+                 outlived the card and hung there while it scrolled away. One
+                 sticky element, one release. -->
+            <div class="compare-stage">
+            <div class="compare-pin">
+
             <div class="compare-head reveal">
                 <p class="section-eyebrow">The difference</p>
                 <h2>Same week, twice</h2>
                 <p class="compare-sub">Drag to move between what arrives and what you actually need.</p>
             </div>
 
-            <div class="compare-stage">
-            <div class="compare-pin">
             <div class="compare-box reveal" data-compare>
 
                 <!-- The panes share a wrapper so a phone can turn them over as
@@ -338,15 +344,6 @@
 
             </div>
             </div>
-
-            <!-- Phones only, and below the stage rather than inside it: the card
-                 fills the pinned screen while it turns, so there is no room
-                 beside it for anything to read. These are the caption to it. -->
-            <ol class="compare-steps" data-compare-steps>
-                <li class="compare-step" data-compare-step="0"><span><b>Twelve messages. Eleven senders. One week.</b></span></li>
-                <li class="compare-step" data-compare-step="1"><span><b>Seven carry a hard date.</b> Nothing on the outside says which.</span></li>
-                <li class="compare-step" data-compare-step="2"><span><b>Four things.</b> The other eight can wait.</span></li>
-            </ol>
 
             <!-- What the film's beats used to say, in one line. -->
             <p class="compare-note">

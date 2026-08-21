@@ -203,25 +203,16 @@ body.light-mode .compare-answer .compare-label { color: var(--cyan-deep); }
 .cmp-row.is-fresh .cmp-subj { color: rgba(255, 255, 255, 0.85); }
 
 /* Which system each one came from. Never rendered: there is no width for it
-   beside the sender and the date flag at any size, and the line under the box
-   names all eleven senders in full. Kept in the markup so the data stays whole
-   if the layout ever finds room for it. */
+   beside the sender at any size, and the line under the box names all eleven
+   senders in full. Kept in the markup so the data stays whole if the layout
+   ever finds room for it. */
 .cmp-src { display: none; }
 
-/* Which ones carry a hard date. The inbox itself never says. */
-.cmp-flag {
-    flex: none;
-    padding: 0.1rem 0.35rem;
-    border: 1px solid rgba(255, 80, 60, 0.5);
-    border-radius: 3px;
-    font-size: 0.5rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: rgba(255, 120, 100, 0.95);
-    opacity: 0;
-}
-
-.cmp-row.is-due .cmp-flag { opacity: 1; }
+/* Seven rows used to carry a DATE chip here. It was an annotation, not part of
+   the mail client — and the line under the box says "nothing on the outside
+   says which seven", which the chips were quietly contradicting. Without them
+   the inbox is what a real one is: a wall with no idea what matters in it, and
+   the answer card is the only thing that sorts it. */
 
 /* --- right: what came back -------------------------------------------------- */
 .cmp-card-head {
@@ -377,23 +368,6 @@ body.light-mode .compare-grip { background: var(--white); }
 .compare-box.is-scrolled .compare-grip,
 .compare-box.is-static .compare-handle { display: none; }
 
-/* --- the stepped read, on phones only -------------------------------------- */
-/* Desktop has a divider you can move at your own pace; a phone does not, so the
-   scroll has to give the reader that time instead. The box pins and these read
-   past it, one screen of scrolling per beat — the same shape as The Reality. */
-.compare-steps { display: none; }
-
-.compare-step {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: var(--text-secondary);
-    opacity: 0.35;
-    transition: opacity 420ms var(--ease-out);
-}
-
-.compare-step.is-active { opacity: 1; }
-.compare-step b { font-weight: 500; color: var(--text-primary); }
-
 /* --- the line under the box -------------------------------------------------- */
 .compare-note {
     max-width: 46rem;
@@ -453,9 +427,10 @@ body.light-mode .compare-grip { background: var(--white); }
 
     .compare-handle { display: none; }
 
-    .compare-steps { display: block; list-style: none; margin: 1.75rem 0 0; padding: 0; }
-    .compare-step { min-height: 0; display: block; padding: 0; opacity: 1; }
-    .compare-step + .compare-step { margin-top: 0.85rem; }
+    /* The section ends on the card. The three lines that used to close it here
+       said what the card has just shown, and a phone had to scroll past the
+       whole flip to reach them. What they said still runs under the box on a
+       desktop, where there is room for it beside nothing else. */
     .compare-note { display: none; }
 
     .compare-head { margin-bottom: 2rem; }
@@ -464,10 +439,58 @@ body.light-mode .compare-grip { background: var(--white); }
     .cmp-from { width: 7rem; }
     .compare-answer { padding: 1rem 1.1rem 1.15rem; }
     .cmp-when { width: 6.5rem; }
+}
+
+@media (max-width: 640px) {
+    .compare-section { padding: 4rem 0; }
+    .compare-sub { font-size: 0.9375rem; }
+    .compare-box { width: 100%; border-radius: 12px; }
+
+    /* A 992px window does not survive a 390px screen by scaling — it survives
+       by giving up what was never load-bearing. The chrome goes first. */
+    .cmp-win-bar { padding: 0.5rem 0.65rem; gap: 0.5rem; }
+    .cmp-lights i { width: 9px; height: 9px; }
+    .cmp-tab { display: none; }
+    .cmp-tab.is-active { display: flex; padding: 0.28rem 0.55rem; font-size: 0.5875rem; }
+
+    .cmp-win-body { padding: 0.7rem 0.8rem 0.75rem; }
+    .cmp-head { font-size: 0.5rem; letter-spacing: 0.12em; margin-bottom: 0.4rem; }
+
+    /* Two lines, never three: the sender takes the first, the subject the
+       second. */
+    .cmp-row {
+        flex-wrap: wrap;
+        gap: 0 0.45rem;
+        /* Tight on purpose. The flip is only offered to screens that can hold
+           the card whole underneath the sticky heading, and every 0.01rem here
+           is 2.4px off the card across twelve rows. A real inbox is dense. */
+        padding: 0.18rem 0;
+        font-size: 0.65rem;
+    }
+
+    .cmp-dot { order: 0; margin-top: 0.22rem; }
+    .cmp-from { order: 1; width: auto; }
+    .cmp-subj { order: 4; flex: 1 0 100%; padding-left: 1.15rem; }
+
+    .cmp-card-head { padding-bottom: 0.7rem; margin-bottom: 0.8rem; gap: 0.5rem; }
+    .cmp-mark { font-size: 1.05rem; }
+    .cmp-q { font-size: 0.7rem; }
+
+    .cmp-action { flex-wrap: wrap; gap: 0.15rem 0.6rem; padding: 0.55rem 0; }
+    .cmp-when { width: auto; font-size: 0.625rem; }
+    .cmp-what { flex: 1 0 100%; font-size: 0.8125rem; }
+    .cmp-tag { align-self: baseline; }
+
+    .compare-note { font-size: 0.875rem; margin-top: 1.5rem; }
 
     /* --- the flip ---------------------------------------------------------
 
-       The plain sequence above is the floor: no JS, reduced motion, or a screen
+       Phone widths only. Above 640px the rows go back to one line and the
+       card goes back to full-bleed width, and a 787px-wide card 490px tall
+       sweeps half the screen when it turns — a tablet is better served by the
+       plain sequence it had before.
+
+       The plain sequence is the floor: no JS, reduced motion, or a screen
        too short to hold the card all get it. Everything below only applies once
        compare.js has confirmed the inbox fits on screen whole, and it turns the
        two panes into the two faces of one card.
@@ -482,10 +505,78 @@ body.light-mode .compare-grip { background: var(--white); }
         position: relative;
     }
 
+    /* --- the heading, while the card turns -------------------------------
+
+       It sticks for the length of the stage and collapses to a title bar as
+       soon as the stage starts moving. The eyebrow is decoration and the sub
+       line is an instruction that has already been followed by then; the name
+       of the thing you are looking at is what is worth keeping on screen.
+
+       The bar is a fixed 3rem rather than a measured height, so the pin below
+       it has a number to sit against without JS having to reflow the head to
+       find one. */
+    .compare-stage.is-flip .compare-head {
+        /* Not sticky itself — the pin around it is. Two sticky elements in one
+           container release at different points, and the heading, being the
+           shorter of the two, went on hanging there for another 500px after
+           the card had let go and scrolled away. Positioned only so it paints
+           over the card's near edge rather than under it. */
+        position: relative;
+        z-index: 4;
+        margin-bottom: 0.75rem;
+        /* Opaque: the card's near edge swings above its own pin at the midpoint
+           and has to pass behind this, not over it. */
+        background: var(--bg-primary);
+        /* .reveal owns transform, and a transformed ancestor is a containing
+           block — the sticky would stop being sticky. */
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    body.light-mode .compare-stage.is-flip .compare-head { background: var(--gray-50); }
+
+    .compare-stage.is-flip .compare-head h2 {
+        transition: font-size 260ms var(--ease-out), margin-bottom 260ms var(--ease-out);
+    }
+
+    .compare-stage.is-flip .section-eyebrow,
+    .compare-stage.is-flip .compare-sub {
+        overflow: hidden;
+        max-height: 4rem;
+        transition: opacity 200ms var(--ease-out),
+                    max-height 260ms var(--ease-out),
+                    margin 260ms var(--ease-out);
+    }
+
+    .compare-stage.is-flip.is-lead .compare-head {
+        height: 3rem;
+        display: flex;
+        /* Column, not row: as a row the collapsed eyebrow and sub still hold
+           horizontal space and squeeze the title into wrapping. */
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .compare-stage.is-flip.is-lead .compare-head h2 {
+        font-size: 1.375rem;
+        margin-bottom: 0;
+    }
+
+    .compare-stage.is-flip.is-lead .section-eyebrow,
+    .compare-stage.is-flip.is-lead .compare-sub {
+        opacity: 0;
+        max-height: 0;
+        margin: 0;
+    }
+
+    /* One sticky element holding both: the heading bar on top, the card below
+       it, released together at the end of the runway. Height stays auto so the
+       heading can collapse from its full self to the bar and take the card up
+       with it. */
     .compare-stage.is-flip .compare-pin {
         position: sticky;
-        top: var(--pin-top, 4rem);
-        height: var(--card-h);
+        top: var(--head-top, 4rem);
     }
 
     .compare-stage.is-flip .compare-box {
@@ -497,7 +588,7 @@ body.light-mode .compare-grip { background: var(--white); }
         box-shadow: none;
         /* Enough depth to read as an object, shallow enough that the near edge
            does not swing up under the fixed nav at the midpoint. */
-        perspective: 1400px;
+        perspective: 1900px;
         /* .reveal owns transform and the flip needs it. The card is well on
            screen before it turns, so there is nothing left for a reveal to do. */
         animation: none;
@@ -555,52 +646,5 @@ body.light-mode .compare-grip { background: var(--white); }
         flex-direction: column;
         justify-content: center;
     }
-
-    /* Sits under the whole runway now, so it needs the gap the stage used to
-       give it. */
-    .compare-stage.is-flip + .compare-steps { margin-top: 2.5rem; }
 }
 
-@media (max-width: 640px) {
-    .compare-section { padding: 4rem 0; }
-    .compare-sub { font-size: 0.9375rem; }
-    .compare-box { width: 100%; border-radius: 12px; }
-
-    /* A 992px window does not survive a 390px screen by scaling — it survives
-       by giving up what was never load-bearing. The chrome goes first. */
-    .cmp-win-bar { padding: 0.5rem 0.65rem; gap: 0.5rem; }
-    .cmp-lights i { width: 9px; height: 9px; }
-    .cmp-tab { display: none; }
-    .cmp-tab.is-active { display: flex; padding: 0.28rem 0.55rem; font-size: 0.5875rem; }
-
-    .cmp-win-body { padding: 0.7rem 0.8rem 0.75rem; }
-    .cmp-head { font-size: 0.5rem; letter-spacing: 0.12em; margin-bottom: 0.4rem; }
-
-    /* Two lines, never three: sender, date flag and source share the first;
-       the subject takes the second. */
-    .cmp-row {
-        flex-wrap: wrap;
-        gap: 0 0.45rem;
-        /* Tight on purpose: 12 rows at 0.32rem put the card 35px over what a
-           360x640 screen can hold, and the flip is only offered to screens that
-           can hold it whole. A real inbox is dense anyway. */
-        padding: 0.24rem 0;
-        font-size: 0.65rem;
-    }
-
-    .cmp-dot { order: 0; margin-top: 0.22rem; }
-    .cmp-from { order: 1; width: auto; }
-    .cmp-flag { order: 2; padding: 0.05rem 0.25rem; font-size: 0.4375rem; }
-    .cmp-subj { order: 4; flex: 1 0 100%; padding-left: 1.15rem; }
-
-    .cmp-card-head { padding-bottom: 0.7rem; margin-bottom: 0.8rem; gap: 0.5rem; }
-    .cmp-mark { font-size: 1.05rem; }
-    .cmp-q { font-size: 0.7rem; }
-
-    .cmp-action { flex-wrap: wrap; gap: 0.15rem 0.6rem; padding: 0.55rem 0; }
-    .cmp-when { width: auto; font-size: 0.625rem; }
-    .cmp-what { flex: 1 0 100%; font-size: 0.8125rem; }
-    .cmp-tag { align-self: baseline; }
-
-    .compare-note { font-size: 0.875rem; margin-top: 1.5rem; }
-}

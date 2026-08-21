@@ -20,8 +20,11 @@
 
     // ── the week, as it arrived ────────────────────────────────────────────
     // Same household as The Reality and the capability cards. `src` is which
-    // system it came from and `due` marks the ones carrying a hard date —
-    // together they are the whole argument for why a filter cannot fix this.
+    // system it came from and `due` marks the ones carrying a hard date.
+    // Neither is rendered: `due` used to print a DATE chip beside the sender,
+    // and taking it away is the point — the inbox gives you no such marker,
+    // which is why seven deadlines can sit in it unnoticed. Kept because the
+    // count of them is what the line under the box claims.
     var INBOX = [
         { from: 'Oakwood Auction', subj: 'VIP Glow Packages still available — Sat 4/11', src: 'Auction site', due: true, fresh: true },
         { from: 'Oakwood Yearbook', subj: 'REMINDER: Yearbook orders close Mon Apr 13', src: 'Photo vendor', due: true, fresh: true },
@@ -68,11 +71,16 @@
         // away rather than left to be grabbed at.
         var stacked = window.matchMedia('(max-width: 900px)');
 
+        // The flip is narrower still. Above 640px the inbox rows go back to one
+        // line and the card back to full-bleed width, and a card 787px across
+        // and 490px tall sweeps half a tablet when it turns. Phones flip;
+        // tablets keep the sequence they had.
+        var phone = window.matchMedia('(max-width: 640px)');
+
         INBOX.forEach(function (m, i) {
             var li = document.createElement('li');
             li.className = 'cmp-row';
             if (m.fresh) li.classList.add('is-fresh');
-            if (m.due) li.classList.add('is-due');
             // Every fourth already read: a list where everything is unread
             // reads as a mock rather than as an inbox.
             if (!m.fresh && i % 4 === 0) li.classList.add('is-read');
@@ -80,8 +88,7 @@
                 '<span class="cmp-dot" aria-hidden="true"></span>' +
                 '<span class="cmp-from">' + m.from + '</span>' +
                 '<span class="cmp-subj">' + m.subj + '</span>' +
-                '<span class="cmp-src">' + m.src + '</span>' +
-                '<span class="cmp-flag" aria-hidden="true">DATE</span>';
+                '<span class="cmp-src">' + m.src + '</span>';
             rowsEl.appendChild(li);
         });
 
@@ -192,8 +199,13 @@
         // plain sequence stands.
         var flipping = false;
         var cardH = 0;
-        var pinTop = 0;
+        var headTop = 0;
         var queued = false;
+
+        // The heading collapses to exactly 3rem, declared in CSS so the pin has
+        // a number to sit against without JS reflowing the head to find one.
+        var HEAD_BAR = 48;
+        var HEAD_GAP = 12;
 
         // Read, turn, read. The card has to sit still long enough at each end
         // to be read, or the flip is the only thing that happened.
@@ -205,17 +217,20 @@
         }
 
         function fits() {
-            if (!stageEl || !flipEl || !winEl) return false;
+            if (!stageEl || !flipEl || !winEl || !phone.matches) return false;
             // Measured out of flip mode, where the pane is still in flow and
             // the window still reports the height its content actually wants.
-            stageEl.classList.remove('is-flip');
+            stageEl.classList.remove('is-flip', 'is-lead');
             var h = Math.ceil(winEl.getBoundingClientRect().height);
-            var top = Math.round((navEl ? navEl.getBoundingClientRect().height : 0) + 20);
+            var head = Math.round((navEl ? navEl.getBoundingClientRect().height : 0) + 8);
+            var top = head + HEAD_BAR + HEAD_GAP;
+            // The card, the bar above it and a margin below all have to clear
+            // the screen at once. If they cannot there is nothing to pin.
             if (h + top + 24 > window.innerHeight) return false;
             cardH = h;
-            pinTop = top;
+            headTop = head;
             stageEl.style.setProperty('--card-h', h + 'px');
-            stageEl.style.setProperty('--pin-top', top + 'px');
+            stageEl.style.setProperty('--head-top', head + 'px');
             return true;
         }
 
@@ -223,8 +238,13 @@
             queued = false;
             if (!flipping) return;
             var r = stageEl.getBoundingClientRect();
-            var travel = r.height - cardH;
-            var p = travel > 0 ? clamp((pinTop - r.top) / travel, 0, 1) : 0;
+            // Both the bar and the card are stuck for this stretch, so the
+            // runway is what is left of the stage once they are subtracted.
+            var travel = r.height - HEAD_BAR - HEAD_GAP - cardH;
+            var p = travel > 0 ? clamp((headTop - r.top) / travel, 0, 1) : 0;
+            // Collapses the moment the bar takes hold, so the two never move
+            // at once and the card does not appear to lurch.
+            stageEl.classList.toggle('is-lead', p > 0);
             var t = easeInOut(clamp((p - HOLD_IN) / TURN, 0, 1));
             stageEl.style.setProperty('--flip', (t * 180).toFixed(2) + 'deg');
             // Pulls away as it turns and comes back flat, so the card reads as
@@ -244,8 +264,11 @@
             if (on) {
                 paint();
             } else {
+                stageEl.classList.remove('is-lead');
                 stageEl.style.removeProperty('--flip');
                 stageEl.style.removeProperty('--flip-scale');
+                stageEl.style.removeProperty('--head-top');
+                stageEl.style.removeProperty('--card-h');
             }
         }
 
@@ -258,6 +281,7 @@
 
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', syncFlip);
+        if (phone.addEventListener) phone.addEventListener('change', syncFlip);
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFlip);
 
         if (stacked.addEventListener) stacked.addEventListener('change', syncMode);
