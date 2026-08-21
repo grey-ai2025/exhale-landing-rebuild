@@ -56,6 +56,7 @@
         var rowsEl = root.querySelector('[data-compare-rows]');
         var actionsEl = root.querySelector('[data-compare-actions]');
         var handleEl = root.querySelector('[data-compare-handle]');
+        var answerEl = root.querySelector('.compare-answer');
         if (!rowsEl || !actionsEl || !handleEl) return;
 
         // Below this a horizontal drag competes with the page scroll for the
@@ -139,6 +140,79 @@
         // moves it. Nothing is dragged on a phone — the two states are laid out
         // in sequence there — so an instruction to drag would be the copy lying
         // about a control that is not on screen.
+        // ── phones: pinned, and stepped by scroll ──────────────────────────
+        // The box pins and the copy advances it, the way The Reality does.
+        // Both panes share one frame, so the frame has to be as tall as
+        // whichever needs more — measured, because it depends on how the rows
+        // and the actions wrap at this width.
+        var stage = root.closest(".compare-stage");
+        var capEl = document.querySelector("[data-compare-caption]");
+        var steps = Array.prototype.slice.call(document.querySelectorAll("[data-compare-step]"));
+
+        // pos: 100 = all inbox, 0 = all answer.
+        var STATES = [
+            { pos: 100, flags: 0 },
+            { pos: 100, flags: 1 },
+            { pos: 0,   flags: 1 }
+        ];
+
+        var step = -1;
+        var frameH = 0;
+
+        function measureFrame() {
+            if (!stage) return;
+            if (!stacked.matches) { stage.style.removeProperty("--frame-h"); return; }
+            // Measure the answer at its natural height, off the layout.
+            var probe = answerEl.cloneNode(true);
+            probe.style.cssText = "position:absolute;visibility:hidden;height:auto;inset:auto;" +
+                "width:" + answerEl.getBoundingClientRect().width + "px";
+            answerEl.parentNode.appendChild(probe);
+            var want = probe.getBoundingClientRect().height;
+            probe.remove();
+            frameH = Math.round(Math.max(want, 260));
+            stage.style.setProperty("--frame-h", frameH + "px");
+        }
+
+        // Pinning is only honest if the whole unit fits the screen. Squeezing
+        // the frame to make it fit cut the bottom off the answer on a 568px
+        // screen in every single sample — better to fall back to the sequence
+        // there than to ship a pinned box that clips its own content.
+        function canPin() {
+            if (!capEl) return false;
+            var cap = capEl.getBoundingClientRect().height || 56;
+            return frameH + cap + 56 + 16 <= window.innerHeight;
+        }
+
+        function setStep(i) {
+            if (!STATES[i] || i === step) return;
+            step = i;
+            setPos(STATES[i].pos);
+            root.style.setProperty("--flags", STATES[i].flags);
+            if (capEl && steps[i]) {
+                // Swap the words while the caption is transparent, so the two
+                // sentences never cross-fade through each other.
+                capEl.classList.add("is-swapping");
+                setTimeout(function () {
+                    capEl.innerHTML = steps[i].innerHTML;
+                    capEl.classList.remove("is-swapping");
+                }, 200);
+            }
+        }
+
+        var io = null;
+
+        function startStepping() {
+            if (io || !steps.length || !("IntersectionObserver" in window)) return;
+            io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting || !stacked.matches) return;
+                    var n = steps.indexOf(entry.target);
+                    if (n !== -1) setStep(n);
+                });
+            }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
+            steps.forEach(function (el) { io.observe(el); });
+        }
+
         var subEl = document.querySelector('.compare-sub');
 
         function syncMode() {
@@ -151,9 +225,22 @@
             root.classList.toggle('is-scrolled', touch);
             handleEl.disabled = touch;
             handleEl.setAttribute('aria-hidden', touch ? 'true' : 'false');
-            // Sequential on a phone: both panes are on screen at once, so there
-            // is no divider to place. Anywhere else it rests in the middle.
-            if (!touch) setPos(50);
+            measureFrame();
+            var pin = touch && canPin();
+            if (stage) stage.classList.toggle('is-stepped', pin);
+            if (pin) {
+                startStepping();
+                setStep(step < 0 ? 0 : step);
+            } else if (touch) {
+                // Sequential fallback: both panes in flow, nothing to reveal.
+                root.style.setProperty('--flags', '1');
+                root.style.removeProperty('--pos');
+                step = -1;
+            } else {
+                root.style.setProperty('--flags', '1');
+                step = -1;
+                setPos(50);
+            }
         }
 
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -166,6 +253,8 @@
             return;
         }
 
+        window.addEventListener('resize', measureFrame);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureFrame);
         if (stacked.addEventListener) stacked.addEventListener('change', syncMode);
 
         syncMode();

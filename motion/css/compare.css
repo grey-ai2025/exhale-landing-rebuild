@@ -216,7 +216,12 @@ body.light-mode .compare-answer .compare-label { color: var(--cyan-deep); }
     opacity: 0;
 }
 
-.cmp-row.is-due .cmp-flag { opacity: 1; }
+/* Staged on a phone, where the flags are a beat of their own. Always on
+   anywhere else, including with no JS at all. */
+.cmp-row.is-due .cmp-flag {
+    opacity: var(--flags, 1);
+    transition: opacity 500ms var(--ease-out);
+}
 
 /* --- right: what came back -------------------------------------------------- */
 .cmp-card-head {
@@ -446,53 +451,81 @@ body.light-mode .compare-grip { background: var(--white); }
     .compare-answer,
     .compare-handle { transition: clip-path 620ms var(--ease-out), top 620ms var(--ease-out); }
 
-    /* No pin, and no wipe. Measured rather than assumed: the answer needs
-       ~410px at these widths however hard it is compacted (every action wraps
-       to two lines), and a 568px screen has 496px under the nav. A box big
-       enough to hold the answer leaves 86px of band — not enough to read a
-       three-line caption in, so the copy was never readable at all.
-
-       So the two states stop sharing one box and become a sequence instead:
-       the inbox at full size, then the answer at full size, then the reasons.
-       It is still paced by scrolling and it is the only version of this that
-       can actually be read on a phone. */
+    /* Without JS this stays a plain sequence: inbox, then answer, then the
+       reasons. Everything below only applies once compare.js has taken over. */
     .compare-stage { display: block; }
-
     .compare-pin { position: static; pointer-events: auto; }
+    .compare-box { position: static; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
 
-    .compare-box {
-        position: static;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Out of the overlay and into the flow, under the inbox it answers. */
     .compare-answer {
         position: static;
         clip-path: none;
         border-top: 1px solid var(--glass-border);
     }
 
-    /* Nothing to drag, nothing to wipe. */
-    .compare-handle { display: none; }
+    .compare-handle,
+    .compare-caption { display: none; }
 
-    .compare-steps {
-        display: block;
-        list-style: none;
-        margin: 1.75rem 0 0;
-        padding: 0;
-    }
-
-    .compare-step {
-        min-height: 0;
-        display: block;
-        padding: 0;
-        opacity: 1;
-    }
-
+    .compare-steps { display: block; list-style: none; margin: 1.75rem 0 0; padding: 0; }
+    .compare-step { min-height: 0; display: block; padding: 0; opacity: 1; }
     .compare-step + .compare-step { margin-top: 0.85rem; }
-
-    /* The line under the box says what the three steps say. */
     .compare-note { display: none; }
+
+    /* --- stepped, once JS is driving ------------------------------------- */
+    /* The box pins and the copy advances it, the way The Reality does. The
+       caption sits above the box rather than beside it: the answer needs ~470px
+       at these widths and the viewport has ~700 under the nav, so there is room
+       for a line of copy above it but nothing like room for a column of it. */
+    .is-stepped .compare-pin {
+        position: sticky;
+        top: 3.5rem;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .is-stepped .compare-caption {
+        display: block;
+        min-height: 3rem;
+        margin: 0 0 0.75rem;
+        font-size: 0.9375rem;
+        line-height: 1.45;
+        color: var(--text-secondary);
+        transition: opacity 320ms var(--ease-out);
+    }
+
+    .is-stepped .compare-caption b { font-weight: 500; color: var(--text-primary); }
+    .is-stepped .compare-caption.is-swapping { opacity: 0; }
+
+    /* One frame, sized to whichever pane needs more — measured in JS, because
+       it depends on how the rows wrap at this width. */
+    .is-stepped .compare-box { height: var(--frame-h, 30rem); }
+
+    /* The inbox gives up its tail to a fade so both states share one frame.
+       A real inbox continues below the fold too. */
+    .is-stepped .cmp-rows {
+        max-height: calc(var(--frame-h, 30rem) - 7rem);
+        overflow: hidden;
+        mask-image: linear-gradient(to bottom, #000 78%, transparent);
+        -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
+    }
+
+    /* Back to an overlay, wiping downward — the axis that keeps lines whole. */
+    .is-stepped .compare-answer {
+        position: absolute;
+        inset: 0;
+        border-top: 0;
+        clip-path: inset(0 0 var(--pos) 0);
+        transition: clip-path 620ms var(--ease-out);
+    }
+
+    /* The steps become the scroll length; their words are shown in the caption
+       so they are not read twice. */
+    .is-stepped .compare-steps { margin: 0; }
+    .is-stepped .compare-step { min-height: 85vh; }
+    .is-stepped .compare-step span { visibility: hidden; }
+
+    /* The caption already says it. */
+    .is-stepped .cmp-note { display: none; }
 
     .compare-head { margin-bottom: 2rem; }
     .cmp-win-body { padding: 0.9rem 1rem 1.05rem; }
