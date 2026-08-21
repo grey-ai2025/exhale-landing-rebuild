@@ -1199,97 +1199,119 @@ body.light-mode .step-number {
 /* ===========================================
    Bespoke Section
    =========================================== */
+/* ===========================================
+   Bespoke
+
+   Was a centred paragraph inside a pane of glass, floating over concentric
+   rings: 848px of section carrying 54 words, where every element on screen
+   except the words was decoration. The rings and the panel are gone. What is
+   left is the argument, set as a statement — left ranged, one measure wide,
+   and about a third of the height.
+
+   The closing line is no longer a pill. It was the only real sentence here
+   and it was being worn as a badge; it is now the thing the section builds to.
+   =========================================== */
 .bespoke {
-    padding: var(--section-padding) 0;
+    padding: clamp(4.5rem, 9vw, 7rem) 0;
     background: var(--bg-primary);
     position: relative;
     z-index: 1;
-    /* Clips the concentric rings the same way `overflow: hidden` did, but
-       without making this a scroll container. `overflow: hidden` would become
-       the scroll container for any `view()` timeline inside it, which pins
-       every scroll-driven animation in the section at 100% forever. */
-    clip-path: inset(0);
-}
-
-/* Geometric concentric rings background */
-.bespoke::before {
-    content: '';
-    position: absolute;
-    /* `clip-path` on the section hides the overhang but doesn't remove it from
-       layout, so a fixed 500px ring kept the document 90px wider than a 320px
-       phone. Capped to the viewport it stays inside and reads better small. */
-    width: min(500px, 88vw);
-    height: min(500px, 88vw);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    border: 1px solid rgba(173, 251, 246, 0.06);
-    box-shadow:
-        0 0 0 60px transparent,
-        0 0 0 61px rgba(173, 251, 246, 0.04),
-        0 0 0 130px transparent,
-        0 0 0 131px rgba(173, 251, 246, 0.03),
-        0 0 0 200px transparent,
-        0 0 0 201px rgba(173, 251, 246, 0.02);
-    pointer-events: none;
-    z-index: 0;
-}
-
-body.light-mode .bespoke::before {
-    border-color: rgba(13, 115, 119, 0.06);
-    box-shadow:
-        0 0 0 60px transparent,
-        0 0 0 61px rgba(13, 115, 119, 0.05),
-        0 0 0 130px transparent,
-        0 0 0 131px rgba(13, 115, 119, 0.04),
-        0 0 0 200px transparent,
-        0 0 0 201px rgba(13, 115, 119, 0.03);
 }
 
 body.light-mode .bespoke {
     background: var(--gray-50);
 }
 
+/* One column, ranged left. Centred prose across 720px reads as a template
+   hero and is measurably harder to scan than a fixed left edge. */
 .bespoke .section-container {
     position: relative;
     z-index: 1;
+    /* The whole statement is one block, centred on the page but ranged left
+       inside itself. Without this the heading would start at the far left of
+       a 1200px container while the prose sat 38rem wide beside it. */
+    max-width: 44rem;
 }
 
-/* A pane of glass over the concentric rings. The rings are what make the
-   material read as material — blur with nothing behind it is just a tint. */
-.bespoke-body {
-    max-width: 720px;
-    margin: 0 auto;
-    text-align: center;
-    padding: clamp(2.5rem, 5vw, 3.75rem) clamp(1.75rem, 4vw, 3.25rem);
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-radius: 28px;
-    box-shadow: var(--shadow-md);
+.bespoke .section-header {
+    text-align: left;
+    margin: 0 0 2rem;
+    max-width: none;
 }
 
-body.light-mode .bespoke-body {
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: var(--shadow-lg);
+.bespoke .section-title {
+    margin-bottom: 0;
 }
+
+/* The shared flourish under section titles is centred, which left a short
+   cyan rule floating in the middle of a block ranged hard left. It also
+   competed with the accent rule above the closing line — two accent marks in
+   a section this short is noise, and the one that matters is the second. */
+.bespoke .section-title::after { display: none; }
 
 .bespoke-body p {
-    font-size: 1.15rem;
-    line-height: 1.8;
+    /* A measure, not a column width: ~70 characters is where a line stops
+       needing the eye to hunt for the next one. */
+    max-width: 38rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
     color: var(--text-secondary);
-    margin-bottom: 1.25rem;
 }
 
-.bespoke-body p:last-child { margin-bottom: 0; }
+.bespoke-body p + p { margin-top: 1.1rem; }
 
-/* The closing line, in the same material as the beta pill. It sits outside
-   the panel rather than on it — light glass stacked on light glass loses
-   legibility, and a floating pill reads as a stamp on the statement. */
+/* The point. A hairline in the accent, then the sentence the whole section
+   exists to deliver — same serif as the headings, so it reads as a statement
+   rather than as a caption. */
 .bespoke-note {
+    display: block;
+    max-width: 38rem;
+    margin: 2.5rem 0 0;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--glass-border);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.35rem, 3vw, 1.75rem) !important;
+    line-height: 1.35;
+    letter-spacing: 0;
+    color: var(--text-primary);
+}
+
+.bespoke-note::before {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 2px;
+    margin-bottom: 1.35rem;
+    background: var(--cyan-light);
+    box-shadow: 0 0 10px rgba(173, 251, 246, 0.55);
+}
+
+body.light-mode .bespoke-note::before {
+    background: var(--cyan-deep);
+    box-shadow: none;
+}
+
+@media (max-width: 640px) {
+    .bespoke { padding: 3.5rem 0; }
+    .bespoke .section-header { margin-bottom: 1.5rem; }
+    .bespoke-body p { font-size: 0.9375rem; line-height: 1.7; }
+    .bespoke-note { margin-top: 2rem; padding-top: 1.4rem; }
+}
+
+/* No bespoke-specific reveal any more. The blur-and-scale materialise was
+   there because the panel was glass and had to read as arriving; text ranged
+   on the page just rises with everything else. */
+
+/* ===========================================
+   CTA Section
+   =========================================== */
+
+/* The sign-up line was borrowing .bespoke-note for its glass pill. When that
+   became a left-ranged serif statement it took this with it — a left-aligned
+   accent rule under centred text, with a stray hairline above. Its own class
+   now, carrying the pill it always meant. */
+.cta-header .cta-note {
     display: block;
     width: fit-content;
     margin: 2.25rem auto 0;
@@ -1300,41 +1322,23 @@ body.light-mode .bespoke-body {
     border: 1px solid var(--glass-border);
     border-radius: 100px;
     box-shadow: var(--shadow-md);
-    font-size: 0.9rem !important;
+    /* .cta-header p sets 1.1rem; matching its specificity and coming later
+       wins without reaching for !important, which is what the old rule did. */
+    font-size: 0.9rem;
+    line-height: 1.5;
     font-style: italic;
     letter-spacing: 0.04em;
     color: var(--text-secondary);
 }
 
-body.light-mode .bespoke-note {
+body.light-mode .cta-header .cta-note {
     background: rgba(255, 255, 255, 0.6);
     border-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Materialise, not a wipe. A hard clip edge travelling up a text block cuts
-   glyphs in half — fine over a photo, wrong over words. This is also what
-   apple-design prescribes for a glass surface: blur radius and scale
-   resolving together, so the panel reads as arriving rather than uncovering.
-   Doubles as the fallback for browsers without view timelines. */
-.bespoke-body.reveal,
-.bespoke-note.reveal {
-    transform: translate3d(0, 32px, 0) scale(0.96);
-    filter: blur(5px);
-    clip-path: none;
-    transition: opacity 0.6s var(--ease-out),
-                transform 0.6s var(--ease-out),
-                filter 0.6s var(--ease-out);
-}
+/* A hidden section must not hold its padding open. */
+[hidden] { display: none !important; }
 
-.bespoke-body.revealed,
-.bespoke-note.revealed {
-    transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(0);
-}
-
-/* ===========================================
-   CTA Section
-   =========================================== */
 .cta-section {
     padding: var(--section-padding) 0;
     background: var(--bg-primary);
@@ -1729,13 +1733,6 @@ body.light-mode .cursor-glow {
         transform: none;
     }
 
-    /* The rule above clears opacity and transform but not filter, which
-       would strand these two blurred if the reveal script never ran. */
-    .bespoke-body.reveal,
-    .bespoke-note.reveal {
-        filter: none;
-        transform: none;
-    }
 }
 
 a:focus-visible,
@@ -2045,25 +2042,12 @@ body.light-mode input:focus-visible {
        is still entering, so the last one is never left faded on screen. */
     .how-it-works .reveal { animation-range: entry 25% cover 30%; }
 
-    /* --- The glass statement resolves into place ---------------------- */
+    /* The statement rises with everything else now that it is not glass,
+       but keeps the later range: it sits low in a short section, and an
+       entry-bound reveal finished before it was anywhere near the eye. */
     .bespoke-body,
-    .bespoke-note {
-        transition: none;
-        animation-name: sd-materialize;
-        /* Measured, not guessed: an `entry`-bound range finished while the
-           panel was still 572px down the screen — done before you look at it.
-           `cover 8% -> 45%` runs it from roughly 800px down to 350px, so it
-           resolves around the middle of the viewport where the eye is. */
-        animation-range: cover 8% cover 45%;
-    }
+    .bespoke-note { animation-range: cover 8% cover 45%; }
 
-    @keyframes sd-materialize {
-        to {
-            opacity: 1;
-            transform: translate3d(0, 0, 0) scale(1);
-            filter: blur(0);
-        }
-    }
 
     /* --- Section title flourish draws --------------------------------- */
     .section-title::after {
