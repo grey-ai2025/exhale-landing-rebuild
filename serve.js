@@ -20,6 +20,16 @@ const TYPES = {
 http
   .createServer((req, res) => {
     let rel = decodeURIComponent(req.url.split('?')[0]);
+
+    // The React build is compiled with a GitHub Pages base of
+    // /exhale-landing-rebuild/, so its asset URLs are absolute and 404 when the
+    // same files are served from the repo root. Strip the prefix here rather
+    // than rewriting the build output — the absolute base is correct in
+    // production, and editing it would break the deploy to fix the preview.
+    if (rel.startsWith('/exhale-landing-rebuild/')) {
+      rel = rel.slice('/exhale-landing-rebuild'.length);
+    }
+
     if (rel.endsWith('/')) rel += 'index.html';
 
     let file = path.join(ROOT, rel);

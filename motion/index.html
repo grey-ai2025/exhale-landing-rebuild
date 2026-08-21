@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="css/scrolly.css">
     <link rel="stylesheet" href="css/craft.css">
     <link rel="stylesheet" href="css/chat.css">
-    <link rel="stylesheet" href="css/film.css">
+    <link rel="stylesheet" href="css/compare.css">
 
     <script src="https://embed.typeform.com/next/embed.js"></script>
 </head>
@@ -68,8 +68,6 @@
             </svg>
         </a>
     </section>
-
-
 
 <!-- Pain Points Section -->
     <section id="pain-points" class="pain-points">
@@ -253,116 +251,87 @@
         </div>
     </section>
 
-<!-- The Film -->
-    <!-- The film, scrubbed by scroll, built 70/20/10.
+<!-- Same week, twice -->
+    <!-- Same week, twice.
 
-         Running order and proportions are the proposal system, measured in
-         scroll distance: 70% of the runway is the problem in real data, 20% is
-         only the parts of the solution that answer it, the last 10% is what
-         happens next. Pricing is deliberately absent.
+         A before/after slider: the inbox as it arrives on the left, what Exhale
+         hands back on the right, one draggable divider between them. Ported
+         from the apple build's compare section with the panes reversed — there
+         the answer holds the left; here the problem does, because that is the
+         order the argument runs in.
 
-         film.js owns every moving value and builds all four lists; the markup
-         here is the shell, the captions, and the rail. -->
-    <section id="film" data-ga-name="The Film" class="film" data-film>
-        <div class="film-track" data-film-track>
-            <div class="film-stage">
+         This replaced a 460vh scroll-driven film. Its eight beats made the same
+         point across four viewports; the comparison makes it on one screen, and
+         a reader who wants it can have it immediately. -->
+    <section id="compare" data-ga-name="Before After" class="compare-section">
+        <div class="section-container">
+            <div class="compare-head reveal">
+                <p class="section-eyebrow">The difference</p>
+                <h2>Same week, twice</h2>
+                <p class="compare-sub">Drag to move between what arrives and what you actually need.</p>
+            </div>
 
-                <!-- Where the reader is standing in the proposal. The three
-                     segments are literally 70/20/10 wide. -->
-                <!-- Two segments, not three. The 10% — next steps — belongs at
-                     the foot of the page where the sign-up is, not in the middle
-                     of it: a close asked for here would be asked before the
-                     reader has seen a single capability. -->
-                <div class="film-rail" data-film-rail data-phase="0" aria-hidden="true">
-                    <div class="film-rail-seg" style="--w: 70"><span>The problem</span></div>
-                    <div class="film-rail-seg" style="--w: 30"><span>What fixes it</span></div>
-                    <div class="film-rail-head"></div>
-                </div>
+            <div class="compare-box reveal" data-compare>
 
-                <div class="film-canvas" data-film-canvas>
-
-                    <div class="film-inbox">
-                        <div class="film-win">
-                            <div class="film-win-bar" aria-hidden="true">
-                                <div class="film-lights"><i></i><i></i><i></i></div>
-                                <div class="film-tabs">
-                                    <div class="film-tab is-active">
-                                        <span class="film-favicon is-mail"></span>
-                                        <span>Inbox (<span data-film-tab-count>2,847</span>) &mdash; Gmail</span>
-                                    </div>
-                                    <div class="film-tab">
-                                        <span class="film-favicon is-cal"></span>
-                                        <span>Calendar</span>
-                                    </div>
-                                    <div class="film-tab">
-                                        <span class="film-favicon is-chat"></span>
-                                        <span>Messages</span>
-                                    </div>
+                <div class="compare-pane compare-problem">
+                    <div class="cmp-win">
+                        <div class="cmp-win-bar" aria-hidden="true">
+                            <div class="cmp-lights"><i></i><i></i><i></i></div>
+                            <div class="cmp-tabs">
+                                <div class="cmp-tab is-active">
+                                    <span class="cmp-favicon is-mail"></span>
+                                    <span>Inbox (2,850) &mdash; Gmail</span>
+                                </div>
+                                <div class="cmp-tab">
+                                    <span class="cmp-favicon is-cal"></span>
+                                    <span>Calendar</span>
+                                </div>
+                                <div class="cmp-tab">
+                                    <span class="cmp-favicon is-chat"></span>
+                                    <span>Messages</span>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="film-win-body">
-                                <p class="film-inbox-head">
-                                    <span>ONE WEEK &middot; TWO CHILDREN</span>
-                                    <span><span data-film-count>2,847</span> UNREAD</span>
-                                </p>
-                                <ul class="film-rows" data-film-rows></ul>
-                            </div>
+                        <div class="cmp-win-body">
+                            <p class="cmp-head">
+                                <span>ONE WEEK &middot; TWO CHILDREN</span>
+                                <span>2,850 UNREAD</span>
+                            </p>
+                            <ul class="cmp-rows" data-compare-rows></ul>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Beat 4: what was inside the ones carrying a date. -->
-                    <ul class="film-stakes" data-film-stakes></ul>
-
-                    <!-- Beat 5: the film's connect scene. -->
-                    <ul class="film-nodes" data-film-nodes></ul>
-
-                    <div class="film-mark" aria-hidden="true">E</div>
-
-                    <!-- Beat 6: the same question the capability cards open with. -->
-                    <div class="film-card">
-                        <div class="film-card-head">
-                            <span class="film-card-mark">EXHALE</span>
-                            <p class="film-card-q">What do I need to know this week?</p>
-                        </div>
-                        <ul class="film-actions" data-film-actions></ul>
+                <div class="compare-pane compare-answer">
+                    <span class="compare-label">What you need</span>
+                    <div class="cmp-card-head">
+                        <span class="cmp-mark">EXHALE</span>
+                        <p class="cmp-q">What do I need to know this week?</p>
                     </div>
-
-                    <!-- Beat 7: the one thing How It Works owned that the film
-                         did not — that none of this is a tool you operate. Its
-                         three steps, kept whole. -->
-                    <ol class="film-managed" data-film-managed>
-                        <li class="film-managed-step">
-                            <span class="film-managed-n">01</span>
-                            <span class="film-managed-t">We connect your channels</span>
-                            <span class="film-managed-d">Email, calendars and school portals flow into one place. We do the wiring.</span>
-                        </li>
-                        <li class="film-managed-step">
-                            <span class="film-managed-n">02</span>
-                            <span class="film-managed-t">We configure it around your family</span>
-                            <span class="film-managed-d">Your children, their schools, your caregivers, your commitments.</span>
-                        </li>
-                        <li class="film-managed-step">
-                            <span class="film-managed-n">03</span>
-                            <span class="film-managed-t">We keep it current</span>
-                            <span class="film-managed-d">New school year, new aftercare, new commitments. We update it &mdash; you never manage the system.</span>
-                        </li>
-                    </ol>
-
-
+                    <ul class="cmp-actions" data-compare-actions></ul>
+                    <p class="cmp-note">Four things this week. The other eight can wait.</p>
                 </div>
 
-                <div class="film-beats">
-                    <p class="film-beat is-on" data-film-beat="0">Two thousand, eight hundred and forty&#8209;seven unread. Three more landed while you read this line.</p>
-                    <p class="film-beat" data-film-beat="1">Twelve messages, eleven senders, one week &mdash; three teachers across two schools, a principal, the PTA, the district, aftercare, three vendors and another parent.</p>
-                    <p class="film-beat" data-film-beat="2">Seven of the twelve carry a hard date. Nothing on the outside of them tells you which seven.</p>
-                    <p class="film-beat" data-film-beat="3">This is what was inside them.</p>
-                    <p class="film-beat" data-film-beat="4">Exhale reads all of it &mdash; every inbox, calendar and thread you connect.</p>
-                    <p class="film-beat" data-film-beat="5">You never build any of this. You never maintain it either.</p>
-                    <p class="film-beat" data-film-beat="6">And it hands back only the part that needed you.</p>
-                    <p class="film-beat" data-film-beat="7">That was one question, on one week. Everything below is what else you can ask it.</p>
-                </div>
+                <!-- role="slider" rather than a plain button: it reports a value,
+                     and the arrow keys move it. -->
+                <button type="button" class="compare-handle" data-compare-handle
+                        role="slider" aria-label="Compare what arrives with what you need"
+                        aria-valuemin="0" aria-valuemax="100" aria-valuenow="58">
+                    <span class="compare-grip" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 6l-4 6 4 6M15 6l4 6-4 6"/>
+                        </svg>
+                    </span>
+                </button>
             </div>
+
+            <!-- What the film's beats used to say, in one line. -->
+            <p class="compare-note">
+                <b>Twelve messages, eleven senders, one week</b> &mdash; three teachers across two
+                schools, a principal, the PTA, the district, aftercare, three vendors and another
+                parent. <b>Seven carry a hard date</b>, and nothing on the outside says which seven.
+            </p>
         </div>
     </section>
 
@@ -416,8 +385,8 @@
 
                             <div class="chat-body" data-chat-body>
                                 <!-- The no-JS fallback, and the shape chat.js rebuilds through on load.
-                                     It is capability 0, prompt 0 — the same question the film above
-                                     ends on, so the two never disagree about what Exhale said. -->
+                                     It is capability 0, prompt 0 — the same question the comparison
+                                     above answers, so the two never disagree about what Exhale said. -->
                                 <div class="chat-turn" data-turn="0">
                                     <div class="chat-turn-inner">
                                         <p class="chat-ask">What do I need to know this week?</p>
@@ -521,13 +490,12 @@
         </div>
     </section>
 
-
-
 <!-- Bespoke Section -->
-    <!-- Hidden for now, not deleted: its argument is already made by the
-         film's third solution beat (01 connect / 02 configure / 03 keep it
-         current), which says the same thing with specifics. Drop the `hidden`
-         attribute to bring it back. -->
+    <!-- Hidden for now, not deleted. Careful before leaving it that way: the
+         "we build and maintain it for you" claim now lives nowhere else on the
+         page. How It Works was folded into the film, the film became the
+         comparison above, and that beat went with it. Drop the `hidden`
+         attribute to bring this back, or find the claim a better home. -->
     <section id="bespoke" class="bespoke" hidden>
         <div class="section-container">
             <div class="section-header reveal">
@@ -665,6 +633,6 @@
     <script src="js/faq.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/scrolly.js"></script>
-    <script src="js/film.js"></script>
+    <script src="js/compare.js"></script>
 </body>
 </html>
