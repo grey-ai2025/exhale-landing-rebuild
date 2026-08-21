@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCursorGlow();
     initVideoPlayer();
     initScrollHint();
+    initChromeAutoHide();
 });
 
 // ===========================================
@@ -349,4 +350,60 @@ function initScrollHint() {
             hint.classList.toggle('is-hinting', entry.isIntersecting);
         });
     }, { threshold: 0.1 }).observe(hint);
+}
+
+// ===========================================
+// Fixed corners that get out of the way
+// ===========================================
+// The nav pill and the theme toggle sit above everything and cross whatever
+// scrolls under them. Scrolling down tucks them away, scrolling up returns
+// them — the direction is the whole input, so nothing has to be tapped to
+// dismiss and nothing is ever more than a flick from coming back.
+function initChromeAutoHide() {
+    const chrome = [
+        document.querySelector('.top-nav'),
+        document.getElementById('themeToggle')
+    ].filter(Boolean);
+
+    if (!chrome.length) return;
+
+    // Near the top they always show — that's where they're expected to be.
+    const TOP_ZONE = 90;
+    // Below this a scroll is a wobble, not a direction. Without it the chrome
+    // flickers on every rubber-band and trackpad twitch.
+    const DELTA = 6;
+
+    let lastY = window.pageYOffset;
+    let tucked = false;
+    let ticking = false;
+
+    function setTucked(next) {
+        if (next === tucked) return;
+        tucked = next;
+        chrome.forEach(el => el.classList.toggle('is-tucked', next));
+    }
+
+    function update() {
+        ticking = false;
+        const y = window.pageYOffset;
+        const dy = y - lastY;
+
+        if (y < TOP_ZONE) { lastY = y; setTucked(false); return; }
+        if (Math.abs(dy) < DELTA) return;   // keep lastY: small moves accumulate
+
+        lastY = y;
+        setTucked(dy > 0);
+    }
+
+    window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+    }, { passive: true });
+
+    // Tabbing to something tucked away has to bring it back, or the focus ring
+    // lands on nothing.
+    chrome.forEach(el => el.addEventListener('focusin', () => setTucked(false)));
+
+    update();
 }

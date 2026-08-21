@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/scrolly.css">
     <link rel="stylesheet" href="css/craft.css">
     <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/film.css">
 
     <script src="https://embed.typeform.com/next/embed.js"></script>
 </head>
@@ -68,24 +69,6 @@
         </a>
     </section>
 
-
-<!-- Video Showcase -->
-    <section id="video" data-ga-name="Video Showcase" class="video-showcase">
-        <div class="section-container">
-            <div class="video-container reveal">
-                <video playsinline autoplay muted loop preload="metadata" controls>
-                    <source src="https://res.cloudinary.com/dnv13bm7j/video/upload/v1775854440/EXHALE_smm_j6p4cj.mp4" type="video/quicktime">
-                    <source src="https://res.cloudinary.com/dnv13bm7j/video/upload/v1775854440/EXHALE_smm_j6p4cj.webm" type="video/webm">
-                </video>
-                <button class="video-play-btn" aria-label="Play video">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </button>
-            </div>
-            <p class="video-caption">See Exhale in action</p>
-        </div>
-    </section>
 
 
 <!-- Pain Points Section -->
@@ -270,6 +253,119 @@
         </div>
     </section>
 
+<!-- The Film -->
+    <!-- The film, scrubbed by scroll, built 70/20/10.
+
+         Running order and proportions are the proposal system, measured in
+         scroll distance: 70% of the runway is the problem in real data, 20% is
+         only the parts of the solution that answer it, the last 10% is what
+         happens next. Pricing is deliberately absent.
+
+         film.js owns every moving value and builds all four lists; the markup
+         here is the shell, the captions, and the rail. -->
+    <section id="film" data-ga-name="The Film" class="film" data-film>
+        <div class="film-track" data-film-track>
+            <div class="film-stage">
+
+                <!-- Where the reader is standing in the proposal. The three
+                     segments are literally 70/20/10 wide. -->
+                <!-- Two segments, not three. The 10% — next steps — belongs at
+                     the foot of the page where the sign-up is, not in the middle
+                     of it: a close asked for here would be asked before the
+                     reader has seen a single capability. -->
+                <div class="film-rail" data-film-rail data-phase="0" aria-hidden="true">
+                    <div class="film-rail-seg" style="--w: 70"><span>The problem</span></div>
+                    <div class="film-rail-seg" style="--w: 30"><span>What fixes it</span></div>
+                    <div class="film-rail-head"></div>
+                </div>
+
+                <div class="film-canvas" data-film-canvas>
+
+                    <div class="film-inbox">
+                        <div class="film-win">
+                            <div class="film-win-bar" aria-hidden="true">
+                                <div class="film-lights"><i></i><i></i><i></i></div>
+                                <div class="film-tabs">
+                                    <div class="film-tab is-active">
+                                        <span class="film-favicon is-mail"></span>
+                                        <span>Inbox (<span data-film-tab-count>2,847</span>) &mdash; Gmail</span>
+                                    </div>
+                                    <div class="film-tab">
+                                        <span class="film-favicon is-cal"></span>
+                                        <span>Calendar</span>
+                                    </div>
+                                    <div class="film-tab">
+                                        <span class="film-favicon is-chat"></span>
+                                        <span>Messages</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="film-win-body">
+                                <p class="film-inbox-head">
+                                    <span>ONE WEEK &middot; TWO CHILDREN</span>
+                                    <span><span data-film-count>2,847</span> UNREAD</span>
+                                </p>
+                                <ul class="film-rows" data-film-rows></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Beat 4: what was inside the ones carrying a date. -->
+                    <ul class="film-stakes" data-film-stakes></ul>
+
+                    <!-- Beat 5: the film's connect scene. -->
+                    <ul class="film-nodes" data-film-nodes></ul>
+
+                    <div class="film-mark" aria-hidden="true">E</div>
+
+                    <!-- Beat 6: the same question the capability cards open with. -->
+                    <div class="film-card">
+                        <div class="film-card-head">
+                            <span class="film-card-mark">EXHALE</span>
+                            <p class="film-card-q">What do I need to know this week?</p>
+                        </div>
+                        <ul class="film-actions" data-film-actions></ul>
+                    </div>
+
+                    <!-- Beat 7: the one thing How It Works owned that the film
+                         did not — that none of this is a tool you operate. Its
+                         three steps, kept whole. -->
+                    <ol class="film-managed" data-film-managed>
+                        <li class="film-managed-step">
+                            <span class="film-managed-n">01</span>
+                            <span class="film-managed-t">We connect your channels</span>
+                            <span class="film-managed-d">Email, calendars and school portals flow into one place. We do the wiring.</span>
+                        </li>
+                        <li class="film-managed-step">
+                            <span class="film-managed-n">02</span>
+                            <span class="film-managed-t">We configure it around your family</span>
+                            <span class="film-managed-d">Your children, their schools, your caregivers, your commitments.</span>
+                        </li>
+                        <li class="film-managed-step">
+                            <span class="film-managed-n">03</span>
+                            <span class="film-managed-t">We keep it current</span>
+                            <span class="film-managed-d">New school year, new aftercare, new commitments. We update it &mdash; you never manage the system.</span>
+                        </li>
+                    </ol>
+
+
+                </div>
+
+                <div class="film-beats">
+                    <p class="film-beat is-on" data-film-beat="0">Two thousand, eight hundred and forty&#8209;seven unread. Three more landed while you read this line.</p>
+                    <p class="film-beat" data-film-beat="1">Twelve messages, eleven senders, one week &mdash; three teachers across two schools, a principal, the PTA, the district, aftercare, three vendors and another parent.</p>
+                    <p class="film-beat" data-film-beat="2">Seven of the twelve carry a hard date. Nothing on the outside of them tells you which seven.</p>
+                    <p class="film-beat" data-film-beat="3">This is what was inside them.</p>
+                    <p class="film-beat" data-film-beat="4">Exhale reads all of it &mdash; every inbox, calendar and thread you connect.</p>
+                    <p class="film-beat" data-film-beat="5">You never build any of this. You never maintain it either.</p>
+                    <p class="film-beat" data-film-beat="6">And it hands back only the part that needed you.</p>
+                    <p class="film-beat" data-film-beat="7">That was one question, on one week. Everything below is what else you can ask it.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
 <!-- Features Section -->
     <section id="features" class="features">
@@ -319,50 +415,21 @@
                             </div>
 
                             <div class="chat-body" data-chat-body>
+                                <!-- The no-JS fallback, and the shape chat.js rebuilds through on load.
+                                     It is capability 0, prompt 0 — the same question the film above
+                                     ends on, so the two never disagree about what Exhale said. -->
                                 <div class="chat-turn" data-turn="0">
                                     <div class="chat-turn-inner">
-                                        <p class="chat-ask">What do I need to know today?</p>
+                                        <p class="chat-ask">What do I need to know this week?</p>
                                         <div class="chat-typing" aria-hidden="true"><span></span><span></span><span></span></div>
                                         <div class="chat-reply">
                                             <div class="chat-reply-inner">
                                                 <div class="chat-reply-card">
-                                                    <p class="chat-reply-intro">You have three things needing you today:</p>
-                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Ethan&rsquo;s field trip form</b> is due at <b>3pm</b>. Draft is ready to send.</p>
-                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Dad&rsquo;s cardiology</b> moved to <b>2:15</b>. I updated your calendar.</p>
-                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Board agenda</b> landed this morning. <b>4 items</b> need your input by <b>tomorrow</b>.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="chat-turn" data-turn="1">
-                                    <div class="chat-turn-inner">
-                                        <p class="chat-ask">Does Ethan&rsquo;s field trip conflict with anything Friday?</p>
-                                        <div class="chat-typing" aria-hidden="true"><span></span><span></span><span></span></div>
-                                        <div class="chat-reply">
-                                            <div class="chat-reply-inner">
-                                                <div class="chat-reply-card">
-                                                    <p class="chat-item"><b>Yes</b>. Your <b>board finance committee call</b> is at <b>2pm</b>, and the field trip pickup is at <b>2:30</b>.</p>
-                                                    <p class="chat-item">The <b>3:30 slot</b> is free for everyone on the committee.</p>
-                                                    <p class="chat-item">Want me to send the <b>reschedule</b>?</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="chat-turn" data-turn="2">
-                                    <div class="chat-turn-inner">
-                                        <p class="chat-ask">When is Dad&rsquo;s next specialist appointment?</p>
-                                        <div class="chat-typing" aria-hidden="true"><span></span><span></span><span></span></div>
-                                        <div class="chat-reply">
-                                            <div class="chat-reply-inner">
-                                                <div class="chat-reply-card">
-                                                    <p class="chat-item"><b>Cardiology with Dr. Martinez</b> on <b>Thursday, September 5th</b> at <b>2:15pm</b>.</p>
-                                                    <p class="chat-item">His care coordinator confirmed the appointment yesterday.</p>
-                                                    <p class="chat-item">Transport is arranged through the hospital&rsquo;s <b>patient shuttle</b>.</p>
-                                                    <p class="chat-item">I&rsquo;ll remind you the day before.</p>
+                                                    <p class="chat-reply-intro">Four things need you this week:</p>
+                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>ELA practice packet</b> due <b>Monday, April 13</b>. No math homework.</p>
+                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Yearbook orders</b> close the same day &mdash; code <b>oakwood26</b>, before <b>6am</b>.</p>
+                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>PTA meeting tonight</b>, <b>7pm</b> on Zoom.</p>
+                                                    <p class="chat-item"><span class="chat-arrow" aria-hidden="true">&rarr;</span><b>Glow Auction</b> closes Monday midnight.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -386,12 +453,11 @@
             </div>
 
             <div class="gallery reveal" data-gallery>
-                <!-- A deck, not a rail. Velocity decides: a flick sends the top card
-                     away even if it barely moved, which is what keeps a swipe from
-                     feeling like it needs permission. -->
-                <div class="gallery-stack" data-deck tabindex="0" role="group"
-                     aria-roledescription="card deck"
-                     aria-label="Capabilities — flick or press the arrow keys for the next one">
+                <!-- A deck the scroll deals, side by side with the phone. Below 900px
+                     it unstacks into a plain list and each card answers for itself
+                     (see .card-answer) — a pinned phone and a whole card never fit
+                     on one narrow screen. -->
+                <div class="gallery-stack" data-deck role="group" aria-label="Capabilities">
                 <div class="feature-card" data-gallery-item>
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -400,12 +466,12 @@
                             <circle cx="18" cy="8" r="3" fill="currentColor" stroke="none"/>
                         </svg>
                     </div>
-                    <h3>Smart Email Search</h3>
-                    <p>All your emails indexed and searchable. Find that trust update, gala invitation, or vet bill in seconds.</p>
+                    <h3>The weekly briefing</h3>
+                    <p>Every newsletter, permission slip and PTA thread you didn&rsquo;t have time to open &mdash; read, sorted, and handed back as the few things that actually need you.</p>
                     <ul class="feature-list">
-                        <li><button type="button" class="feature-prompt" data-prompt="0.0">What did the estate attorney send about the trust update?</button></li>
-                        <li><button type="button" class="feature-prompt" data-prompt="0.1">What are the rules for the gala silent auction?</button></li>
-                        <li><button type="button" class="feature-prompt" data-prompt="0.2">When is the cat's next vet appointment?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="0.0">What do I need to know this week?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="0.1">Send me the principals&rsquo; latest updates</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="0.2">Is there anything I need to sign or send back?</button></li>
                     </ul>
                 </div>
 
@@ -417,12 +483,12 @@
                             <path d="M8 13h8M8 17h8M8 9h2" pathLength="100"/>
                         </svg>
                     </div>
-                    <h3>Daily Briefings & Life Tracking</h3>
-                    <p>Start each day knowing exactly what's happening — events, deadlines, school closures, care schedules, and action items delivered on demand.</p>
+                    <h3>What they&rsquo;re actually learning</h3>
+                    <p>Homework, spelling lists and this week&rsquo;s lessons, for each child, without opening a single classroom newsletter.</p>
                     <ul class="feature-list">
-                        <li><button type="button" class="feature-prompt" data-prompt="1.0">What do I need to know today?</button></li>
-                        <li><button type="button" class="feature-prompt" data-prompt="1.1">Does Dad's home aide schedule conflict with his specialist appointment?</button></li>
-                        <li><button type="button" class="feature-prompt" data-prompt="1.2">What is due to the board committee this week?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="1.0">What is the homework this week?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="1.1">What are the kids&rsquo; spelling words this week?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="1.2">What are they learning in class this week?</button></li>
                     </ul>
                 </div>
 
@@ -433,12 +499,12 @@
                             <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" pathLength="100"/>
                         </svg>
                     </div>
-                    <h3>Task & Calendar Management</h3>
-                    <p>Create events, set reminders, and send quick updates through natural conversation. Never forget to confirm a guest list, follow up with a care coordinator, or update the nanny.</p>
+                    <h3>Dates that matter</h3>
+                    <p>Testing windows, early dismissals and the events worth blocking out &mdash; found in the inbox before they surprise you.</p>
                     <ul class="feature-list">
-                        <li><button type="button" class="feature-prompt" data-prompt="2.0">Add the donor reception to the calendar</button></li>
-                        <li><button type="button" class="feature-prompt" data-prompt="2.1">Remind me to call Dad's care coordinator</button></li>
-                        <li><button type="button" class="feature-prompt" data-prompt="2.2">Text Charles I'm running late from the benefit dinner</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="2.0">Is there anything going on with testing?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="2.1">Any days off or early dismissals coming up?</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="2.2">What should go on the calendar?</button></li>
                     </ul>
                 </div>
 
@@ -446,51 +512,15 @@
 
                 <p class="deck-hint" data-deck-hint aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 6l-6 6 6 6"/>
+                        <path d="M6 10l6 6 6-6"/>
                     </svg>
-                    Flick for the next one
+                    Keep scrolling
                 </p>
             </div>
             </div>
         </div>
     </section>
 
-
-<!-- How It Works Section -->
-    <section id="how-it-works" class="how-it-works">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <p class="section-eyebrow">How it works</p>
-                <h2 class="section-title">Built around your life</h2>
-            </div>
-
-            <div class="steps">
-                <div class="step reveal">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>We map your world together</h3>
-                        <p>You set up a few simple automations so your important emails and updates flow to one central place. We take it from there — connecting your communication channels and configuring Exhale around your life.</p>
-                    </div>
-                </div>
-
-                <div class="step reveal">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Ask anything, anytime</h3>
-                        <p>Message Exhale like you'd text a trusted assistant. Plain language questions get instant answers pulled from your own information — emails, schedules, and websites all in one place.</p>
-                    </div>
-                </div>
-
-                <div class="step reveal">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>We keep it running</h3>
-                        <p>Your life changes — new schools, new caregivers, new commitments. We update Exhale continuously so it always reflects how you actually live. You never manage the system. We do.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
 
 <!-- Bespoke Section -->
@@ -631,5 +661,6 @@
     <script src="js/faq.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/scrolly.js"></script>
+    <script src="js/film.js"></script>
 </body>
 </html>

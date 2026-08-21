@@ -21,90 +21,118 @@
     var CAPABILITIES = [
         [
             {
-                q: 'What did the estate attorney send about the trust update?',
-                intro: null,
-                a: [
-                    'The <b>revised trust summary</b> came through <b>Tuesday</b> from Weiss &amp; Cole.',
-                    'Two pages need your signature by <b>September 12</b>.',
-                    'I filed it under <b>Family &middot; Legal</b> and flagged the deadline.'
+                "q": "What do I need to know this week?",
+                "intro": "Four things need you this week:",
+                "a": [
+                    "&rarr; <b>ELA practice packet</b> due <b>Monday, April 13</b>. No math homework.",
+                    "&rarr; <b>Yearbook orders</b> close the same day &mdash; code <b>oakwood26</b>, before <b>6am</b>.",
+                    "&rarr; <b>PTA meeting tonight</b>, <b>7pm</b> on Zoom.",
+                    "&rarr; <b>Glow Auction</b> closes Monday midnight."
                 ]
             },
             {
-                q: 'What are the rules for the gala silent auction?',
-                intro: null,
-                a: [
-                    'Bidding closes at <b>9:30pm</b>, with a <b>$50</b> minimum increment.',
-                    'Winners settle at the <b>west desk</b> before leaving.',
-                    'The committee sent the full sheet on <b>August 14</b> — want it forwarded?'
+                "q": "Send me the principals&rsquo; latest updates",
+                "intro": null,
+                "a": [
+                    "<b>Oakwood</b> &mdash; Principal Whitfield, <b>March 26</b>.",
+                    "<b>Brookfield Hills</b> &mdash; Principal Marsh, <b>March 27</b>.",
+                    "Both went out before spring break ended <b>April 7</b>."
                 ]
             },
             {
-                q: 'When is the cat&rsquo;s next vet appointment?',
-                intro: null,
-                a: [
-                    '<b>Thursday, September 11</b> at <b>4:40pm</b>, Riverside Vet.',
-                    'Annual vaccination plus the weight check they asked for.',
-                    'I&rsquo;ll remind you the evening before.'
+                "q": "Is there anything I need to sign or send back?",
+                "intro": null,
+                "a": [
+                    "The <b>recorder permission letter</b> from music, sent home <b>March 26</b>. It needs reading in full before it goes back.",
+                    "The practice packet returned by <b>Monday</b> earns Maya <b>3 WOW board spots</b>.",
+                    "Nothing outstanding for Theo."
                 ]
             }
         ],
         [
             {
-                q: 'What do I need to know today?',
-                intro: 'You have three things needing you today:',
-                a: [
-                    '&rarr; <b>Ethan&rsquo;s field trip form</b> is due at <b>3pm</b>. Draft is ready to send.',
-                    '&rarr; <b>Dad&rsquo;s cardiology</b> moved to <b>2:15</b>. I updated your calendar.',
-                    '&rarr; <b>Board agenda</b> landed this morning. <b>4 items</b> need your input by <b>tomorrow</b>.'
+                "q": "What is the homework this week?",
+                "intro": null,
+                "a": [
+                    "<b>Maya</b> &mdash; ELA practice packet all week. <b>No math homework.</b>",
+                    "<b>Theo</b> &mdash; Math Module 4, <b>Lessons 27 to 29</b>: adding 2-digit numbers."
                 ]
             },
             {
-                q: 'Does Dad&rsquo;s home aide schedule conflict with his specialist appointment?',
-                intro: null,
-                a: [
-                    '<b>Yes</b>. The aide is booked <b>1&ndash;5pm Thursday</b>; cardiology is at <b>2:15</b>.',
-                    'I flagged it with her coordinator this morning.',
-                    'The <b>9am slot</b> is open if you&rsquo;d rather move the appointment.'
+                "q": "What are the kids&rsquo; spelling words this week?",
+                "intro": null,
+                "a": [
+                    "<b>Maya</b> &mdash; jellyfish, germy, digest, fringe, nudging, ridge, exchange&hellip; <b>20 words</b>.",
+                    "<b>Theo</b> &mdash; tricky word <b>said</b>, plus the <b>/er/</b>, <b>/ar/</b> and <b>/or/</b> groups."
                 ]
             },
             {
-                q: 'What is due to the board committee this week?',
-                intro: null,
-                a: [
-                    'Four items on the <b>Q3 memo</b> need your notes by <b>Friday 5pm</b>.',
-                    'The finance summary is drafted and waiting on your review.',
-                    'Nothing else is due before the <b>12th</b>.'
+                "q": "What are they learning in class this week?",
+                "intro": null,
+                "a": [
+                    "<b>Maya</b> &mdash; oral presentations, graded on <b>volume, clarity and enthusiasm</b>. She presents <b>Wednesday or Thursday</b>.",
+                    "<b>Theo</b> &mdash; habitats, punctuation, and adding 2-digit numbers."
                 ]
             }
         ],
         [
             {
-                q: 'Add the donor reception to the calendar',
-                intro: null,
-                a: [
-                    'Added &mdash; <b>Thursday, October 2</b> at <b>6:30pm</b>, the Whitcomb.',
-                    'I blocked travel either side and invited <b>Charles</b>.',
-                    'Attire is black tie; it&rsquo;s noted on the event.'
+                "q": "Is there anything going on with testing?",
+                "intro": null,
+                "a": [
+                    "<b>ELA</b>: April <b>28</b>, <b>29</b>, <b>30</b> and <b>May 4</b>.",
+                    "<b>Math</b>: May <b>15</b>, <b>19</b>, <b>20</b>, <b>21</b>.",
+                    "Mrs. Alvarez asked that Maya be there for every one of them."
                 ]
             },
             {
-                q: 'Remind me to call Dad&rsquo;s care coordinator',
-                intro: null,
-                a: [
-                    'Set for <b>tomorrow at 9:15am</b>, before your first call.',
-                    'I attached her direct line and last week&rsquo;s notes.'
+                "q": "Any days off or early dismissals coming up?",
+                "intro": null,
+                "a": [
+                    "<b>Wednesday, April 15</b> &mdash; early release for both, end of term.",
+                    "<b>Thursday, April 23</b> &mdash; Take Your Child to Work Day at Oakwood.",
+                    "<b>Monday, April 20</b> &mdash; staff grading day, regular schedule."
                 ]
             },
             {
-                q: 'Text Charles I&rsquo;m running late from the benefit dinner',
-                intro: null,
-                a: [
-                    'Sent: <b>&ldquo;Running about 30 behind &mdash; start without me.&rdquo;</b>',
-                    'I also pushed your <b>8:30</b> to <b>9:00</b> and let the sitter know.'
+                "q": "What should go on the calendar?",
+                "intro": null,
+                "a": [
+                    "<b>April 10</b> &mdash; Open House, and Theo&rsquo;s Career Day.",
+                    "<b>April 13</b> &mdash; picture day and Town Hall at <b>9am</b>.",
+                    "<b>April 24</b> &mdash; Talent Show."
                 ]
             }
         ]
     ];
+
+    // The bubble Exhale answers in. Shared: on desktop it goes in the phone's
+    // thread, on a phone it goes inside the card under the question that asked
+    // for it. One renderer, so the two can never word things differently.
+    function buildReplyCard(entry) {
+        var card = document.createElement('div');
+        card.className = 'chat-reply-card';
+
+        if (entry.intro) {
+            var intro = document.createElement('p');
+            intro.className = 'chat-reply-intro';
+            intro.innerHTML = entry.intro;
+            card.appendChild(intro);
+        }
+
+        entry.a.forEach(function (line) {
+            var p = document.createElement('p');
+            p.className = 'chat-item';
+            // The arrow is decoration in front of the line, not content.
+            p.innerHTML = line.replace(/^&rarr;\s*/, '<span class="chat-arrow" aria-hidden="true">→</span>');
+            card.appendChild(p);
+        });
+
+        return card;
+    }
+
+    // Below this the phone is hidden and the cards carry their own answers.
+    var STACKED = '(max-width: 900px)';
 
     var THINKING_MS = 620;
     var MAX_TURNS = 3;   // older ones are under the fade anyway
@@ -158,25 +186,7 @@
             reply.className = 'chat-reply';
             var replyInner = document.createElement('div');
             replyInner.className = 'chat-reply-inner';
-            var card = document.createElement('div');
-            card.className = 'chat-reply-card';
-
-            if (entry.intro) {
-                var intro = document.createElement('p');
-                intro.className = 'chat-reply-intro';
-                intro.innerHTML = entry.intro;
-                card.appendChild(intro);
-            }
-
-            entry.a.forEach(function (line) {
-                var p = document.createElement('p');
-                p.className = 'chat-item';
-                // The arrow is decoration in front of the line, not content.
-                p.innerHTML = line.replace(/^&rarr;\s*/, '<span class="chat-arrow" aria-hidden="true">→</span>');
-                card.appendChild(p);
-            });
-
-            replyInner.appendChild(card);
+            replyInner.appendChild(buildReplyCard(entry));
             reply.appendChild(replyInner);
             inner.appendChild(ask);
             inner.appendChild(typing);
@@ -235,8 +245,13 @@
             setCapability(e.detail.index);
         });
 
-        // Tapping a prompt asks that one and keeps the thread going.
+        // Tapping a prompt asks that one and keeps the thread going. Only
+        // where there is a phone to ask into — on a narrow screen the same tap
+        // opens the answer inside the card instead (initCardAnswers).
+        var stacked = window.matchMedia(STACKED);
+
         gallery.addEventListener('click', function (e) {
+            if (stacked.matches) return;
             var btn = e.target.closest('.feature-prompt');
             if (!btn) return;
 
@@ -261,9 +276,122 @@
         setCapability(start > -1 ? start : 0);
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initChat);
-    } else {
+
+    /**
+     * The answer, inside the card
+     *
+     * On a phone there is no device to drive, so the prompt stops being a
+     * remote control and becomes the question itself: tap it and Exhale
+     * answers underneath. Same disclosure as the FAQ further down the page.
+     *
+     * The panels are built at every width and left to CSS to reveal, because
+     * building them on a breakpoint change would throw away whichever one the
+     * reader had open when they rotated the phone.
+     */
+    function initCardAnswers() {
+        var gallery = document.querySelector('[data-gallery]');
+        if (!gallery) return;
+
+        var stacked = window.matchMedia(STACKED);
+        var prompts = Array.prototype.slice.call(gallery.querySelectorAll('.feature-prompt'));
+        var open = null;
+
+        prompts.forEach(function (btn) {
+            var parts = (btn.getAttribute('data-prompt') || '').split('.');
+            var cap = Number(parts[0]);
+            var idx = Number(parts[1]);
+            var entry = CAPABILITIES[cap] && CAPABILITIES[cap][idx];
+            var li = btn.parentElement;
+            if (!entry || !li) return;
+
+            var id = 'card-answer-' + cap + '-' + idx;
+            var inner = document.createElement('div');
+            inner.className = 'card-answer-inner';
+            inner.appendChild(buildReplyCard(entry));
+
+            var panel = document.createElement('div');
+            panel.className = 'card-answer';
+            panel.id = id;
+            panel.appendChild(inner);
+            li.appendChild(panel);
+
+            btn.insertAdjacentHTML('afterbegin',
+                '<svg class="feature-prompt-caret" viewBox="0 0 24 24" fill="none" ' +
+                'stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+                'stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>');
+        });
+
+        function setOpen(li) {
+            // One at a time. Three open answers make a card longer than the
+            // screen, and the reader is comparing questions, not reading all
+            // three at once.
+            if (open && open !== li) {
+                open.classList.remove('is-open');
+                var was = open.querySelector('.feature-prompt');
+                if (was) was.setAttribute('aria-expanded', 'false');
+            }
+            open = li;
+        }
+
+        gallery.addEventListener('click', function (e) {
+            if (!stacked.matches) return;
+
+            var btn = e.target.closest('.feature-prompt');
+            if (!btn) return;
+
+            var li = btn.parentElement;
+            if (!li || !li.querySelector('.card-answer')) return;
+
+            var wasOpen = li.classList.contains('is-open');
+            setOpen(wasOpen ? null : li);
+            li.classList.toggle('is-open', !wasOpen);
+            btn.setAttribute('aria-expanded', wasOpen ? 'false' : 'true');
+        });
+
+        // Above the breakpoint the same button drives the phone and expands
+        // nothing, so it must not claim to. The panels stay in the DOM either
+        // way — only the promise made about them changes.
+        function syncRole() {
+            var isDisclosure = stacked.matches;
+            prompts.forEach(function (btn) {
+                var panel = btn.parentElement && btn.parentElement.querySelector('.card-answer');
+                if (!panel) return;
+                if (isDisclosure) {
+                    btn.setAttribute('aria-controls', panel.id);
+                    btn.setAttribute('aria-expanded',
+                        btn.parentElement.classList.contains('is-open') ? 'true' : 'false');
+                } else {
+                    btn.removeAttribute('aria-controls');
+                    btn.removeAttribute('aria-expanded');
+                }
+            });
+        }
+
+        // Widening the window hands the conversation back to the phone; an
+        // answer left open in a card would sit there with nothing to close it.
+        if (stacked.addEventListener) {
+            stacked.addEventListener('change', function (e) {
+                if (!e.matches) {
+                    if (open) setOpen(null);
+                    gallery.querySelectorAll('.feature-list li.is-open').forEach(function (li) {
+                        li.classList.remove('is-open');
+                    });
+                }
+                syncRole();
+            });
+        }
+
+        syncRole();
+    }
+
+    function init() {
         initChat();
+        initCardAnswers();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 })();
