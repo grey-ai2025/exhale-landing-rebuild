@@ -533,15 +533,19 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
         margin-bottom: 1.25rem;
     }
 
-    .phone-date { font-size: 0.875rem; }
+    /* Smaller than the device it is imitating. A real lockscreen sets its clock
+       to fill a phone held at arm's length; this one is a picture of a phone
+       inside a page, and at full scale it read as a hero rather than as the
+       thing the copy underneath is describing. */
+    .phone-date { font-size: 0.8rem; }
 
-    .phone-clock { font-size: 3.25rem; }
-    .phone-clock em { font-size: 1.05rem; }
+    .phone-clock { font-size: 2.75rem; }
+    .phone-clock em { font-size: 0.9rem; }
 
     .phone-count {
-        margin-top: 0.6rem;
-        padding: 0.3rem 0.85rem;
-        font-size: 0.75rem;
+        margin-top: 0.5rem;
+        padding: 0.28rem 0.75rem;
+        font-size: 0.6875rem;
     }
 
     /* --- the stack, at page scale ----------------------------------------- */
@@ -551,58 +555,65 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
         /* Still bounded, just not by a screen: without a cap all nine cards
            render and the pinned block swallows the viewport. The fade stays,
            because it is what says the pile continues above. */
-        max-height: 19rem;
+        max-height: 17rem;
         mask-image: linear-gradient(to bottom, transparent 0, #000 3rem);
         -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 3rem);
     }
 
-    .phone-notif-inner { padding-top: 0.625rem; }
+    .phone-notif-inner { padding-top: 0.5rem; }
 
     .phone-notif-card {
-        gap: 0.75rem;
-        padding: 0.75rem 0.875rem;
-        border-radius: 16px;
+        gap: 0.625rem;
+        padding: 0.625rem 0.75rem;
+        border-radius: 14px;
     }
 
-    .phone-notif-icon { width: 26px; height: 26px; border-radius: 7px; }
-    .phone-notif-icon svg { width: 15px; height: 15px; }
+    .phone-notif-icon { width: 22px; height: 22px; border-radius: 6px; }
+    .phone-notif-icon svg { width: 13px; height: 13px; }
 
-    .phone-notif-from { font-size: 0.8125rem; }
-    .phone-notif-body { font-size: 0.875rem; line-height: 1.4; }
-    .phone-notif-time { font-size: 0.75rem; padding-top: 0.05rem; }
+    .phone-notif-from { font-size: 0.75rem; }
+    .phone-notif-body { font-size: 0.8125rem; line-height: 1.35; }
+    .phone-notif-time { font-size: 0.6875rem; padding-top: 0.05rem; }
+
+    /* The copy is the section; the phone is the illustration. At 1.05rem over
+       1.8 a four-line paragraph ran to seven lines on a 390px screen and the
+       reader lost the thread between the top of it and the bottom. */
+    .scrolly-step h3 { font-size: 1.3rem; margin-bottom: 0.75rem; }
+    .scrolly-step p { font-size: 0.9375rem; line-height: 1.7; }
 
     /* The copy has to clear the pinned lockscreen, and without a screen to
        clip against the only lever is how much of the pile shows. */
-    .scrolly-copy { padding-top: 31rem; }
+    .scrolly-copy { padding-top: 25rem; }
 }
 
 /* Shorter screens see less of the pile, not a smaller phone. */
 @media (max-width: 640px) and (max-height: 720px) {
     .scrolly-canvas { top: 3.25rem; padding-bottom: 2rem; }
     .phone-lock { margin-bottom: 0.875rem; }
-    .phone-date { font-size: 0.8125rem; }
-    .phone-clock { font-size: 2.5rem; }
-    .phone-clock em { font-size: 0.9rem; }
-    .phone-count { margin-top: 0.45rem; font-size: 0.7rem; }
+    .phone-date { font-size: 0.75rem; }
+    .phone-clock { font-size: 2.2rem; }
+    .phone-clock em { font-size: 0.8rem; }
+    .phone-count { margin-top: 0.4rem; font-size: 0.65rem; }
     .phone-stack {
-        max-height: 11rem;
+        max-height: 10rem;
         mask-image: linear-gradient(to bottom, transparent 0, #000 2rem);
         -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 2rem);
     }
-    .scrolly-copy { padding-top: 21rem; }
+    .scrolly-copy { padding-top: 17.25rem; }
 }
 
 @media (max-width: 640px) and (max-height: 600px) {
     .scrolly-canvas { top: 3rem; padding-bottom: 1.5rem; }
     .phone-lock { margin-bottom: 0.625rem; }
-    .phone-clock { font-size: 2rem; }
-    .phone-count { margin-top: 0.35rem; }
+    .phone-clock { font-size: 1.85rem; }
+    .phone-count { margin-top: 0.3rem; }
     .phone-stack {
-        max-height: 6.5rem;
+        max-height: 6rem;
         mask-image: linear-gradient(to bottom, transparent 0, #000 1.5rem);
         -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 1.5rem);
     }
-    .phone-notif-card { padding: 0.6rem 0.75rem; }
-    .phone-notif-body { font-size: 0.8125rem; }
-    .scrolly-copy { padding-top: 15rem; }
+    .phone-notif-card { padding: 0.5rem 0.65rem; }
+    .phone-notif-body { font-size: 0.75rem; }
+    .scrolly-step p { font-size: 0.875rem; }
+    .scrolly-copy { padding-top: 13rem; }
 }
