@@ -56,8 +56,12 @@
         var rowsEl = root.querySelector('[data-compare-rows]');
         var actionsEl = root.querySelector('[data-compare-actions]');
         var handleEl = root.querySelector('[data-compare-handle]');
-        var answerEl = root.querySelector('.compare-answer');
         if (!rowsEl || !actionsEl || !handleEl) return;
+
+        var stageEl = root.closest('.compare-stage');
+        var flipEl = root.querySelector('[data-compare-flip]');
+        var winEl = root.querySelector('.cmp-win');
+        var navEl = document.querySelector('.top-nav');
 
         // Below this a horizontal drag competes with the page scroll for the
         // same gesture, so the scroll owns the divider and the grip is taken
@@ -136,125 +140,126 @@
             if (e.key === 'End') { e.preventDefault(); setPos(100); }
         });
 
-        // The line under the heading has to describe the gesture that actually
-        // moves it. Nothing is dragged on a phone — the two states are laid out
-        // in sequence there — so an instruction to drag would be the copy lying
-        // about a control that is not on screen.
-        // ── phones: pinned, and stepped by scroll ──────────────────────────
-        // The box pins and the copy advances it, the way The Reality does.
-        // Both panes share one frame, so the frame has to be as tall as
-        // whichever needs more — measured, because it depends on how the rows
-        // and the actions wrap at this width.
-        var stage = root.closest(".compare-stage");
-        var capEl = document.querySelector("[data-compare-caption]");
-        var steps = Array.prototype.slice.call(document.querySelectorAll("[data-compare-step]"));
-
-        // pos: 100 = all inbox, 0 = all answer.
-        var STATES = [
-            { pos: 100, flags: 0 },
-            { pos: 100, flags: 1 },
-            { pos: 0,   flags: 1 }
-        ];
-
-        var step = -1;
-        var frameH = 0;
-
-        function measureFrame() {
-            if (!stage) return;
-            if (!stacked.matches) { stage.style.removeProperty("--frame-h"); return; }
-            // Measure the answer at its natural height, off the layout.
-            var probe = answerEl.cloneNode(true);
-            probe.style.cssText = "position:absolute;visibility:hidden;height:auto;inset:auto;" +
-                "width:" + answerEl.getBoundingClientRect().width + "px";
-            answerEl.parentNode.appendChild(probe);
-            var want = probe.getBoundingClientRect().height;
-            probe.remove();
-            frameH = Math.round(Math.max(want, 260));
-            stage.style.setProperty("--frame-h", frameH + "px");
-        }
-
-        // Pinning is only honest if the whole unit fits the screen. Squeezing
-        // the frame to make it fit cut the bottom off the answer on a 568px
-        // screen in every single sample — better to fall back to the sequence
-        // there than to ship a pinned box that clips its own content.
-        function canPin() {
-            if (!capEl) return false;
-            var cap = capEl.getBoundingClientRect().height || 56;
-            return frameH + cap + 56 + 16 <= window.innerHeight;
-        }
-
-        function setStep(i) {
-            if (!STATES[i] || i === step) return;
-            step = i;
-            setPos(STATES[i].pos);
-            root.style.setProperty("--flags", STATES[i].flags);
-            if (capEl && steps[i]) {
-                // Swap the words while the caption is transparent, so the two
-                // sentences never cross-fade through each other.
-                capEl.classList.add("is-swapping");
-                setTimeout(function () {
-                    capEl.innerHTML = steps[i].innerHTML;
-                    capEl.classList.remove("is-swapping");
-                }, 200);
-            }
-        }
-
-        var io = null;
-
-        function startStepping() {
-            if (io || !steps.length || !("IntersectionObserver" in window)) return;
-            io = new IntersectionObserver(function (entries) {
-                entries.forEach(function (entry) {
-                    if (!entry.isIntersecting || !stacked.matches) return;
-                    var n = steps.indexOf(entry.target);
-                    if (n !== -1) setStep(n);
-                });
-            }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
-            steps.forEach(function (el) { io.observe(el); });
-        }
-
-        var subEl = document.querySelector('.compare-sub');
-
         function syncMode() {
             var touch = stacked.matches;
+            var flipped = syncFlip();
             if (subEl) {
-                subEl.textContent = touch
-                    ? 'What arrives, and what you actually need.'
-                    : 'Drag to move between what arrives and what you actually need.';
+                subEl.textContent = !touch
+                    ? 'Drag to move between what arrives and what you actually need.'
+                    : (flipped
+                        ? 'Keep scrolling — it turns over.'
+                        : 'What arrives, and what you actually need.');
             }
             root.classList.toggle('is-scrolled', touch);
             handleEl.disabled = touch;
             handleEl.setAttribute('aria-hidden', touch ? 'true' : 'false');
-            measureFrame();
-            var pin = touch && canPin();
-            if (stage) stage.classList.toggle('is-stepped', pin);
-            if (pin) {
-                startStepping();
-                setStep(step < 0 ? 0 : step);
-            } else if (touch) {
-                // Sequential fallback: both panes in flow, nothing to reveal.
-                root.style.setProperty('--flags', '1');
-                root.style.removeProperty('--pos');
-                step = -1;
-            } else {
-                root.style.setProperty('--flags', '1');
-                step = -1;
-                setPos(50);
-            }
+            // The divider is a pointer-device idea: below 900px it is the scroll
+            // that turns the card, and on a screen too short to hold the card
+            // whole nothing moves at all — both panes simply sit in sequence.
+            if (!touch) setPos(50);
         }
 
+        // The line under the heading has to describe the gesture that actually
+        // moves the section. There are three of them — a drag, a scroll, or
+        // nothing at all — and naming the wrong one is the copy lying about a
+        // control that is not on screen.
+        var subEl = document.querySelector('.compare-sub');
+
+        // Before the flip is built, not after: the flip registers a fonts.ready
+        // callback and a resize listener, and both would fire straight past an
+        // early return placed below them and switch it back on.
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            // No drag: the section resolves to the answer, which is the half
-            // that carries the point.
+            // No drag, no turn: the section resolves to the answer, which is the
+            // half that carries the point, and the phone keeps the plain
+            // sequence it falls back to anyway.
             root.classList.add('is-static');
             setPos(0);
             handleEl.disabled = true;
             handleEl.setAttribute('aria-hidden', 'true');
+            if (subEl) subEl.textContent = 'What arrives, and what you actually need.';
             return;
         }
 
-        window.addEventListener('resize', measureFrame);
-        if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureFrame);
+        // ── the flip, on a phone ───────────────────────────────────────────
+        // The two panes become the two faces of one card and the scroll turns
+        // it over. A wipe could never work here: it has to show both panes at
+        // once, so both have to fit one frame, so the frame gets capped and the
+        // cap cuts an inbox row in half. A card shows one face at a time, so
+        // the frame only has to be as tall as the taller of the two.
+        //
+        // Which is also the condition. If the inbox cannot clear the viewport
+        // whole there is nothing to flip to, so the flip is not offered and the
+        // plain sequence stands.
+        var flipping = false;
+        var cardH = 0;
+        var pinTop = 0;
+        var queued = false;
+
+        // Read, turn, read. The card has to sit still long enough at each end
+        // to be read, or the flip is the only thing that happened.
+        var HOLD_IN = 0.24;
+        var TURN = 0.44;
+
+        function easeInOut(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function fits() {
+            if (!stageEl || !flipEl || !winEl) return false;
+            // Measured out of flip mode, where the pane is still in flow and
+            // the window still reports the height its content actually wants.
+            stageEl.classList.remove('is-flip');
+            var h = Math.ceil(winEl.getBoundingClientRect().height);
+            var top = Math.round((navEl ? navEl.getBoundingClientRect().height : 0) + 20);
+            if (h + top + 24 > window.innerHeight) return false;
+            cardH = h;
+            pinTop = top;
+            stageEl.style.setProperty('--card-h', h + 'px');
+            stageEl.style.setProperty('--pin-top', top + 'px');
+            return true;
+        }
+
+        function paint() {
+            queued = false;
+            if (!flipping) return;
+            var r = stageEl.getBoundingClientRect();
+            var travel = r.height - cardH;
+            var p = travel > 0 ? clamp((pinTop - r.top) / travel, 0, 1) : 0;
+            var t = easeInOut(clamp((p - HOLD_IN) / TURN, 0, 1));
+            stageEl.style.setProperty('--flip', (t * 180).toFixed(2) + 'deg');
+            // Pulls away as it turns and comes back flat, so the card reads as
+            // an object being handled rather than a texture being swapped.
+            stageEl.style.setProperty('--flip-scale', (1 - 0.09 * Math.sin(Math.PI * t)).toFixed(3));
+        }
+
+        function onScroll() {
+            if (!flipping || queued) return;
+            queued = true;
+            requestAnimationFrame(paint);
+        }
+
+        function setFlip(on) {
+            flipping = on;
+            stageEl.classList.toggle('is-flip', on);
+            if (on) {
+                paint();
+            } else {
+                stageEl.style.removeProperty('--flip');
+                stageEl.style.removeProperty('--flip-scale');
+            }
+        }
+
+        function syncFlip() {
+            if (!stageEl) return false;
+            var on = stacked.matches && fits();
+            setFlip(on);
+            return on;
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', syncFlip);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFlip);
+
         if (stacked.addEventListener) stacked.addEventListener('change', syncMode);
 
         syncMode();

@@ -22,6 +22,10 @@
     color: inherit; text-decoration: none;
     transition: border-color 200ms ease, background-color 200ms ease;
   }
+  /* display:block above outranks the UA rule behind [hidden], so it has to be
+     said again here. Hidden, not deleted: the builds are still on disk and
+     still served — removing the attribute puts a card back. */
+  a.card[hidden] { display: none; }
   a.card:hover { border-color: #3d3d46; background: #1c1c20; }
   a.card:active { transform: scale(0.995); }
   .name { font-weight: 600; margin-bottom: 0.25rem; }
@@ -38,7 +42,7 @@
 <body>
 <main>
   <h1>Exhale landing page</h1>
-  <p class="sub">Five builds, served locally from this folder.</p>
+  <p class="sub">Served locally from this folder.</p>
 
   <a class="card" href="original/">
     <div class="name">Original <code>/original/</code><span class="tag">reference &middot; do not edit</span></div>
@@ -50,17 +54,17 @@
     <div class="desc">Same fonts, colours and copy as the original. This is where the scroll and section-display proposals get applied.</div>
   </a>
 
-  <a class="card" href="apple/">
+  <a class="card" href="apple/" hidden>
     <div class="name">Apple <code>/apple/</code><span class="tag">rebuild</span></div>
     <div class="desc">Ground-up reimagining on vanilla JS + Motion (UMD, no build step). Ten sections, its own composition rather than the original&rsquo;s.</div>
   </a>
 
-  <a class="card" href="apple/lab/">
+  <a class="card" href="apple/lab/" hidden>
     <div class="name">Motion lab <code>/apple/lab/</code><span class="tag">reference &middot; techniques</span></div>
     <div class="desc">Twelve animation techniques, one per section, each with live controls: easing curves, spring parameters, stagger, clipped tab indicator, squash &amp; stretch, number ticker, 3D flip, typewriter, drag to dismiss, WAAPI, @starting-style and motion blur.</div>
   </a>
 
-  <a class="card" href="react/">
+  <a class="card" href="react/" hidden>
     <div class="name">React <code>/react/</code><span class="tag">built output</span></div>
     <div class="desc">Vite + React 19 on Base UI, Sonner, cmdk, NumberFlow and Motion. Source lives in <code>/react-app/</code>; this is what <code>npm run build</code> produces.</div>
   </a>

@@ -273,11 +273,12 @@
 
             <div class="compare-stage">
             <div class="compare-pin">
-            <!-- Filled from the active step by compare.js. Above the box, not
-                 beside it: a caption band beside a pinned box needs room the
-                 phone does not have, which is what sank the first attempt. -->
-            <p class="compare-caption" data-compare-caption aria-hidden="true"></p>
             <div class="compare-box reveal" data-compare>
+
+                <!-- The panes share a wrapper so a phone can turn them over as
+                     one card. It has to be its own element: .compare-box carries
+                     the reveal animation, and that animation owns transform. -->
+                <div class="compare-flip" data-compare-flip>
 
                 <div class="compare-pane compare-problem">
                     <div class="cmp-win">
@@ -319,6 +320,8 @@
                     <p class="cmp-note">Four things this week. The other eight can wait.</p>
                 </div>
 
+                </div>
+
                 <!-- role="slider" rather than a plain button: it reports a value,
                      and the arrow keys move it. -->
                 <button type="button" class="compare-handle" data-compare-handle
@@ -334,17 +337,16 @@
 
 
             </div>
+            </div>
 
-            <!-- Phones only. The box pins and these scroll past it, the way The
-                 Reality's steps do — one screen of scrolling per beat, so there
-                 is time to actually read the inbox before the answer arrives.
-                 A single continuous wipe gave the reader no chance to. -->
+            <!-- Phones only, and below the stage rather than inside it: the card
+                 fills the pinned screen while it turns, so there is no room
+                 beside it for anything to read. These are the caption to it. -->
             <ol class="compare-steps" data-compare-steps>
                 <li class="compare-step" data-compare-step="0"><span><b>Twelve messages. Eleven senders. One week.</b></span></li>
                 <li class="compare-step" data-compare-step="1"><span><b>Seven carry a hard date.</b> Nothing on the outside says which.</span></li>
                 <li class="compare-step" data-compare-step="2"><span><b>Four things.</b> The other eight can wait.</span></li>
             </ol>
-            </div>
 
             <!-- What the film's beats used to say, in one line. -->
             <p class="compare-note">

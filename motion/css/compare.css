@@ -57,6 +57,11 @@ body.light-mode .compare-box { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12); }
 
 .compare-pane { position: relative; }
 
+/* Wraps both panes so a phone can turn them over together. Inert at every other
+   width: it is position:relative only so .compare-answer's inset:0 keeps
+   resolving against the same rectangle it always did. */
+.compare-flip { position: relative; }
+
 /* The overlay. inset(0 0 0 X%) keeps everything to the RIGHT of the divider,
    so dragging left uncovers more of the answer. */
 .compare-answer {
@@ -216,12 +221,7 @@ body.light-mode .compare-answer .compare-label { color: var(--cyan-deep); }
     opacity: 0;
 }
 
-/* Staged on a phone, where the flags are a beat of their own. Always on
-   anywhere else, including with no JS at all. */
-.cmp-row.is-due .cmp-flag {
-    opacity: var(--flags, 1);
-    transition: opacity 500ms var(--ease-out);
-}
+.cmp-row.is-due .cmp-flag { opacity: 1; }
 
 /* --- right: what came back -------------------------------------------------- */
 .cmp-card-head {
@@ -433,26 +433,14 @@ body.light-mode .compare-grip { background: var(--white); }
 }
 
 /* --- smaller screens -------------------------------------------------------- */
-/* The wipe turns ninety degrees.
-
-   A vertical divider across a 390px box leaves two ~190px columns, and a wipe
-   down the middle of them cuts every line in half — mid-sweep you read "eed to
-   know this week?" beside "s due (code". Text lines are horizontal, so the only
-   edge that can cross them without breaking them is a horizontal one.
-
-   Rotated, it also runs on the axis the reader is already moving: the answer
-   wipes downward over the inbox as the page scrolls down. Whole rows above the
-   edge, whole rows below it, nothing cut. */
 @media (max-width: 900px) {
-    .compare-answer { clip-path: inset(0 0 var(--pos) 0); }
+    /* Simple, and deliberately so. The inbox whole, the answer under it, then
+       the three reasons — nothing pinned, nothing wiped, nothing capped.
 
-    /* Stepped, not scrubbed: the divider lands on one of three positions, so it
-       has to travel there itself rather than track a finger that is not there. */
-    .compare-answer,
-    .compare-handle { transition: clip-path 620ms var(--ease-out), top 620ms var(--ease-out); }
-
-    /* Without JS this stays a plain sequence: inbox, then answer, then the
-       reasons. Everything below only applies once compare.js has taken over. */
+       Every version that tried to keep the comparison on a phone had to make
+       both panes share one frame, and the frame had to be capped to fit, and
+       the cap cut a row in half. The comparison is the divider, and the divider
+       needs a pointer. */
     .compare-stage { display: block; }
     .compare-pin { position: static; pointer-events: auto; }
     .compare-box { position: static; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
@@ -463,69 +451,12 @@ body.light-mode .compare-grip { background: var(--white); }
         border-top: 1px solid var(--glass-border);
     }
 
-    .compare-handle,
-    .compare-caption { display: none; }
+    .compare-handle { display: none; }
 
     .compare-steps { display: block; list-style: none; margin: 1.75rem 0 0; padding: 0; }
     .compare-step { min-height: 0; display: block; padding: 0; opacity: 1; }
     .compare-step + .compare-step { margin-top: 0.85rem; }
     .compare-note { display: none; }
-
-    /* --- stepped, once JS is driving ------------------------------------- */
-    /* The box pins and the copy advances it, the way The Reality does. The
-       caption sits above the box rather than beside it: the answer needs ~470px
-       at these widths and the viewport has ~700 under the nav, so there is room
-       for a line of copy above it but nothing like room for a column of it. */
-    .is-stepped .compare-pin {
-        position: sticky;
-        top: 3.5rem;
-        z-index: 2;
-        pointer-events: none;
-    }
-
-    .is-stepped .compare-caption {
-        display: block;
-        min-height: 3rem;
-        margin: 0 0 0.75rem;
-        font-size: 0.9375rem;
-        line-height: 1.45;
-        color: var(--text-secondary);
-        transition: opacity 320ms var(--ease-out);
-    }
-
-    .is-stepped .compare-caption b { font-weight: 500; color: var(--text-primary); }
-    .is-stepped .compare-caption.is-swapping { opacity: 0; }
-
-    /* One frame, sized to whichever pane needs more — measured in JS, because
-       it depends on how the rows wrap at this width. */
-    .is-stepped .compare-box { height: var(--frame-h, 30rem); }
-
-    /* The inbox gives up its tail to a fade so both states share one frame.
-       A real inbox continues below the fold too. */
-    .is-stepped .cmp-rows {
-        max-height: calc(var(--frame-h, 30rem) - 7rem);
-        overflow: hidden;
-        mask-image: linear-gradient(to bottom, #000 78%, transparent);
-        -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
-    }
-
-    /* Back to an overlay, wiping downward — the axis that keeps lines whole. */
-    .is-stepped .compare-answer {
-        position: absolute;
-        inset: 0;
-        border-top: 0;
-        clip-path: inset(0 0 var(--pos) 0);
-        transition: clip-path 620ms var(--ease-out);
-    }
-
-    /* The steps become the scroll length; their words are shown in the caption
-       so they are not read twice. */
-    .is-stepped .compare-steps { margin: 0; }
-    .is-stepped .compare-step { min-height: 85vh; }
-    .is-stepped .compare-step span { visibility: hidden; }
-
-    /* The caption already says it. */
-    .is-stepped .cmp-note { display: none; }
 
     .compare-head { margin-bottom: 2rem; }
     .cmp-win-body { padding: 0.9rem 1rem 1.05rem; }
@@ -533,6 +464,101 @@ body.light-mode .compare-grip { background: var(--white); }
     .cmp-from { width: 7rem; }
     .compare-answer { padding: 1rem 1.1rem 1.15rem; }
     .cmp-when { width: 6.5rem; }
+
+    /* --- the flip ---------------------------------------------------------
+
+       The plain sequence above is the floor: no JS, reduced motion, or a screen
+       too short to hold the card all get it. Everything below only applies once
+       compare.js has confirmed the inbox fits on screen whole, and it turns the
+       two panes into the two faces of one card.
+
+       A flip is what a wipe could never be here. A wipe has to show both panes
+       at once, so both have to fit one frame, so the frame gets capped and the
+       cap cuts a row in half — that failure was structural, not a bug. A card
+       only ever shows one face, so the frame only has to be as tall as the
+       taller of the two. Nothing is capped because nothing is shared. */
+    .compare-stage.is-flip {
+        height: calc(var(--card-h) + 190vh);
+        position: relative;
+    }
+
+    .compare-stage.is-flip .compare-pin {
+        position: sticky;
+        top: var(--pin-top, 4rem);
+        height: var(--card-h);
+    }
+
+    .compare-stage.is-flip .compare-box {
+        position: relative;
+        height: var(--card-h);
+        /* overflow:hidden would flatten the 3D, so the rounding and the shadow
+           move onto the faces. */
+        overflow: visible;
+        box-shadow: none;
+        /* Enough depth to read as an object, shallow enough that the near edge
+           does not swing up under the fixed nav at the midpoint. */
+        perspective: 1400px;
+        /* .reveal owns transform and the flip needs it. The card is well on
+           screen before it turns, so there is nothing left for a reveal to do. */
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    /* The slot the card turns inside.
+
+       A plane with no thickness projects to a line at exactly 90 degrees, so
+       for a few pixels of scroll there is nothing on screen at all. The eased
+       turn crosses that window in about 16px and no card can avoid it — what it
+       can avoid is turning into nothing. This sits on .compare-box, which does
+       not rotate, so the card's own footprint stays lit the whole way round. */
+    .compare-stage.is-flip .compare-box::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .compare-stage.is-flip .compare-flip {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        transform: rotateY(var(--flip, 0deg)) scale(var(--flip-scale, 1));
+        will-change: transform;
+    }
+
+    .compare-stage.is-flip .compare-pane {
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    body.light-mode .compare-stage.is-flip .compare-pane {
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.16);
+    }
+
+    /* The back. Centred rather than top-aligned: it is four rows against the
+       inbox twelve, so it never fills the card, and floating in the middle
+       reads as deliberate where hanging from the top reads as short. */
+    .compare-stage.is-flip .compare-answer {
+        clip-path: none;
+        border-top: 0;
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Sits under the whole runway now, so it needs the gap the stage used to
+       give it. */
+    .compare-stage.is-flip + .compare-steps { margin-top: 2.5rem; }
 }
 
 @media (max-width: 640px) {
@@ -547,15 +573,18 @@ body.light-mode .compare-grip { background: var(--white); }
     .cmp-tab { display: none; }
     .cmp-tab.is-active { display: flex; padding: 0.28rem 0.55rem; font-size: 0.5875rem; }
 
-    .cmp-win-body { padding: 0.75rem 0.8rem 0.9rem; }
-    .cmp-head { font-size: 0.5rem; letter-spacing: 0.12em; margin-bottom: 0.5rem; }
+    .cmp-win-body { padding: 0.7rem 0.8rem 0.75rem; }
+    .cmp-head { font-size: 0.5rem; letter-spacing: 0.12em; margin-bottom: 0.4rem; }
 
     /* Two lines, never three: sender, date flag and source share the first;
        the subject takes the second. */
     .cmp-row {
         flex-wrap: wrap;
         gap: 0 0.45rem;
-        padding: 0.32rem 0;
+        /* Tight on purpose: 12 rows at 0.32rem put the card 35px over what a
+           360x640 screen can hold, and the flip is only offered to screens that
+           can hold it whole. A real inbox is dense anyway. */
+        padding: 0.24rem 0;
         font-size: 0.65rem;
     }
 
