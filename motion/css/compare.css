@@ -42,7 +42,7 @@ body.light-mode .compare-section { background-color: var(--gray-50); }
 
 /* --- the box --------------------------------------------------------------- */
 .compare-box {
-    --pos: 58%;
+    --pos: 50%;
     position: relative;
     /* The inbox needs the room, so the box takes what it can get. */
     width: min(76rem, 96%);
@@ -82,40 +82,8 @@ body.light-mode .compare-answer { background: var(--white); }
 .compare-answer .compare-label { color: var(--cyan-glow); }
 body.light-mode .compare-answer .compare-label { color: var(--cyan-deep); }
 
-/* Each side keeps to its own half, so both read completely at rest. Two panes
-   running the full width meant the divider cut every line mid-word. */
-/* Each side fills exactly what the divider has revealed of it, rather than
-   sitting in a fixed column. Pinned to its own half, the answer left a growing
-   band of empty background behind the divider as you dragged left — you had
-   uncovered space rather than content. Now both contents track the seam.
-
-   Safe to reflow: the inbox rows are single-line (the subject is nowrap with an
-   ellipsis), so narrowing that pane truncates but never re-wraps, and the box
-   keeps its height. The answer is absolutely positioned and cannot affect the
-   height at all.
-
-   At rest the seam is at 58%, not 50%: twelve rows of sender + subject + flag
-   need far more width than four dated actions, and an even split truncated
-   every subject on a 1024px screen — which ate the dates that are the entire
-   point of the left pane. */
-@media (min-width: 901px) {
-    .compare-problem { padding-right: calc(100% - var(--pos) + 1.5rem); }
-    .compare-answer { padding-left: calc(var(--pos) + 1.5rem); }
-
-    /* No room for both: the per-row source loses to the date flag, and the
-       sender breakdown is spelled out in full under the box. */
-    .cmp-src { display: none; }
-}
-
 /* --- left: the inbox, as it arrives ---------------------------------------- */
-/* A floor on the width, so the window never squeezes narrow enough to re-wrap.
-   Without it the header and rows reflowed once the divider passed about a
-   quarter and the whole box grew 48px taller mid-drag. Past the floor it simply
-   overflows and the box clips it — under the answer, which covers that area. */
-.cmp-win {
-    background: #1c1c1f;
-    min-width: 26rem;
-}
+.cmp-win { background: #1c1c1f; }
 
 .cmp-win-bar {
     display: flex;
@@ -179,7 +147,7 @@ body.light-mode .compare-answer .compare-label { color: var(--cyan-deep); }
     margin-bottom: 0.75rem;
     font-size: 0.625rem;
     letter-spacing: 0.18em;
-    /* The only red on the page, and it never stops climbing. */
+    /* The only red on the page. */
     color: rgba(255, 80, 60, 0.75);
 }
 
@@ -229,17 +197,11 @@ body.light-mode .compare-answer .compare-label { color: var(--cyan-deep); }
 
 .cmp-row.is-fresh .cmp-subj { color: rgba(255, 255, 255, 0.85); }
 
-/* Which system each one came from — the answer to "why not just set up a
-   filter": there is no single thing to filter. */
-.cmp-src {
-    flex: none;
-    width: 7.5rem;
-    text-align: right;
-    font-size: 0.625rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.42);
-}
+/* Which system each one came from. Never rendered: there is no width for it
+   beside the sender and the date flag at any size, and the line under the box
+   names all eleven senders in full. Kept in the markup so the data stays whole
+   if the layout ever finds room for it. */
+.cmp-src { display: none; }
 
 /* Which ones carry a hard date. The inbox itself never says. */
 .cmp-flag {
@@ -410,7 +372,24 @@ body.light-mode .compare-grip { background: var(--white); }
 .compare-box.is-scrolled .compare-grip,
 .compare-box.is-static .compare-handle { display: none; }
 
-/* --- the line the film's beats used to carry -------------------------------- */
+/* --- the stepped read, on phones only -------------------------------------- */
+/* Desktop has a divider you can move at your own pace; a phone does not, so the
+   scroll has to give the reader that time instead. The box pins and these read
+   past it, one screen of scrolling per beat — the same shape as The Reality. */
+.compare-steps { display: none; }
+
+.compare-step {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    opacity: 0.35;
+    transition: opacity 420ms var(--ease-out);
+}
+
+.compare-step.is-active { opacity: 1; }
+.compare-step b { font-weight: 500; color: var(--text-primary); }
+
+/* --- the line under the box -------------------------------------------------- */
 .compare-note {
     max-width: 46rem;
     margin: 2rem auto 0;
@@ -425,6 +404,19 @@ body.light-mode .compare-grip { background: var(--white); }
     color: var(--text-primary);
 }
 
+/* Both contents sit against the same left edge, full width, and stay there.
+
+   They used to track the divider so neither side ever showed empty space. That
+   kept the middle tidy but meant neither end was ever a clean view of one
+   thing: the pane you were revealing kept resizing under you. Anchored, the
+   two extremes are the point — all the way right is the inbox exactly as it
+   arrives, all the way left is the answer, whole. The middle is a transition
+   between them rather than a state to read. */
+@media (min-width: 901px) {
+    .compare-problem { padding-right: 1.5rem; }
+    .compare-answer { padding-left: 1.5rem; }
+}
+
 /* Small laptops: the left pane is under 540px there, which starts eating the
    dates out of the subjects. Buy the width back from the type rather than from
    the content. */
@@ -436,12 +428,76 @@ body.light-mode .compare-grip { background: var(--white); }
 }
 
 /* --- smaller screens -------------------------------------------------------- */
+/* The wipe turns ninety degrees.
+
+   A vertical divider across a 390px box leaves two ~190px columns, and a wipe
+   down the middle of them cuts every line in half — mid-sweep you read "eed to
+   know this week?" beside "s due (code". Text lines are horizontal, so the only
+   edge that can cross them without breaking them is a horizontal one.
+
+   Rotated, it also runs on the axis the reader is already moving: the answer
+   wipes downward over the inbox as the page scrolls down. Whole rows above the
+   edge, whole rows below it, nothing cut. */
 @media (max-width: 900px) {
+    .compare-answer { clip-path: inset(0 0 var(--pos) 0); }
+
+    /* Stepped, not scrubbed: the divider lands on one of three positions, so it
+       has to travel there itself rather than track a finger that is not there. */
+    .compare-answer,
+    .compare-handle { transition: clip-path 620ms var(--ease-out), top 620ms var(--ease-out); }
+
+    /* No pin, and no wipe. Measured rather than assumed: the answer needs
+       ~410px at these widths however hard it is compacted (every action wraps
+       to two lines), and a 568px screen has 496px under the nav. A box big
+       enough to hold the answer leaves 86px of band — not enough to read a
+       three-line caption in, so the copy was never readable at all.
+
+       So the two states stop sharing one box and become a sequence instead:
+       the inbox at full size, then the answer at full size, then the reasons.
+       It is still paced by scrolling and it is the only version of this that
+       can actually be read on a phone. */
+    .compare-stage { display: block; }
+
+    .compare-pin { position: static; pointer-events: auto; }
+
+    .compare-box {
+        position: static;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Out of the overlay and into the flow, under the inbox it answers. */
+    .compare-answer {
+        position: static;
+        clip-path: none;
+        border-top: 1px solid var(--glass-border);
+    }
+
+    /* Nothing to drag, nothing to wipe. */
+    .compare-handle { display: none; }
+
+    .compare-steps {
+        display: block;
+        list-style: none;
+        margin: 1.75rem 0 0;
+        padding: 0;
+    }
+
+    .compare-step {
+        min-height: 0;
+        display: block;
+        padding: 0;
+        opacity: 1;
+    }
+
+    .compare-step + .compare-step { margin-top: 0.85rem; }
+
+    /* The line under the box says what the three steps say. */
+    .compare-note { display: none; }
+
     .compare-head { margin-bottom: 2rem; }
     .cmp-win-body { padding: 0.9rem 1rem 1.05rem; }
     .cmp-row { font-size: 0.72rem; gap: 0.5rem; }
     .cmp-from { width: 7rem; }
-    .cmp-src { width: auto; margin-left: auto; font-size: 0.5625rem; }
     .compare-answer { padding: 1rem 1.1rem 1.15rem; }
     .cmp-when { width: 6.5rem; }
 }
@@ -473,7 +529,6 @@ body.light-mode .compare-grip { background: var(--white); }
     .cmp-dot { order: 0; margin-top: 0.22rem; }
     .cmp-from { order: 1; width: auto; }
     .cmp-flag { order: 2; padding: 0.05rem 0.25rem; font-size: 0.4375rem; }
-    .cmp-src { order: 3; }
     .cmp-subj { order: 4; flex: 1 0 100%; padding-left: 1.15rem; }
 
     .cmp-card-head { padding-bottom: 0.7rem; margin-bottom: 0.8rem; gap: 0.5rem; }

@@ -91,9 +91,10 @@
         });
 
         // ── the divider ────────────────────────────────────────────────────
-        // 58, not 50: the panes are split 58/42 because the inbox needs the
-        // width and the four actions do not. The divider rests on that seam.
-        var pos = 58;   // percent; 100 = all problem, 0 = all answer
+        // Back to the middle: with both contents anchored left rather than
+        // split into columns, there is no seam for the divider to rest on and
+        // half of each is the honest starting point.
+        var pos = 50;   // percent; 100 = all problem, 0 = all answer
 
         function setPos(v) {
             v = clamp(v, 0, 100);
@@ -134,40 +135,30 @@
             if (e.key === 'End') { e.preventDefault(); setPos(100); }
         });
 
-        // ── the phone: scroll sweeps it ────────────────────────────────────
-        // With the film gone there is no runway to read a position from, so the
-        // box's own travel through the viewport is the timeline: it starts
-        // covered and is fully uncovered by the time it reaches the middle.
-        var ticking = false;
-
-        function sweep() {
-            ticking = false;
-            if (!stacked.matches) return;
-            var r = root.getBoundingClientRect();
-            var vh = window.innerHeight;
-            var from = vh * 0.72;
-            var to = vh * 0.22;
-            setPos(100 - clamp((from - r.top) / (from - to), 0, 1) * 100);
-        }
-
-        function onScroll() {
-            if (ticking) return;
-            ticking = true;
-            requestAnimationFrame(sweep);
-        }
+        // The line under the heading has to describe the gesture that actually
+        // moves it. Nothing is dragged on a phone — the two states are laid out
+        // in sequence there — so an instruction to drag would be the copy lying
+        // about a control that is not on screen.
+        var subEl = document.querySelector('.compare-sub');
 
         function syncMode() {
             var touch = stacked.matches;
+            if (subEl) {
+                subEl.textContent = touch
+                    ? 'What arrives, and what you actually need.'
+                    : 'Drag to move between what arrives and what you actually need.';
+            }
             root.classList.toggle('is-scrolled', touch);
             handleEl.disabled = touch;
             handleEl.setAttribute('aria-hidden', touch ? 'true' : 'false');
-            if (touch) sweep();
-            else setPos(58);
+            // Sequential on a phone: both panes are on screen at once, so there
+            // is no divider to place. Anywhere else it rests in the middle.
+            if (!touch) setPos(50);
         }
 
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            // No sweep and no drag: the section resolves to the answer, which
-            // is the half that carries the point.
+            // No drag: the section resolves to the answer, which is the half
+            // that carries the point.
             root.classList.add('is-static');
             setPos(0);
             handleEl.disabled = true;
@@ -175,8 +166,6 @@
             return;
         }
 
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
         if (stacked.addEventListener) stacked.addEventListener('change', syncMode);
 
         syncMode();
