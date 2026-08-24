@@ -368,9 +368,9 @@
             <div class="capabilities">
             <!-- The answer side of the lockscreen in The Reality: same phone,
                  same brand, everything resolved. The conversation advances with
-                 the reader's scroll rather than on a timer, so a fast scroller
-                 can't arrive after it has already played out and a slow one
-                 never watches it sit finished.
+                 the deck rather than on a timer: whichever card is on top asks
+                 its own question, so the thread can't play out before the reader
+                 gets here, or sit finished while they read.
 
                  Each turn and each reply is a 0fr -> 1fr grid row with one
                  overflow wrapper inside it — the same disclosure the FAQ and
@@ -441,10 +441,11 @@
             </div>
 
             <div class="gallery reveal" data-gallery>
-                <!-- A deck the scroll deals, side by side with the phone. Below 900px
-                     it unstacks into a plain list and each card answers for itself
-                     (see .card-answer) — a pinned phone and a whole card never fit
-                     on one narrow screen. -->
+                <!-- A deck you flick through, side by side with the phone; the
+                     arrows and dots below are the same two moves for anyone who
+                     won't guess the gesture. Below 900px it unstacks into a plain
+                     list and each card answers for itself (see .card-answer) — a
+                     pinned phone and a whole card never fit on one narrow screen. -->
                 <div class="gallery-stack" data-deck role="group" aria-label="Capabilities">
                 <div class="feature-card" data-gallery-item>
                     <div class="feature-icon">
@@ -498,11 +499,31 @@
 
                 </div>
 
+                <!-- The gesture is the fast way through the pile; these are the
+                     visible one. A cursor has no reason to try a flick, and the
+                     fan alone only says "there are more" — it never says "this
+                     one moves". The dots double as the position, so the deck
+                     stops being a pile of unknown depth. Built for the deck, so
+                     they only exist where the deck does (gallery.is-deck). -->
+                <div class="deck-nav" data-deck-nav>
+                    <button type="button" class="deck-arrow" data-deck-prev aria-label="Previous capability">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M14.5 5.5L8 12l6.5 6.5"/>
+                        </svg>
+                    </button>
+                    <div class="deck-dots" data-deck-dots></div>
+                    <button type="button" class="deck-arrow" data-deck-next aria-label="Next capability">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9.5 5.5L16 12l-6.5 6.5"/>
+                        </svg>
+                    </button>
+                </div>
+
                 <p class="deck-hint" data-deck-hint aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6 10l6 6 6-6"/>
+                        <path d="M19 12H5M10 7l-5 5 5 5"/>
                     </svg>
-                    Keep scrolling
+                    Swipe the card
                 </p>
             </div>
             </div>

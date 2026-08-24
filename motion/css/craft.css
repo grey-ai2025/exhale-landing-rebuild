@@ -47,16 +47,25 @@
 
 /* Cards are uncovered in sequence. They share a vertical position, so the
    cascade is a transition-delay rather than an offset scroll range. */
+/* This file loads after styles.css, so this `transition` is the one the deck
+   gets — the depth transition has to be declared here or it is overwritten and
+   the cards behind snap between depths instead of easing. */
 .gallery .feature-card {
     clip-path: inset(0 0 100% 0 round 24px);
-    transition: clip-path 650ms var(--ease-in-out);
+    transition: clip-path 650ms var(--ease-in-out),
+                transform 520ms var(--ease-drawer),
+                opacity 420ms var(--ease-out),
+                filter 420ms var(--ease-out);
 }
 
 .gallery.revealed .feature-card { clip-path: inset(0 0 0 0 round 24px); }
 
-.gallery .feature-card:nth-child(1) { transition-delay: 0ms; }
-.gallery .feature-card:nth-child(2) { transition-delay: 70ms; }
-.gallery .feature-card:nth-child(3) { transition-delay: 140ms; }
+/* The stagger is the wipe's alone. A delay list matches the property list
+   above, so a card that changes depth mid-deck moves at once — waiting 140ms
+   to answer a flick would read as lag, not as cascade. */
+.gallery .feature-card:nth-child(1) { transition-delay: 0ms, 0s, 0s, 0s; }
+.gallery .feature-card:nth-child(2) { transition-delay: 70ms, 0s, 0s, 0s; }
+.gallery .feature-card:nth-child(3) { transition-delay: 140ms, 0s, 0s, 0s; }
 
 @media (max-width: 768px) {
     .video-container.reveal { clip-path: inset(0 0 100% 0 round 16px); }

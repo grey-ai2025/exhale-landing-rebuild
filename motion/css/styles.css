@@ -2072,61 +2072,178 @@ body.light-mode input:focus-visible {
    =========================================== */
 .gallery { position: relative; }
 
-/* A deck the scroll wheel deals: each card sticks at the same offset, so the
-   next one rises and covers the one before it. The pile is still a pile — it
-   just advances with the gesture people already make, instead of asking for a
-   flick they have to discover. The cards are their own scroll track, so there
-   is no empty run of viewport paying for the effect. */
+/* A deck rather than a rail: the cards sit on top of each other and you send
+   the front one away. Depth is carried by the two behind it, so the stack
+   reads as a finite pile you're working through.
+
+   Everything here is scoped to `.is-deck`, which gallery.js adds only when
+   there is a deck to run — wide enough for the pile, and JS alive to deal it.
+   Without that class the cards stay in flow as an ordinary column, which is
+   what a browser with no JS should get instead of three cards on one pixel. */
+/* No deck: a plain column, which is also the no-JS fallback. */
 .gallery-stack {
-    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 6rem;
+    gap: 1.25rem;
+}
+
+.gallery.is-deck .gallery-stack {
+    display: block;
+    position: relative;
+    /* The stack is one fixed height and every card fills it, so the deck
+       doesn't resize under your hand as it cycles. The value is the tallest
+       card's content at this width. */
+    height: 34rem;
+    /* Room for the depth offsets and the shadows beneath. */
     padding-bottom: 2rem;
 }
 
 .gallery-stack:focus { outline: none; }
 
-.gallery .feature-card {
-    position: sticky;
-    /* Every card stops in the same place. Later siblings paint over earlier
-       ones, which is the stacking, for free. Only ever a pile beside the phone —
-       chat.css unsticks these below 900px. */
-    top: calc(50vh - 17rem);
+.gallery.is-deck .feature-card {
+    position: absolute;
+    /* The right edge is held back by the width of the fan, so the two cards
+       behind can peek out there without the deck growing or overflowing its
+       column. Without that peek the pile is invisible and nothing says there
+       is anything to swipe. */
+    inset: 0 2.25rem 0 0;
     display: flex;
     flex-direction: column;
     /* Opaque, deliberately. The glass tint is fine on a rail where cards sit
        side by side; in a pile you read straight through the front card to the
-       two behind it and every line of text doubles. */
+       two behind it and every line of text doubles. The section colour under
+       the same tint keeps the look without the transparency. */
     background-color: var(--bg-primary);
     background-image: linear-gradient(var(--glass-bg), var(--glass-bg));
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    transition: transform 520ms var(--ease-out), opacity 420ms var(--ease-out);
+    will-change: transform;
+    touch-action: pan-y;   /* horizontal belongs to the deck, vertical to the page */
 }
 
-/* A covered card recedes to an edge, not to a readable card. Lifting it far
-   enough to show its heading meant two or three titles stacked on the same
-   line, all legible, all overlapping — the scale difference alone gives the
-   sliver that says 'there are more underneath'. */
-.gallery .feature-card.is-covered {
-    transform: scale(0.972);
-    opacity: 0.5;
+/* Depth. Each step back is smaller, dimmer and slightly out of focus — the
+   same recipe the scrollytelling scenes use for the cards you've passed. */
+.gallery.is-deck .feature-card[data-depth="0"] {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    z-index: 3;
+    cursor: grab;
 }
 
-.gallery .feature-card.is-covered + .feature-card.is-covered,
-.gallery .feature-card.is-covered ~ .feature-card.is-covered {
-    transform: scale(0.944);
-    opacity: 0.28;
+/* Fanned to the right and tilted a degree or two, the way a dealt hand sits.
+   Depth alone (straight down) hides them exactly behind the front card. */
+.gallery.is-deck .feature-card[data-depth="1"] {
+    transform: translate3d(1.15rem, 0.6rem, 0) scale(0.975) rotate(1.1deg);
+    opacity: 0.75;
+    filter: blur(0.3px);
+    z-index: 2;
+    pointer-events: none;
 }
 
-/* --- the scroll affordance ------------------------------------------------- */
-.deck-hint {
+.gallery.is-deck .feature-card[data-depth="2"] {
+    transform: translate3d(2.25rem, 1.2rem, 0) scale(0.95) rotate(2.2deg);
+    opacity: 0.45;
+    filter: blur(0.8px);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* The one-time nudge that shows the top card is loose, and the card on its way
+   out, are both written frame by frame — a transition would fight them. */
+.gallery .feature-card.is-nudging,
+.gallery .feature-card.is-gone { transition: none; }
+
+/* --- the controls ---------------------------------------------------------
+   A flick is the quick way through the deck and an invisible one: nothing on
+   a fanned pile says it can be thrown, and a mouse never tries. So the two
+   moves the gesture makes are also two buttons, with the dots carrying the
+   one thing the fan can't say — which card of how many you are on. */
+.deck-nav {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.gallery.is-deck .deck-nav { display: flex; }
+
+.deck-arrow {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: transform 160ms var(--ease-out),
+                background-color 220ms var(--ease-out),
+                border-color 220ms var(--ease-out),
+                color 220ms var(--ease-out);
+}
+
+.deck-arrow svg { width: 17px; height: 17px; }
+
+.deck-arrow:hover {
+    color: var(--cyan-glow);
+    border-color: rgba(173, 251, 246, 0.35);
+    background: rgba(173, 251, 246, 0.08);
+}
+
+/* Feedback on the press, not on the release. */
+.deck-arrow:active { transform: scale(0.92); }
+
+.deck-arrow:focus-visible {
+    outline: 2px solid var(--cyan-glow);
+    outline-offset: 3px;
+}
+
+.deck-dots {
     display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.deck-dot {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--glass-border);
+    cursor: pointer;
+    transition: transform 260ms var(--ease-out), background-color 260ms var(--ease-out);
+}
+
+/* The current card's dot is the only one that carries the accent, and it grows
+   rather than just brightening — a 7px dot has no room to change value alone. */
+.deck-dot.is-on {
+    background: var(--cyan-glow);
+    transform: scale(1.4);
+}
+
+.deck-dot:focus-visible {
+    outline: 2px solid var(--cyan-glow);
+    outline-offset: 4px;
+}
+
+body.light-mode .deck-dot { background: rgba(13, 115, 119, 0.2); }
+body.light-mode .deck-dot.is-on { background: var(--cyan-deep); }
+body.light-mode .deck-arrow:hover {
+    color: var(--cyan-deep);
+    border-color: rgba(13, 115, 119, 0.25);
+    background: rgba(13, 115, 119, 0.07);
+}
+
+/* --- the gesture affordance ------------------------------------------------ */
+.deck-hint {
+    display: none;
     align-items: center;
     justify-content: center;
     gap: 0.45rem;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -2134,18 +2251,20 @@ body.light-mode input:focus-visible {
     transition: opacity 500ms var(--ease-out);
 }
 
+.gallery.is-deck .deck-hint { display: flex; }
+
 .deck-hint svg {
     width: 15px;
     height: 15px;
     animation: deck-hint-nudge 2.4s var(--ease-in-out) infinite;
 }
 
-/* Once the second card has covered the first, the reader has done it. */
+/* Once you've flicked one, or pressed an arrow, you know. */
 .deck-hint.is-used { opacity: 0; pointer-events: none; }
 
 @keyframes deck-hint-nudge {
-    0%, 62%, 100% { transform: translateY(0); opacity: 0.75; }
-    76%           { transform: translateY(4px); opacity: 1; }
+    0%, 62%, 100% { transform: translateX(0); opacity: 0.75; }
+    76%           { transform: translateX(-4px); opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2160,15 +2279,10 @@ body.light-mode input:focus-visible {
     z-index: 4;
 }
 
-/* Cards carry their own height now, so nothing has to be equalised and the
-   stack has no fixed box. The phone breakpoints only change where it rests. */
-@media (max-width: 900px) {
-    .gallery-stack { gap: 3.5rem; padding-bottom: 1.5rem; }
-}
-
-/* A card that scrolls under another shouldn't also lift on hover. */
-.gallery .feature-card:hover { transform: none; }
-.gallery .feature-card.is-covered:hover { transform: scale(0.972); }
+/* A card you can grab shouldn't also lift away from the pointer. Only the
+   front card can be hovered — the ones behind it are pointer-events: none —
+   so this is the resting transform of depth 0, not `none`. */
+.gallery.is-deck .feature-card:hover { transform: translate3d(0, 0, 0) scale(1); }
 
 /* Example prompts are things you'd send an assistant — so they look like it. */
 .gallery .feature-list {

@@ -20,20 +20,12 @@
     grid-template-columns: 17.5rem minmax(0, 30rem);
     justify-content: center;
     gap: 3.5rem;
-    /* Start, not centre: the cards column is now as tall as three cards and
-       their scroll run, and the phone has to pin rather than float in the
-       middle of it. */
-    align-items: start;
+    /* Centre again: the deck is one card tall and stays put, so there is no
+       scroll run for the phone to pin against — it sits beside the pile. */
+    align-items: center;
 }
 
-.chat {
-    display: flex;
-    justify-content: center;
-    /* Pinned beside the stack, so the answer is on screen for every card that
-       scrolls up over the last. */
-    position: sticky;
-    top: calc(50vh - 17rem);
-}
+.chat { display: flex; justify-content: center; }
 
 .chat-phone { height: 34rem; }
 
@@ -330,13 +322,16 @@ body.light-mode .chat-reply-intro b { color: var(--cyan-deep); }
 
     .gallery .feature-card {
         position: static;
-        /* The deck's depth classes are inert here — gallery.js stops painting
-           them at this width, and these keep a stale one from dimming a card. */
+        /* The deck is off at this width — gallery.js drops `.is-deck` and takes
+           its depths back off — and these keep a stale one from dimming a card
+           if the reader narrows the window mid-flick. */
         transform: none;
         opacity: 1;
+        cursor: auto;
     }
 
-    /* Nothing to keep scrolling for. */
+    /* Nothing to step through: the cards are all here, one after another. */
+    .deck-nav,
     .deck-hint { display: none; }
 
     /* Every card is its own height now, so the prompts sit under the text
