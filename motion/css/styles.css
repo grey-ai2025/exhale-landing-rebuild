@@ -173,6 +173,68 @@ body.light-mode .ambient-orb {
 }
 
 /* ===========================================
+   Section glow
+
+   The same cyan light as the orbs above, for sections further down the page.
+   Not the orbs themselves: those are `position: fixed`, so letting them show
+   through a section would pin the glow to the same screen coordinates for the
+   whole scroll — light that sits on the display rather than in the page — and
+   would put their 20s float on screen continuously instead of for one
+   viewport. These are anchored to their section and completely static; they
+   travel with the content and hold still while you read.
+
+   Each section places its own with the three variables. Deliberately not
+   applied to every section: see the notes at each one for why it is or isn't
+   there. --glow-color is an unwrapped triplet so the alpha stays adjustable.
+   =========================================== */
+.features,
+.faq {
+    --glow-color: 173, 251, 246;
+    --glow-size: 58rem;
+    --glow-strength: 0.13;
+}
+
+/* On a near-white ground the pale cyan reads as nothing at all, so light mode
+   swaps in the deep cyan at a lower alpha — a tint of the same hue rather than
+   a highlight, which is what "glow" means on a light background. */
+body.light-mode .features,
+body.light-mode .faq {
+    --glow-color: 13, 115, 119;
+    --glow-strength: 0.05;
+}
+
+/* z-index: -1 rather than 0. Inside the section's own stacking context that
+   paints above its background and below the content; at 0 it would paint above
+   the ordinary, non-positioned content instead, and wash over the type. */
+.features::before,
+.faq::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(var(--glow-size) var(--glow-size)
+        at var(--glow-x) var(--glow-y),
+        rgba(var(--glow-color), var(--glow-strength)) 0%,
+        transparent 68%);
+}
+
+/* Placed off the deck's top corner, the same quarter the hero's light comes
+   from — the section where the product finally answers gets the brand's own
+   colour behind it, and the phone's glow already lives on the other side. */
+.features { --glow-x: 74%; --glow-y: 18%; }
+
+/* Low and to the left, deliberately not where the last one was: two washes in
+   the same corner read as one repeated stamp rather than as a page with light
+   in it. It also lifts the flattest panel on the site off the footer. */
+.faq {
+    --glow-x: 24%;
+    --glow-y: 82%;
+    --glow-size: 44rem;
+    --glow-strength: 0.12;
+}
+
+/* ===========================================
    Dark Mode Toggle
    =========================================== */
 .theme-toggle {
