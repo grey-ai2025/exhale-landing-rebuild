@@ -530,25 +530,12 @@
         </div>
     </section>
 
-<!-- Bespoke Section -->
-    <!-- Hidden for now, not deleted. Careful before leaving it that way: the
-         "we build and maintain it for you" claim now lives nowhere else on the
-         page. How It Works was folded into the film, the film became the
-         comparison above, and that beat went with it. Drop the `hidden`
-         attribute to bring this back, or find the claim a better home. -->
-    <section id="bespoke" class="bespoke" hidden>
-        <div class="section-container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Bespoke. Managed.<br><span class="no-italic">Yours.</span></h2>
-            </div>
-            <div class="bespoke-body reveal">
-                <p>Exhale isn't an app you download. It's a system we build and manage specifically for your life — your family, your caregivers, your calendars, your commitments.</p>
-                <p>Our team handles the build, the integrations, and the ongoing updates so Exhale always reflects how you actually live.</p>
-            </div>
-
-            <p class="bespoke-note reveal">Not a product. A service relationship.</p>
-        </div>
-    </section>
+<!-- Bespoke Section — folded into the application below.
+     It was hidden here because standalone it was a slab of centred prose
+     between two visual sections: nothing happened in it. The claim itself was
+     never the problem — it is the only place the page says we build and manage
+     the thing for you — it just had no work to do until it sat beside the form
+     it explains. See #typeform-section. -->
 
 
 <!-- FAQ Section -->
@@ -602,16 +589,40 @@
 
 
 <!-- CTA Section with Typeform -->
+<!-- The claim and the application, as one thing. A 550px form asking for real
+     effort had nothing on the page explaining why this is an application and
+     not a download; the answer was sitting two sections up with nothing to do.
+     Side by side each fixes the other — the claim is the reason the form
+     exists, and the form is what the claim builds to.
+
+     One headline, not two: the claim leads because it is the argument, and
+     "Ready to EXHALE?" steps down to label the form it belongs to. The
+     subtitle that used to sit under it is gone — beside two paragraphs of
+     claim it was a fourth piece of prose competing at the moment of signing
+     up, which is exactly where the page should stop talking. -->
     <section id="typeform-section" data-ga-name="Sign Up" class="cta-section">
         <div class="section-container">
-            <div class="cta-header reveal">
-                <h2 class="section-title">Ready to <span class="no-italic">EXHALE?</span></h2>
-                <p class="section-subtitle">Finally, infrastructure for the most important part of your life.</p>
-                <p class="cta-note">Sign up for the beta.</p>
-            </div>
-            <div class="typeform-wrapper reveal">
-                <div class="typeform-container">
-                    <div data-tf-live="01KCSRGA2N1VAMCM729CFEZPKZ"></div>
+            <div class="cta-split">
+                <div class="cta-claim reveal">
+                    <h2 class="section-title">Bespoke. Managed.<br><span class="no-italic">Yours.</span></h2>
+                    <div class="bespoke-body">
+                        <p>Exhale isn't an app you download. It's a system we build and manage specifically for your life — your family, your caregivers, your calendars, your commitments.</p>
+                        <p>Our team handles the build, the integrations, and the ongoing updates so Exhale always reflects how you actually live.</p>
+                    </div>
+
+                    <p class="bespoke-note">Not a product. A service relationship.</p>
+                </div>
+
+                <div class="cta-form reveal">
+                    <div class="cta-form-header">
+                        <h3 class="cta-form-title">Ready to <span class="no-italic">EXHALE?</span></h3>
+                        <p class="cta-note">Sign up for the beta.</p>
+                    </div>
+                    <div class="typeform-wrapper">
+                        <div class="typeform-container">
+                            <div data-tf-live="01KCSRGA2N1VAMCM729CFEZPKZ"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

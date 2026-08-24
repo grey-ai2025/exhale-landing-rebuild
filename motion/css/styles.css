@@ -642,10 +642,18 @@ body.light-mode .join-waitlist-btn:active {
 /* ===========================================
    Typeform Container
    =========================================== */
+/* The min-height only reserves the form's space so the page doesn't jump while
+   the embed boots — so it has to be no taller than what the embed actually
+   renders, or the surplus becomes a strip of empty glass under the button. It
+   was 550 against an embed that lays itself out at 500, which was invisible
+   while this was a centred box on its own and obvious the moment it stood
+   beside a column with a clean bottom edge. Matching it is the whole fix: the
+   embed writes its height inline, so nothing short of !important would move it
+   and there is no reason to fight a script that is sizing itself correctly. */
 .typeform-container {
     position: relative;
     z-index: 1;
-    min-height: 550px;
+    min-height: 500px;
     width: 100%;
 }
 
@@ -746,16 +754,22 @@ body.light-mode .section-title::after {
     background: linear-gradient(90deg, transparent, var(--cyan-deep), transparent);
 }
 
-.section-title span {
+/* The accent word. .cta-form-title is a stepped-down heading rather than a
+   section title, but it is the same sentence pattern — one word carrying the
+   colour — and it would be the only title on the page that doesn't. */
+.section-title span,
+.cta-form-title span {
     font-style: italic;
     color: var(--cyan-glow);
 }
 
-.section-title span.no-italic {
+.section-title span.no-italic,
+.cta-form-title span.no-italic {
     font-style: normal;
 }
 
-body.light-mode .section-title span {
+body.light-mode .section-title span,
+body.light-mode .cta-form-title span {
     color: var(--cyan-deep);
 }
 
@@ -1197,57 +1211,34 @@ body.light-mode .step-number {
 }
 
 /* ===========================================
-   Bespoke Section
-   =========================================== */
-/* ===========================================
-   Bespoke
+   The bespoke claim
 
    Was a centred paragraph inside a pane of glass, floating over concentric
    rings: 848px of section carrying 54 words, where every element on screen
-   except the words was decoration. The rings and the panel are gone. What is
-   left is the argument, set as a statement — left ranged, one measure wide,
-   and about a third of the height.
+   except the words was decoration. The rings and the panel went, and what was
+   left was the argument, set as a statement — left ranged, one measure wide.
 
-   The closing line is no longer a pill. It was the only real sentence here
-   and it was being worn as a badge; it is now the thing the section builds to.
+   It is no longer a section of its own. As a standalone beat it was prose
+   between two visual sections with nothing happening in it, which is why it
+   spent a while hidden. It now leads the application (see .cta-split), where
+   it is the answer to the question the form raises: why this is something you
+   apply for rather than something you download.
+
+   The closing line is not a pill. It was the only real sentence here and it
+   was being worn as a badge; it is the thing the column builds to.
    =========================================== */
-.bespoke {
-    padding: clamp(4.5rem, 9vw, 7rem) 0;
-    background: var(--bg-primary);
-    position: relative;
-    z-index: 1;
-}
 
-body.light-mode .bespoke {
-    background: var(--gray-50);
-}
-
-/* One column, ranged left. Centred prose across 720px reads as a template
-   hero and is measurably harder to scan than a fixed left edge. */
-.bespoke .section-container {
-    position: relative;
-    z-index: 1;
-    /* The whole statement is one block, centred on the page but ranged left
-       inside itself. Without this the heading would start at the far left of
-       a 1200px container while the prose sat 38rem wide beside it. */
-    max-width: 44rem;
-}
-
-.bespoke .section-header {
-    text-align: left;
-    margin: 0 0 2rem;
-    max-width: none;
-}
-
-.bespoke .section-title {
-    margin-bottom: 0;
+/* Left ranged, one measure wide. Centred prose across 720px reads as a
+   template hero and is measurably harder to scan than a fixed left edge. */
+.cta-claim .section-title {
+    margin-bottom: 2rem;
 }
 
 /* The shared flourish under section titles is centred, which left a short
    cyan rule floating in the middle of a block ranged hard left. It also
    competed with the accent rule above the closing line — two accent marks in
-   a section this short is noise, and the one that matters is the second. */
-.bespoke .section-title::after { display: none; }
+   a column this short is noise, and the one that matters is the second. */
+.cta-claim .section-title::after { display: none; }
 
 .bespoke-body p {
     /* A measure, not a column width: ~70 characters is where a line stops
@@ -1293,8 +1284,7 @@ body.light-mode .bespoke-note::before {
 }
 
 @media (max-width: 640px) {
-    .bespoke { padding: 3.5rem 0; }
-    .bespoke .section-header { margin-bottom: 1.5rem; }
+    .cta-claim .section-title { margin-bottom: 1.5rem; }
     .bespoke-body p { font-size: 0.9375rem; line-height: 1.7; }
     .bespoke-note { margin-top: 2rem; padding-top: 1.4rem; }
 }
@@ -1307,33 +1297,18 @@ body.light-mode .bespoke-note::before {
    CTA Section
    =========================================== */
 
-/* The sign-up line was borrowing .bespoke-note for its glass pill. When that
-   became a left-ranged serif statement it took this with it — a left-aligned
-   accent rule under centred text, with a stray hairline above. Its own class
-   now, carrying the pill it always meant. */
-.cta-header .cta-note {
-    display: block;
-    width: fit-content;
-    margin: 2.25rem auto 0;
-    padding: 0.6rem 1.4rem;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-radius: 100px;
-    box-shadow: var(--shadow-md);
-    /* .cta-header p sets 1.1rem; matching its specificity and coming later
-       wins without reaching for !important, which is what the old rule did. */
+/* The sign-up line was a glass pill, centred under a centred headline. It
+   can't stay one: it now sits an inch above the glass form wrapper, and a
+   translucent badge on top of a translucent panel is the one stack that
+   reliably turns to mud. Plain line, same italic voice, doing the same job —
+   saying what the form is before you look at it. */
+.cta-note {
+    margin-top: 0.5rem;
     font-size: 0.9rem;
     line-height: 1.5;
     font-style: italic;
     letter-spacing: 0.04em;
     color: var(--text-secondary);
-}
-
-body.light-mode .cta-header .cta-note {
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(255, 255, 255, 0.8);
 }
 
 /* A hidden section must not hold its padding open. */
@@ -1344,59 +1319,120 @@ body.light-mode .cta-header .cta-note {
     background: var(--bg-primary);
     position: relative;
     z-index: 1;
+    /* The photograph layer below is scaled up past the section's edges to hide
+       the blur's soft fringe; without this it reaches past the right edge of
+       the page and puts a horizontal scrollbar on the whole document. Nothing
+       in this section overflows on purpose. */
+    overflow: hidden;
 }
 
 body.light-mode .cta-section {
     background: var(--gray-50);
 }
 
-.cta-header {
-    text-align: center;
-    margin-bottom: 3rem;
-    position: relative;
-    padding: 2.5rem 3rem;
-}
+/* --- the photograph under the application ---------------------------------
+   The one image of actual people on a page that is otherwise devices and
+   type, and it sits under the only place we ask for something. It is blurred
+   well past recognition on purpose: at full strength a warm, bright, busy
+   living room would be the loudest thing on a near-black page and would drag
+   the eye away from the form — the point is a warmth you feel rather than a
+   picture you look at.
 
-/* Corner bracket frames */
-.cta-header::before,
-.cta-header::after {
+   Its own layer rather than a background on the section, because `filter`
+   would otherwise blur the claim and the form along with it. */
+.cta-section::before {
     content: '';
     position: absolute;
-    width: 40px;
-    height: 40px;
-    border-color: rgba(173, 251, 246, 0.2);
-    border-style: solid;
+    inset: 0;
+    z-index: 0;
+    background-image: url('../assets/images/exhale-background.jpg');
+    background-size: cover;
+    /* Slightly above centre: the crop keeps the family rather than the ceiling
+       when the section is short and wide. */
+    background-position: center 40%;
+    filter: blur(24px) saturate(0.7) brightness(0.5);
+    /* A blur samples from beyond the element and leaves a soft transparent
+       fringe at each edge. Scaling up pushes that fringe outside the section. */
+    transform: scale(1.08);
+    opacity: 0.34;
+    /* Faded out top and bottom so it reads as light in the room rather than as
+       a panel banding against the FAQ above and the footer below. */
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 18%, #000 82%, transparent 100%);
     pointer-events: none;
 }
 
-.cta-header::before {
-    top: 0;
-    left: 0;
-    border-width: 2px 0 0 2px;
+/* Light mode has nowhere near as much room to hide a photograph. A dark scrim
+   is not available to it, and the desaturated middle setting that works on
+   black turns to grey mud on a pale ground — a smudge rather than a room. So
+   it goes the other way: much fainter, and warmer rather than greyer, so what
+   survives is the colour of the light in the photograph and nothing else. */
+body.light-mode .cta-section::before {
+    filter: blur(24px) saturate(0.9) brightness(1.16);
+    opacity: 0.16;
 }
 
-.cta-header::after {
-    bottom: 0;
-    right: 0;
-    border-width: 0 2px 2px 0;
+/* The image is decoration; text contrast is not negotiable. */
+@media (prefers-contrast: more) {
+    .cta-section::before { display: none; }
 }
 
-body.light-mode .cta-header::before,
-body.light-mode .cta-header::after {
-    border-color: rgba(13, 115, 119, 0.2);
+/* Above the photograph. Without this the claim and the form share the
+   pseudo-element's plane and the paint order is left to source order. */
+.cta-section > .section-container {
+    position: relative;
+    z-index: 1;
 }
 
-.cta-header p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text-secondary);
-    max-width: 700px;
-    margin: 1rem auto 0;
+/* The claim and the form, one row. Proportioned so the form gets the larger
+   share: the prose has a measure it must not exceed anyway, and the Typeform
+   embed is the thing being asked for. `start`, not `stretch` — the claim is a
+   statement that ends where it ends, not a panel to be squared off against a
+   form twice its height. */
+.cta-split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
 }
 
-.cta-subtitle {
-    font-size: 0.85em;
-    opacity: 0.7;
+/* Ranged left against the form, and held to a measure — ~70 characters is
+   where a line stops needing the eye to hunt for the next one. */
+.cta-claim {
+    max-width: 38rem;
+    /* The claim is the argument; the form beside it is taller. Nudged down so
+       the two read as a pair rather than as a heading with a box after it. */
+    padding-top: clamp(0rem, 2vw, 1.5rem);
+}
+
+/* The action, stepped down. It was the section title when the form stood
+   alone; beside a claim that is now the headline, a second h2 would be two
+   headlines shouting over each other. Same serif, smaller voice, and it sits
+   directly above the thing it names. */
+.cta-form-header {
+    margin-bottom: 1.25rem;
+}
+
+.cta-form-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--text-primary);
+}
+
+/* One column below the same line the capabilities deck stands down at. The
+   embed is the constraint: split any narrower and the form is answering
+   questions in a 400px gutter. Stacked, the claim still comes first — you
+   read why before you are asked to. */
+@media (max-width: 900px) {
+    .cta-split {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.5rem;
+    }
+
+    .cta-claim { padding-top: 0; }
 }
 
 .typeform-wrapper {
@@ -2042,11 +2078,10 @@ body.light-mode input:focus-visible {
        is still entering, so the last one is never left faded on screen. */
     .how-it-works .reveal { animation-range: entry 25% cover 30%; }
 
-    /* The statement rises with everything else now that it is not glass,
-       but keeps the later range: it sits low in a short section, and an
-       entry-bound reveal finished before it was anywhere near the eye. */
-    .bespoke-body,
-    .bespoke-note { animation-range: cover 8% cover 45%; }
+    /* The claim used to reveal in three pieces low in a short section of its
+       own, which needed a later range or it finished before the eye arrived.
+       It is one block at the top of a tall section now — the default entry
+       range is where it belongs, and its three parts rise together. */
 
 
     /* --- Section title flourish draws --------------------------------- */
