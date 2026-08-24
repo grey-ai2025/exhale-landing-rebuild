@@ -617,3 +617,79 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
     .scrolly-step p { font-size: 0.875rem; }
     .scrolly-copy { padding-top: 13rem; }
 }
+
+/* ===========================================
+   The lockscreen wallpaper
+
+   The Reality phone is somebody's actual phone, and nobody's actual phone has
+   a gradient behind the lockscreen — it has a picture of the people the
+   notifications are about. Which is the point of the section: the pile-up is
+   not abstract, it is happening on top of these five faces.
+
+   Only this phone. `[data-phone]` is the Reality lockscreen; the one in Meet
+   Your AI Executive is `.chat-phone` and keeps its plain screen, because a
+   thread reads against a flat ground and not against a photograph.
+
+   Desktop only, per the ask — and because the rule not matching is also the
+   reason a narrow screen never downloads the file.
+   =========================================== */
+@media (min-width: 901px) {
+    [data-phone] .phone-screen {
+        /* Two layers, photo underneath. The scrim is heavier at the top and
+           bottom than through the middle: the clock sits in one end and the
+           notification stack fills the other, and the faces are in between.
+           It is the same reason iOS dims a wallpaper behind the time. */
+        background-image:
+            linear-gradient(180deg,
+                rgba(6, 7, 10, 0.82) 0%,
+                rgba(6, 7, 10, 0.55) 26%,
+                rgba(6, 7, 10, 0.42) 46%,
+                rgba(6, 7, 10, 0.72) 72%,
+                rgba(6, 7, 10, 0.88) 100%),
+            url('../assets/images/exhale-phone-background.jpg');
+        background-size: cover;
+        background-position: center 42%;
+        background-repeat: no-repeat;
+    }
+
+    /* The count pill was a 9%-white chip, which is plenty over a gradient and
+       nothing at all over a lit window: measured 4.1:1 in dark mode and 3.3:1
+       in light against a 4.5 requirement for text this size. Over a photograph
+       it has to be an actual material — a dark, blurred chip the way a real
+       lockscreen widget is — and the label goes up from 55% to 88% white. The
+       notification cards below need none of this; they sit in the heavy end of
+       the scrim and measured 7.7:1 and better. */
+    [data-phone] .phone-count {
+        background: rgba(8, 10, 14, 0.62);
+        -webkit-backdrop-filter: blur(10px) saturate(140%);
+        backdrop-filter: blur(10px) saturate(140%);
+        border-color: rgba(255, 255, 255, 0.22);
+        color: rgba(245, 245, 245, 0.88);
+    }
+
+    /* A photo lockscreen is white-on-image whatever the system theme is doing
+       — a real phone does not switch its lockscreen type to match light mode,
+       and the dark ink this phone uses in light mode would be unreadable over
+       the scrim. Specificity has to clear `body.light-mode .phone:not(.is-night)`
+       above, hence the doubled-up selector. */
+    body.light-mode [data-phone].phone:not(.is-night) {
+        --phone-ink: #f5f5f5;
+        --phone-ink-dim: rgba(245, 245, 245, 0.62);
+        --phone-card: rgba(255, 255, 255, 0.14);
+        --phone-card-border: rgba(255, 255, 255, 0.2);
+    }
+
+    /* 3:47 AM. The screen-colour variables the night state used to work
+       through are no longer painting anything here, so the beat moves into the
+       scrim: same picture, turned down, still the brightest thing in the room. */
+    [data-phone].phone.is-night .phone-screen {
+        background-image:
+            linear-gradient(180deg,
+                rgba(4, 6, 11, 0.9) 0%,
+                rgba(4, 6, 11, 0.76) 26%,
+                rgba(4, 6, 11, 0.68) 46%,
+                rgba(4, 6, 11, 0.85) 72%,
+                rgba(4, 6, 11, 0.94) 100%),
+            url('../assets/images/exhale-phone-background.jpg');
+    }
+}
