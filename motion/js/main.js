@@ -53,15 +53,10 @@ function initThemeToggle() {
         const isLight = document.body.classList.contains('light-mode');
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
 
-        // Update cursor glow color
-        const glow = document.querySelector('.cursor-glow');
-        if (glow) {
-            if (isLight) {
-                glow.style.background = 'radial-gradient(circle, rgba(13, 115, 119, 0.15) 0%, transparent 70%)';
-            } else {
-                glow.style.background = 'radial-gradient(circle, rgba(173, 251, 246, 0.15) 0%, transparent 70%)';
-            }
-        }
+        // The cursor glow used to be recoloured here with an inline style.
+        // `body.light-mode .cursor-glow` in styles.css does it now, and has to:
+        // the glow also swaps blend mode between themes, and an inline
+        // background would have outranked the rule that pairs with it.
     });
 
     // Listen for system theme changes (only if no saved preference)
@@ -231,23 +226,46 @@ function initCursorGlow() {
 
     let mouseX = 0, mouseY = 0;
     let glowX = 0, glowY = 0;
+    let seen = false;
+    let frame = null;
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+
+        // The first move places it rather than easing to it from 0,0 — a light
+        // sliding in from the top-left corner announces the effect instead of
+        // just being there.
+        if (!seen) {
+            seen = true;
+            glowX = mouseX;
+            glowY = mouseY;
+            glow.classList.add('is-lit');
+        }
+        if (!frame) frame = requestAnimationFrame(animateGlow);
     });
+
+    // Off the page, the light goes with it.
+    document.addEventListener('mouseleave', () => glow.classList.remove('is-lit'));
+    document.addEventListener('mouseenter', () => { if (seen) glow.classList.add('is-lit'); });
 
     function animateGlow() {
         glowX += (mouseX - glowX) * 0.08;
         glowY += (mouseY - glowY) * 0.08;
 
-        glow.style.left = `${glowX}px`;
-        glow.style.top = `${glowY}px`;
+        // left/top would lay out the page on every frame; a transform is a
+        // composite. The -50% keeps it centred on the pointer.
+        glow.style.transform =
+            `translate3d(${glowX}px, ${glowY}px, 0) translate(-50%, -50%)`;
 
-        requestAnimationFrame(animateGlow);
+        // Park the loop once it has caught up, so an idle pointer isn't
+        // holding a rAF open for the life of the page.
+        if (Math.abs(mouseX - glowX) > 0.5 || Math.abs(mouseY - glowY) > 0.5) {
+            frame = requestAnimationFrame(animateGlow);
+        } else {
+            frame = null;
+        }
     }
-
-    animateGlow();
 }
 
 // ===========================================

@@ -1019,34 +1019,28 @@ body.light-mode .video-play-btn:active {
 /* ===========================================
    Pain Points Section
    =========================================== */
+/* Same ground as the hero, continuous with it.
+
+   Three things used to set this section apart and none of them earned it: a
+   background one notch off the hero's (--bg-secondary, #0a0a0f against
+   #0A0A0A — invisible in the dark, but white against off-white in light mode),
+   a 32px dot grid, and a hairline across the top. Together they made the page's
+   second beat read as a panel laid over the page rather than as the page
+   continuing.
+
+   The colour is the hero's now. The section is still opaque further down — it
+   has to be, or the fixed orbs would sit at the same screen coordinates the
+   whole way through it — but it starts transparent and fades in over the first
+   stretch, so the hero's light carries across the join and dies away naturally
+   instead of being sliced off at a hard horizontal edge. */
 .pain-points {
     padding: var(--section-padding) 0;
-    background: var(--bg-secondary);
+    background: linear-gradient(180deg, transparent 0, var(--bg-primary) 30rem);
     position: relative;
     z-index: 1;
-    background-image: radial-gradient(circle, rgba(173, 251, 246, 0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
 }
-
-body.light-mode .pain-points {
-    background-color: var(--white);
-    background-image: radial-gradient(circle, rgba(13, 115, 119, 0.06) 1px, transparent 1px);
-    background-size: 32px 32px;
-}
-
-.pain-points::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-}
-
-body.light-mode .pain-points::before {
-    background: linear-gradient(90deg, transparent, var(--gray-200), transparent);
-}
+/* No light-mode override: --bg-primary already re-resolves, and what shows
+   through the transparent end is the body, which is that same colour. */
 
 /* ===========================================
    Features Section
@@ -1563,7 +1557,7 @@ body.light-mode .typeform-wrapper {
     right: -20%;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(173, 251, 246, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(173, 251, 246, 0.12) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -1733,21 +1727,46 @@ body.light-mode .footer {
 /* ===========================================
    Cursor Glow
    =========================================== */
+/* It follows the pointer across the whole page, not just the hero.
+
+   It used to sit at z-index 0, behind every section — and every section from
+   The Reality down paints an opaque background, so the light only ever showed
+   in the hero, which is the one section with no background of its own. Raising
+   it above them is the only way it reaches the rest of the page.
+
+   Which means it is now in front of the content rather than behind it, so it
+   has to add light rather than paint over it: `screen` on a dark ground, where
+   the transparent falloff is the blend's own no-op, and `multiply` in light
+   mode, where a pale cyan screened onto near-white would be nothing at all.
+   Under 1000 so it stays beneath the nav pill and the theme toggle. */
 .cursor-glow {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 400px;
     height: 400px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(173, 251, 246, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(173, 251, 246, 0.12) 0%, transparent 70%);
     pointer-events: none;
-    z-index: 0;
-    transform: translate(-50%, -50%);
+    z-index: 4;
+    mix-blend-mode: screen;
+    /* main.js writes the translate3d; the -50% centres it on the pointer.
+       Positioned by transform rather than by left/top so following the mouse
+       costs a composite instead of a layout on every frame. */
+    transform: translate3d(-50%, -50%, 0);
+    will-change: transform;
+    /* Dark until the pointer has actually been somewhere, and dark again when
+       it leaves the window — otherwise the light sits in the corner of a page
+       nobody is touching. */
+    opacity: 0;
     transition: opacity 0.3s ease;
-    mix-blend-mode: normal;
 }
 
+.cursor-glow.is-lit { opacity: 1; }
+
 body.light-mode .cursor-glow {
-    background: radial-gradient(circle, rgba(13, 115, 119, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(13, 115, 119, 0.12) 0%, transparent 70%);
+    mix-blend-mode: multiply;
 }
 
 /* ===========================================
@@ -2516,14 +2535,16 @@ body.light-mode .step {
    A disclosure list rather than a card grid: an answer should open where
    the question sits, not somewhere else on the page.
    =========================================== */
+/* The hero's ground, like everything else. This was the last section on
+   --bg-secondary: invisible against --bg-primary in the dark (#0a0a0f against
+   #0A0A0A), but pure white against off-white in light mode, which made the
+   final panel of the page a visibly different sheet of paper. */
 .faq {
     padding: var(--section-padding) 0;
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     position: relative;
     z-index: 1;
 }
-
-body.light-mode .faq { background: var(--white); }
 
 .section-eyebrow {
     font-size: 0.75rem;
