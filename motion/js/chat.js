@@ -31,7 +31,7 @@
                 ]
             },
             {
-                "q": "Send me the principals&rsquo; latest updates",
+                "q": "Send me the latest updates",
                 "intro": null,
                 "a": [
                     "<b>Oakwood</b> &mdash; Principal Whitfield, <b>March 26</b>.",
