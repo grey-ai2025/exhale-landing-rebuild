@@ -638,14 +638,23 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
         /* Two layers, photo underneath. The scrim is heavier at the top and
            bottom than through the middle: the clock sits in one end and the
            notification stack fills the other, and the faces are in between.
-           It is the same reason iOS dims a wallpaper behind the time. */
+           It is the same reason iOS dims a wallpaper behind the time.
+
+           One set of stops for every step of the story. The 3:47 AM state used
+           to carry its own, much heavier scrim, which meant the wallpaper was
+           conspicuously brighter in the four steps either side of it — the same
+           photograph changing exposure as you scrolled. Both are at the darker
+           setting now, and the night beat is a shift in tint plus a couple of
+           points of alpha rather than a change of brightness. */
+        --lock-tint: 6, 7, 10;
+        --lock-dim: 0;
         background-image:
             linear-gradient(180deg,
-                rgba(6, 7, 10, 0.82) 0%,
-                rgba(6, 7, 10, 0.55) 26%,
-                rgba(6, 7, 10, 0.42) 46%,
-                rgba(6, 7, 10, 0.72) 72%,
-                rgba(6, 7, 10, 0.88) 100%),
+                rgba(var(--lock-tint), calc(0.90 + var(--lock-dim))) 0%,
+                rgba(var(--lock-tint), calc(0.76 + var(--lock-dim))) 26%,
+                rgba(var(--lock-tint), calc(0.68 + var(--lock-dim))) 46%,
+                rgba(var(--lock-tint), calc(0.85 + var(--lock-dim))) 72%,
+                rgba(var(--lock-tint), calc(0.94 + var(--lock-dim))) 100%),
             url('../assets/images/exhale-phone-background.jpg');
         background-size: cover;
         background-position: center 42%;
@@ -667,6 +676,28 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
         color: rgba(245, 245, 245, 0.88);
     }
 
+    /* Still glass, with more substance behind it. The 9%-white veil these
+       cards use is the right weight over a flat screen and far too thin over a
+       photograph — the room reads straight through the words. What replaces it
+       is not an opaque card: it is the same frosted material with the tint
+       switched from white to dark and taken up to 46%, so the picture still
+       moves under it and the text sits clearly on top. Dark rather than white
+       because the ink is white; a heavier white veil over a lit photograph
+       just turns pale and takes the text with it.
+
+       Only the two tokens change: the count pill sets its own material just
+       above, and the chat phone in Meet Your AI Executive is never
+       `[data-phone]`, so its cards keep the lighter tint they were tuned for. */
+    [data-phone].phone {
+        --phone-card: rgba(18, 20, 26, 0.46);
+        --phone-card-border: rgba(255, 255, 255, 0.16);
+    }
+
+    [data-phone] .phone-notif-card {
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        backdrop-filter: blur(18px) saturate(140%);
+    }
+
     /* A photo lockscreen is white-on-image whatever the system theme is doing
        — a real phone does not switch its lockscreen type to match light mode,
        and the dark ink this phone uses in light mode would be unreadable over
@@ -675,21 +706,27 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
     body.light-mode [data-phone].phone:not(.is-night) {
         --phone-ink: #f5f5f5;
         --phone-ink-dim: rgba(245, 245, 245, 0.62);
-        --phone-card: rgba(255, 255, 255, 0.14);
-        --phone-card-border: rgba(255, 255, 255, 0.2);
+        --phone-card: rgba(18, 20, 26, 0.46);
+        --phone-card-border: rgba(255, 255, 255, 0.16);
     }
 
-    /* 3:47 AM. The screen-colour variables the night state used to work
-       through are no longer painting anything here, so the beat moves into the
-       scrim: same picture, turned down, still the brightest thing in the room. */
+    /* The urgent card carries its own cyan wash, at an alpha chosen for the
+       same 9%-white veil — so it needs bringing up with the rest or it would
+       be the one transparent card in the stack. The signal stays in the border
+       and the icon; the body just gets a colder ground than its neighbours.
+       The light-mode rule it has to outrank is six classes deep, hence this. */
+    [data-phone] .phone-notif.is-urgent .phone-notif-card,
+    body.light-mode [data-phone].phone:not(.is-night) .phone-notif.is-urgent .phone-notif-card {
+        background: rgba(16, 34, 38, 0.5);
+        border-color: rgba(173, 251, 246, 0.34);
+    }
+
+    /* 3:47 AM. The screen-colour variables the night state used to work through
+       are no longer painting anything here, so the beat lives in the scrim —
+       but as a colder tint and three points of alpha, not as a step change in
+       exposure. The room is the same room; only the hour is different. */
     [data-phone].phone.is-night .phone-screen {
-        background-image:
-            linear-gradient(180deg,
-                rgba(4, 6, 11, 0.9) 0%,
-                rgba(4, 6, 11, 0.76) 26%,
-                rgba(4, 6, 11, 0.68) 46%,
-                rgba(4, 6, 11, 0.85) 72%,
-                rgba(4, 6, 11, 0.94) 100%),
-            url('../assets/images/exhale-phone-background.jpg');
+        --lock-tint: 4, 6, 11;
+        --lock-dim: 0.03;
     }
 }
