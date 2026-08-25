@@ -710,8 +710,13 @@
     </section>
 
 <!-- FAQ Section -->
-<!-- Two questions here, the rest on exhale.bot/faqs. The ones kept are the
-     trust questions people ask before they connect an inbox.
+<!-- Five questions here, the rest on exhale.bot/faqs. The ones kept are the
+     trust questions people ask before they connect an inbox: two on what
+     Exhale can reach, one on what happens to the data, one on whether it works
+     for you at all, and the price last — the easiest yes to end on. All five
+     are the live page's own wording, carried over from apple/index.html rather
+     than written here; the two left behind (Google's unverified-app screen and
+     how to disconnect) both belong to onboarding, which is past this page.
 
      Last on the page, after the application rather than before it. The reader
      who is ready signs up without wading through objections first; the one who
@@ -751,6 +756,48 @@
                     <div class="faq-panel" id="faq-panel-2" role="region" aria-labelledby="faq-trigger-2">
                         <div class="faq-panel-inner">
                             <p>No. Exhale&rsquo;s access to Gmail is read-only. It cannot send, reply, delete, or change a single message.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-heading">
+                        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">
+                            <span class="faq-label">Do you use my family&rsquo;s data to train AI models?</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
+                        </button>
+                    </h3>
+                    <div class="faq-panel" id="faq-panel-3" role="region" aria-labelledby="faq-trigger-3">
+                        <div class="faq-panel-inner">
+                            <p>No. Your email and calendar data is used to run your assistant and nothing else. We don&rsquo;t sell it, we don&rsquo;t share it for advertising, and we don&rsquo;t train models on it.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-heading">
+                        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-panel-4" id="faq-trigger-4">
+                            <span class="faq-label">Do I need Gmail?</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
+                        </button>
+                    </h3>
+                    <div class="faq-panel" id="faq-panel-4" role="region" aria-labelledby="faq-trigger-4">
+                        <div class="faq-panel-inner">
+                            <p>Yes, for now. Exhale connects to Gmail and Google Calendar. Other providers aren&rsquo;t supported yet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-heading">
+                        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-panel-5" id="faq-trigger-5">
+                            <span class="faq-label">What does it cost?</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
+                        </button>
+                    </h3>
+                    <div class="faq-panel" id="faq-panel-5" role="region" aria-labelledby="faq-trigger-5">
+                        <div class="faq-panel-inner">
+                            <p>Nothing while we&rsquo;re in beta. If that changes, you&rsquo;ll hear it from us before it happens, not from a charge.</p>
                         </div>
                     </div>
                 </div>
