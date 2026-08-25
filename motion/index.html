@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/craft.css">
     <link rel="stylesheet" href="css/chat.css">
     <link rel="stylesheet" href="css/compare.css">
+    <link rel="stylesheet" href="css/benefits.css">
 
     <script src="https://embed.typeform.com/next/embed.js"></script>
 </head>
@@ -538,6 +539,133 @@
      it explains. See #typeform-section. -->
 
 
+<!-- Benefits Section -->
+<!-- Placed here on purpose: the deck above says what Exhale does, and the
+     application below asks for something. This is the beat between them — what
+     the week actually looks like once it works. Five moments, only one open at
+     a time; hover opens them on a mouse, tap and the arrow keys everywhere
+     else (benefits.js).
+
+     The photos are Cloudinary URLs with an f_auto,q_auto,w_1600 transform, so
+     each column ships a couple of hundred KB of WebP or AVIF rather than a 3MB
+     JPEG. They are requested from JS: a column with no photo, or one whose
+     file 404s, falls back to the tinted plate on its own <li>. -->
+    <section class="benefits" id="benefits" data-ga-name="Benefits" aria-labelledby="benefits-title">
+        <div class="benefits__inner reveal">
+
+            <header class="benefits__head">
+                <h2 class="benefits__title" id="benefits-title">
+                    Built for the <em>family CEO</em>.
+                </h2>
+            </header>
+
+            <ul class="rack" id="benefitsRack">
+
+                <!-- 1 · Mornings -->
+                <li class="col" style="--tone-near:#2b2115; --tone-far:#0b0b0f;">
+                    <figure class="col__frame">
+                        <div class="col__media">
+                            <img class="col__photo" loading="lazy" decoding="async" data-src="https://res.cloudinary.com/diuqpckme/image/upload/f_auto,q_auto,w_1600/v1787684375/Mornings_n1f5t7.jpg" alt="A Black woman packing a school lunch in her kitchen in early morning light.">
+                        </div>
+                        <div class="col__grade"></div>
+                        <div class="col__edge"></div>
+                        <figcaption class="col__caption">
+                            <p class="col__kicker">Mornings</p>
+                            <div class="col__reveal"><div class="col__revealInner">
+                                <p class="col__line">The permission slip is signed before you remember it exists.</p>
+                            </div></div>
+                        </figcaption>
+                    </figure>
+                    <button class="col__hit" type="button" aria-expanded="false">
+                        <span class="visually-hidden">Mornings. The permission slip is signed before you remember it exists.</span>
+                    </button>
+                </li>
+
+                <!-- 2 · The 2pm meeting -->
+                <li class="col" style="--tone-near:#13232b; --tone-far:#0b0b0f;">
+                    <figure class="col__frame">
+                        <div class="col__media">
+                            <img class="col__photo" loading="lazy" decoding="async" data-src="https://res.cloudinary.com/diuqpckme/image/upload/f_auto,q_auto,w_1600/v1787684375/The_2pm_meeting_vkwcfj.jpg" alt="An Asian woman leading a meeting in a glass-walled conference room.">
+                        </div>
+                        <div class="col__grade"></div>
+                        <div class="col__edge"></div>
+                        <figcaption class="col__caption">
+                            <p class="col__kicker">The 2pm meeting</p>
+                            <div class="col__reveal"><div class="col__revealInner">
+                                <p class="col__line">You are fully in the room, because home is already handled.</p>
+                            </div></div>
+                        </figcaption>
+                    </figure>
+                    <button class="col__hit" type="button" aria-expanded="false">
+                        <span class="visually-hidden">The 2pm meeting. You are fully in the room, because home is already handled.</span>
+                    </button>
+                </li>
+
+                <!-- 3 · The handoff -->
+                <li class="col" style="--tone-near:#1f1a2b; --tone-far:#0b0b0f;">
+                    <figure class="col__frame">
+                        <div class="col__media">
+                            <img class="col__photo" loading="lazy" decoding="async" data-src="https://res.cloudinary.com/diuqpckme/image/upload/f_auto,q_auto,w_1600/v1787684375/the_handoff_wexac3.jpg" alt="A Latina woman walking away from her home on a business call, her partner holding their child in the doorway behind her.">
+                        </div>
+                        <div class="col__grade"></div>
+                        <div class="col__edge"></div>
+                        <figcaption class="col__caption">
+                            <p class="col__kicker">The handoff</p>
+                            <div class="col__reveal"><div class="col__revealInner">
+                                <p class="col__line">Your partner stops asking who has it. It is already done.</p>
+                            </div></div>
+                        </figcaption>
+                    </figure>
+                    <button class="col__hit" type="button" aria-expanded="false">
+                        <span class="visually-hidden">The handoff. Your partner stops asking who has it. It is already done.</span>
+                    </button>
+                </li>
+
+                <!-- 4 · Dinner -->
+                <li class="col" style="--tone-near:#2b1a18; --tone-far:#0b0b0f;">
+                    <figure class="col__frame">
+                        <div class="col__media">
+                            <img class="col__photo" loading="lazy" decoding="async" data-src="https://res.cloudinary.com/diuqpckme/image/upload/f_auto,q_auto,w_1600/v1787684375/dinner_yuogg4.jpg" alt="A Black family at the dinner table, the mother's phone face down beside her plate.">
+                        </div>
+                        <div class="col__grade"></div>
+                        <div class="col__edge"></div>
+                        <figcaption class="col__caption">
+                            <p class="col__kicker">Dinner</p>
+                            <div class="col__reveal"><div class="col__revealInner">
+                                <p class="col__line">Nobody at this table is checking a calendar.</p>
+                            </div></div>
+                        </figcaption>
+                    </figure>
+                    <button class="col__hit" type="button" aria-expanded="false">
+                        <span class="visually-hidden">Dinner. Nobody at this table is checking a calendar.</span>
+                    </button>
+                </li>
+
+                <!-- 5 · Sunday night -->
+                <li class="col" style="--tone-near:#141f26; --tone-far:#0b0b0f;">
+                    <figure class="col__frame">
+                        <div class="col__media">
+                            <img class="col__photo" loading="lazy" decoding="async" data-src="https://res.cloudinary.com/diuqpckme/image/upload/f_auto,q_auto,w_1600/v1787684375/sunday_night_t85egu.jpg" alt="A white woman reading on her couch by lamp light.">
+                        </div>
+                        <div class="col__grade"></div>
+                        <div class="col__edge"></div>
+                        <figcaption class="col__caption">
+                            <p class="col__kicker">Sunday night</p>
+                            <div class="col__reveal"><div class="col__revealInner">
+                                <p class="col__line">The week ahead does not need to be reassembled.</p>
+                            </div></div>
+                        </figcaption>
+                    </figure>
+                    <button class="col__hit" type="button" aria-expanded="false">
+                        <span class="visually-hidden">Sunday night. The week ahead does not need to be reassembled.</span>
+                    </button>
+                </li>
+
+            </ul>
+        </div>
+    </section>
+
+
 
 
 <!-- CTA Section with Typeform -->
@@ -680,5 +808,6 @@
     <script src="js/chat.js"></script>
     <script src="js/scrolly.js"></script>
     <script src="js/compare.js"></script>
+    <script src="js/benefits.js"></script>
 </body>
 </html>
