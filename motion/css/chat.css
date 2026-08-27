@@ -37,67 +37,52 @@
     right: 0;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 0.5rem;
-    padding: 0.5rem 0.85rem;
+    padding: 0.5rem 0.7rem;
     border-bottom: 1px solid var(--phone-card-border);
     z-index: 2;
 }
 
-.chat-avatar {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 7px;
-    background: rgba(173, 251, 246, 0.16);
-    color: var(--cyan-glow);
-}
+/* The real topbar, from public/chat.html: the wordmark on the left, the
+   account controls on the right, a hairline under it. What was here before was
+   a messaging-app contact row — avatar, the name "Exhale" set in serif italic,
+   and a "● LIVE" pill. None of that exists; this does.
 
-.chat-avatar svg { width: 13px; height: 13px; }
-
-body.light-mode .chat-avatar {
-    background: rgba(13, 115, 119, 0.12);
-    color: var(--cyan-deep);
-}
-
-.chat-name {
-    flex: 1;
+   The wordmark is `.brand-mark` over there: Cormorant 300, uppercase, tracked
+   out 0.32em with a matching left pad so the tracking on the final E doesn't
+   push it off centre. The account email sits between these two on a wide
+   screen and is dropped here, which is what a narrow viewport does with it
+   anyway — Settings and Sign out are what survive at this width. */
+.chat-brand {
     font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 1rem;
+    font-weight: 300;
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    padding-left: 0.32em;
+    text-transform: uppercase;
     line-height: 1;
-    color: var(--cyan-glow);
+    color: var(--phone-ink);
 }
 
-body.light-mode .chat-name { color: var(--cyan-deep); }
+/* Just the accent and a soft halo — not the hero's `.logo-e`, which stacks
+   four text-shadows for a 5rem headline and would bloom at this size. */
+.chat-brand-e {
+    color: var(--cyan-glow);
+    text-shadow: 0 0 12px rgba(173, 251, 246, 0.4);
+}
 
-/* Where the thread actually is.
+body.light-mode .chat-brand-e {
+    color: var(--cyan-deep);
+    text-shadow: none;
+}
 
-   This pill used to read "● LIVE", with a pulsing dot. Nothing in the product
-   has that state — it was chrome invented for the mockup, and it was the one
-   thing on this screen advertising something that does not exist. The rest of
-   the phone is accurate: the real web chat at /chat is built on the same
-   #0A0A0A ground and #ADFBF6 accent, with the same cyan user bubble and
-   bordered reply, so what is drawn here is the product, not an impression of
-   it.
-
-   The replacement is the honest version of the same slot, and says something
-   worth knowing: Exhale answers on Telegram or in the browser, whichever you
-   already have open. Both are real — the dashboard's platform picker offers
-   Telegram and Web Chat, with WhatsApp still coming. Drop the element if the
-   channel line ever stops being true; nothing else depends on it. */
-.chat-channel {
-    display: inline-flex;
+.chat-topbar-meta {
+    display: flex;
     align-items: center;
-    padding: 0.15rem 0.45rem;
-    border: 1px solid rgba(92, 236, 211, 0.28);
-    border-radius: 999px;
-    background: rgba(92, 236, 211, 0.08);
+    gap: 0.55rem;
     font-size: 0.5rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
     white-space: nowrap;
     color: var(--phone-ink-dim);
 }
@@ -164,18 +149,18 @@ body.light-mode .chat-name { color: var(--cyan-deep); }
     transition-delay: 60ms;
 }
 
-/* Three dots for as long as it takes the answer to arrive. Removed from flow
-   once the reply lands so the thread doesn't keep a gap where it was. */
+/* The wait, as the product actually renders it: the word "thinking…" in muted
+   italic, with no bubble around it. This was three pulsing dots in a bordered
+   pill, which is the messaging-app convention and not what /chat does.
+   Removed from flow once the reply lands so the thread doesn't keep a gap. */
 .chat-typing {
-    display: flex;
-    align-items: center;
-    gap: 4px;
     width: max-content;
     margin-top: 0.5rem;
-    padding: 0.45rem 0.6rem;
-    border-radius: 16px 16px 16px 4px;
-    background: var(--phone-card);
-    border: 1px solid var(--phone-card-border);
+    padding: 0.25rem 0.45rem;
+    font-size: 0.58rem;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--phone-ink-dim);
     opacity: 0;
     transform: translateY(4px);
     transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
@@ -183,22 +168,6 @@ body.light-mode .chat-name { color: var(--cyan-deep); }
 
 .chat-turn.is-thinking .chat-typing { opacity: 1; transform: none; }
 .chat-turn.has-reply .chat-typing { display: none; }
-
-.chat-typing span {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--phone-ink-dim);
-    animation: chat-typing 1.15s ease-in-out infinite;
-}
-
-.chat-typing span:nth-child(2) { animation-delay: 0.14s; }
-.chat-typing span:nth-child(3) { animation-delay: 0.28s; }
-
-@keyframes chat-typing {
-    0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
-    30%           { opacity: 1;    transform: translateY(-2px); }
-}
 
 .chat-reply-card {
     margin-top: 0.5rem;
@@ -252,18 +221,20 @@ body.light-mode .chat-item b,
 body.light-mode .chat-reply-intro b { color: var(--cyan-deep); }
 
 /* --- input bar ------------------------------------------------------------- */
+/* The real composer is a bar, not a pill: a hairline across the top, then a
+   bordered textarea and a separate Send button sitting beside it. What was
+   here was one rounded capsule with an icon tucked inside — the messaging-app
+   shape again, where /chat has a form. */
 .chat-input {
     position: absolute;
-    left: 0.6rem;
-    right: 0.6rem;
-    bottom: 1.5rem;
+    left: 0;
+    right: 0;
+    bottom: 1.1rem;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 0.4rem;
-    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
-    border-radius: 15px;
-    background: var(--phone-card);
-    border: 1px solid var(--phone-card-border);
+    padding: 0.55rem 0.7rem;
+    border-top: 1px solid var(--phone-card-border);
     z-index: 2;
 }
 
@@ -275,8 +246,11 @@ body.light-mode .chat-reply-intro b { color: var(--cyan-deep); }
 .chat-input-text {
     flex: 1;
     min-width: 0;   /* a flex item won't shrink below its text without this */
-    padding: 0.4rem 0;
-    font-size: 0.64rem;
+    padding: 0.4rem 0.45rem;
+    border-radius: 7px;
+    background: var(--phone-card);
+    border: 1px solid var(--phone-card-border);
+    font-size: 0.6rem;
     font-weight: 300;
     white-space: nowrap;
     overflow: hidden;
@@ -284,18 +258,21 @@ body.light-mode .chat-reply-intro b { color: var(--cyan-deep); }
     color: var(--phone-ink-dim);
 }
 
+/* A labelled button, the way /chat ships it — accent fill, dark text,
+   weight 600. Not a paper-plane glyph. */
 .chat-send {
     flex: none;
     display: grid;
     place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
+    padding: 0 0.6rem;
+    height: 1.72rem;
+    border-radius: 7px;
     background: var(--cyan-light);
     color: #0a0a0a;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
-
-.chat-send svg { width: 12px; height: 12px; }
 
 /* --- smaller screens ------------------------------------------------------- */
 /* --- phones and small tablets ---------------------------------------------

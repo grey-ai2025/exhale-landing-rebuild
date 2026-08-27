@@ -180,7 +180,7 @@
             var typing = document.createElement('div');
             typing.className = 'chat-typing';
             typing.setAttribute('aria-hidden', 'true');
-            typing.innerHTML = '<span></span><span></span><span></span>';
+            typing.textContent = 'thinking…';   // the wait, worded as /chat words it
 
             var reply = document.createElement('div');
             reply.className = 'chat-reply';
