@@ -1388,20 +1388,23 @@ body.light-mode .cta-section {
 
 /* --- the photograph under the application ---------------------------------
    The one image of actual people on a page that is otherwise devices and
-   type, and it sits under the only place we ask for something. It is blurred
-   well past recognition on purpose: at full strength a warm, bright, busy
-   living room would be the loudest thing on a near-black page and would drag
-   the eye away from the form — the point is a warmth you feel rather than a
-   picture you look at.
+   type, and it sits under the only place we ask for something. Softened to
+   about a depth-of-field rather than hidden: the room reads, the faces read,
+   and the scrim below carries the job of keeping the words legible instead of
+   the blur doing it by erasing the picture.
 
    Its own layer rather than a background on the section, because `filter`
-   would otherwise blur the claim and the form along with it. */
+   would otherwise blur the claim and the form along with it.
+
+   Served from Cloudinary through the same f_auto,q_auto transform as the
+   lockscreen and the benefits rack — w_1800 covers the widest viewport this
+   is drawn across, at roughly a fifteenth of the original's weight. */
 .cta-section::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: 0;
-    background-image: url('../assets/images/exhale-background.jpg');
+    background-image: url('https://res.cloudinary.com/dayr3egl3/image/upload/f_auto,q_auto,w_1800/v1787865693/exhale-background_eszswr.jpg');
     background-size: cover;
     background-position: center;
     /* Enough softness to read as depth of field rather than as a sharp photo

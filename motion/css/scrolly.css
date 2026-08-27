@@ -636,7 +636,12 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
    thread reads against a flat ground and not against a photograph.
 
    Desktop only, per the ask — and because the rule not matching is also the
-   reason a narrow screen never downloads the file.
+   reason a narrow screen never fetches the image at all.
+
+   Served from Cloudinary rather than from assets/, through the same
+   f_auto,q_auto transform the benefits rack uses: w_620 is twice the 280px
+   the screen is ever drawn at, and comes back as ~75KB of WebP or AVIF
+   instead of the 3.1MB original.
    =========================================== */
 @media (min-width: 901px) {
     [data-phone] .phone-screen {
@@ -660,7 +665,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
                 rgba(var(--lock-tint), calc(0.68 + var(--lock-dim))) 46%,
                 rgba(var(--lock-tint), calc(0.85 + var(--lock-dim))) 72%,
                 rgba(var(--lock-tint), calc(0.94 + var(--lock-dim))) 100%),
-            url('../assets/images/exhale-phone-background.jpg');
+            url('https://res.cloudinary.com/dayr3egl3/image/upload/f_auto,q_auto,w_620/v1787865702/exhale-phone-background_viclkd.jpg');
         background-size: cover;
         background-position: center 42%;
         background-repeat: no-repeat;
