@@ -34,9 +34,9 @@
                 "q": "What are the latest updates?",
                 "intro": null,
                 "a": [
-                    "<b>Oakwood</b> &mdash; Principal Whitfield, <b>March 26</b>.",
-                    "<b>Brookfield Hills</b> &mdash; Principal Marsh, <b>March 27</b>.",
-                    "Both went out before spring break ended <b>April 7</b>."
+                    "<b>Oakwood</b> &mdash; Principal Whitfield: pickup moves to the <b>Elm Street gate</b> from <b>April 14</b> while the lot is resurfaced.",
+                    "<b>Brookfield Hills</b> &mdash; Principal Marsh: phones go in lockers from <b>April 21</b>. Daytime messages for Theo go through the office.",
+                    "Both letters went out before spring break ended <b>April 7</b>, and neither has been mentioned since."
                 ]
             },
             {

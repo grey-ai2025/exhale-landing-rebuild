@@ -644,6 +644,19 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
    instead of the 3.1MB original.
    =========================================== */
 @media (min-width: 901px) {
+    /* The photo turns over with the step — scrolly.js writes --lock-photo from
+       its own STATES list, so the scrim stays one rule here and the four
+       wallpapers stay one list there. This is the first step's, and the
+       fallback for a browser that never runs the script.
+
+       It has to be declared on the phone, not on .phone-screen below: the
+       script sets the property on [data-phone], and a declaration on the child
+       would beat the value inherited from the parent every time — which is
+       exactly the bug that pinned all four steps to this one photo. */
+    [data-phone] {
+        --lock-photo: url('https://res.cloudinary.com/dayr3egl3/image/upload/f_auto,q_auto,w_620/v1787865702/exhale-phone-background_viclkd.jpg');
+    }
+
     [data-phone] .phone-screen {
         /* Two layers, photo underneath. The scrim is heavier at the top and
            bottom than through the middle: the clock sits in one end and the
@@ -665,7 +678,7 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
                 rgba(var(--lock-tint), calc(0.68 + var(--lock-dim))) 46%,
                 rgba(var(--lock-tint), calc(0.85 + var(--lock-dim))) 72%,
                 rgba(var(--lock-tint), calc(0.94 + var(--lock-dim))) 100%),
-            url('https://res.cloudinary.com/dayr3egl3/image/upload/f_auto,q_auto,w_620/v1787865702/exhale-phone-background_viclkd.jpg');
+            var(--lock-photo);
         background-size: cover;
         background-position: center 42%;
         background-repeat: no-repeat;
