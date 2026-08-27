@@ -408,6 +408,11 @@ body.light-mode .phone:not(.is-night) .phone-notif.is-warn .phone-notif-icon {
     line-height: 1.8;
 }
 
+/* Steps were single-paragraph until one of them needed to turn from the
+   problem to the answer. A gap wider than the 1.8 line-height, or the two
+   read as one block with an odd break in it. */
+.scrolly-step p + p { margin-top: 1.15em; }
+
 /* A phone taller than the viewport can't be pinned to the middle of it. */
 @media (max-height: 780px) {
     .scrolly-canvas { top: calc(50vh - 14rem); height: 28rem; }

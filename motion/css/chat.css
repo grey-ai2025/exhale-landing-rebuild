@@ -72,34 +72,34 @@ body.light-mode .chat-avatar {
 
 body.light-mode .chat-name { color: var(--cyan-deep); }
 
-.chat-live {
+/* Where the thread actually is.
+
+   This pill used to read "● LIVE", with a pulsing dot. Nothing in the product
+   has that state — it was chrome invented for the mockup, and it was the one
+   thing on this screen advertising something that does not exist. The rest of
+   the phone is accurate: the real web chat at /chat is built on the same
+   #0A0A0A ground and #ADFBF6 accent, with the same cyan user bubble and
+   bordered reply, so what is drawn here is the product, not an impression of
+   it.
+
+   The replacement is the honest version of the same slot, and says something
+   worth knowing: Exhale answers on Telegram or in the browser, whichever you
+   already have open. Both are real — the dashboard's platform picker offers
+   Telegram and Web Chat, with WhatsApp still coming. Drop the element if the
+   channel line ever stops being true; nothing else depends on it. */
+.chat-channel {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
     padding: 0.15rem 0.45rem;
     border: 1px solid rgba(92, 236, 211, 0.28);
     border-radius: 999px;
     background: rgba(92, 236, 211, 0.08);
     font-size: 0.5rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    white-space: nowrap;
     color: var(--phone-ink-dim);
-}
-
-.chat-live::before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--cyan-light);
-    box-shadow: 0 0 5px rgba(92, 236, 211, 0.9);
-    animation: chat-live-pulse 1.8s ease-in-out infinite;
-}
-
-@keyframes chat-live-pulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.45; }
 }
 
 /* --- conversation ---------------------------------------------------------- */
@@ -267,11 +267,20 @@ body.light-mode .chat-reply-intro b { color: var(--cyan-deep); }
     z-index: 2;
 }
 
+/* The real placeholder — "Ask about an email, schedule, or PDF…" — is longer
+   than the invented one it replaced, and at the old size it wrapped to two
+   lines and pushed the bar up over the last message. A composer is one line,
+   always, so it stays one line: slightly smaller, and with an ellipsis as the
+   backstop for a width where even that won't fit. */
 .chat-input-text {
     flex: 1;
+    min-width: 0;   /* a flex item won't shrink below its text without this */
     padding: 0.4rem 0;
-    font-size: 0.72rem;
+    font-size: 0.64rem;
     font-weight: 300;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--phone-ink-dim);
 }
 

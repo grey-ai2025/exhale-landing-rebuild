@@ -31,7 +31,7 @@
                 ]
             },
             {
-                "q": "Send me the latest updates",
+                "q": "What are the latest updates?",
                 "intro": null,
                 "a": [
                     "<b>Oakwood</b> &mdash; Principal Whitfield, <b>March 26</b>.",
@@ -62,8 +62,8 @@
                 "q": "What are the kids&rsquo; spelling words this week?",
                 "intro": null,
                 "a": [
-                    "<b>Maya</b> &mdash; jellyfish, germy, digest, fringe, nudging, ridge, exchange&hellip; <b>20 words</b>.",
-                    "<b>Theo</b> &mdash; tricky word <b>said</b>, plus the <b>/er/</b>, <b>/ar/</b> and <b>/or/</b> groups."
+                    "<b>Maya</b> &mdash; all <b>20</b>: jellyfish, germy, digest, fringe, nudging, ridge, exchange, bridge, charge, gentle, giant, hedge, judge, magic, orange, plunge, smudge, strange, village, wedge.",
+                    "<b>Theo</b> &mdash; all <b>19</b>. Tricky word <b>said</b>, then <b>/er/</b>: her, herd, term, verb, person, winter. <b>/ar/</b>: car, farm, hard, park, sharp, garden. <b>/or/</b>: for, corn, north, storm, short, morning."
                 ]
             },
             {
@@ -91,16 +91,16 @@
                 "a": [
                     "<b>Wednesday, April 15</b> &mdash; early release for both, end of term.",
                     "<b>Thursday, April 23</b> &mdash; Take Your Child to Work Day at Oakwood.",
-                    "<b>Monday, April 20</b> &mdash; staff grading day, regular schedule."
+                    "<b>Monday, April 20</b> &mdash; Brookfield Hills staff grading day. Theo&rsquo;s schedule is unchanged."
                 ]
             },
             {
                 "q": "What should go on the calendar?",
                 "intro": null,
                 "a": [
-                    "<b>April 10</b> &mdash; Open House, and Theo&rsquo;s Career Day.",
-                    "<b>April 13</b> &mdash; picture day and Town Hall at <b>9am</b>.",
-                    "<b>April 24</b> &mdash; Talent Show."
+                    "<b>April 10</b> &mdash; Maya&rsquo;s Open House and Theo&rsquo;s Career Day.",
+                    "<b>April 13</b> &mdash; Maya&rsquo;s picture day, and the Oakwood Town Hall at <b>9am</b>.",
+                    "<b>April 24</b> &mdash; Theo&rsquo;s Talent Show at Brookfield Hills."
                 ]
             }
         ]

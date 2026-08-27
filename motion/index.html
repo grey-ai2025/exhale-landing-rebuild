@@ -245,7 +245,12 @@
 
                     <article class="scrolly-step" data-step>
                         <h3>No Infrastructure at Home</h3>
-                        <p>You have EAs, project managers, and systems keeping your professional life on track. But your personal life — just as complex, just as consequential — runs on memory and group texts. Exhale changes that. One AI system that runs your home life leaner and smarter than most enterprise operations.</p>
+                        <!-- Two paragraphs, and the break is the argument: the first
+                             is the problem, the second is the answer. It is the only
+                             step on this page that turns, and the only one long
+                             enough to need the air. -->
+                        <p>You have EAs, project managers, and systems keeping your professional life on track. But your personal life — just as complex, just as consequential — runs on memory and group texts.</p>
+                        <p>Exhale changes that. One AI system that runs your home life leaner and smarter than most enterprise operations.</p>
                     </article>
                 </div>
             </div>
@@ -400,7 +405,7 @@
                                     </svg>
                                 </span>
                                 <span class="chat-name">Exhale</span>
-                                <span class="chat-live">Live</span>
+                                <span class="chat-channel">Telegram &middot; Web</span>
                             </div>
 
                             <div class="chat-body" data-chat-body>
@@ -427,7 +432,7 @@
                             </div>
 
                             <div class="chat-input" aria-hidden="true">
-                                <span class="chat-input-text">Ask Exhale anything&hellip;</span>
+                                <span class="chat-input-text">Ask about an email, schedule, or PDF&hellip;</span>
                                 <span class="chat-send">
                                     <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
                                         <polygon points="22 2 15 22 11 13 2 9 22 2"/>
@@ -460,7 +465,7 @@
                     <p>Every newsletter, permission slip and PTA thread you didn&rsquo;t have time to open &mdash; read, sorted, and handed back as the few things that actually need you.</p>
                     <ul class="feature-list">
                         <li><button type="button" class="feature-prompt" data-prompt="0.0">What do I need to know this week?</button></li>
-                        <li><button type="button" class="feature-prompt" data-prompt="0.1">Send me the latest updates</button></li>
+                        <li><button type="button" class="feature-prompt" data-prompt="0.1">What are the latest updates?</button></li>
                         <li><button type="button" class="feature-prompt" data-prompt="0.2">Is there anything I need to sign or send back?</button></li>
                     </ul>
                 </div>
@@ -572,34 +577,15 @@
                         <figcaption class="col__caption">
                             <p class="col__kicker">Mornings</p>
                             <div class="col__reveal"><div class="col__revealInner">
-                                <p class="col__line">The permission slip is signed before you remember it exists.</p>
+                                <p class="col__line">The permission slip finds you before the deadline does.</p>
                             </div></div>
                         </figcaption>
                     </figure>
                     <button class="col__hit" type="button" aria-expanded="false">
-                        <span class="visually-hidden">Mornings. The permission slip is signed before you remember it exists.</span>
+                        <span class="visually-hidden">Mornings. The permission slip finds you before the deadline does.</span>
                     </button>
                 </li>
 
-                <!-- 2 · The 2pm meeting -->
-                <li class="col" style="--tone-near:#13232b; --tone-far:#0b0b0f;">
-                    <figure class="col__frame">
-                        <div class="col__media">
-                            <img class="col__photo" loading="lazy" decoding="async" data-src="https://res.cloudinary.com/diuqpckme/image/upload/f_auto,q_auto,w_1600/v1787684375/The_2pm_meeting_vkwcfj.jpg" alt="An Asian woman leading a meeting in a glass-walled conference room.">
-                        </div>
-                        <div class="col__grade"></div>
-                        <div class="col__edge"></div>
-                        <figcaption class="col__caption">
-                            <p class="col__kicker">The 2pm meeting</p>
-                            <div class="col__reveal"><div class="col__revealInner">
-                                <p class="col__line">You are fully in the room, because home is already handled.</p>
-                            </div></div>
-                        </figcaption>
-                    </figure>
-                    <button class="col__hit" type="button" aria-expanded="false">
-                        <span class="visually-hidden">The 2pm meeting. You are fully in the room, because home is already handled.</span>
-                    </button>
-                </li>
 
                 <!-- 3 · The handoff -->
                 <li class="col" style="--tone-near:#1f1a2b; --tone-far:#0b0b0f;">
@@ -612,12 +598,32 @@
                         <figcaption class="col__caption">
                             <p class="col__kicker">The handoff</p>
                             <div class="col__reveal"><div class="col__revealInner">
-                                <p class="col__line">Your partner stops asking who has it. It is already done.</p>
+                                <p class="col__line">Your partner stops asking who has it. You both already know.</p>
                             </div></div>
                         </figcaption>
                     </figure>
                     <button class="col__hit" type="button" aria-expanded="false">
-                        <span class="visually-hidden">The handoff. Your partner stops asking who has it. It is already done.</span>
+                        <span class="visually-hidden">The handoff. Your partner stops asking who has it. You both already know.</span>
+                    </button>
+                </li>
+
+                                <!-- 2 · The 2pm meeting -->
+                <li class="col" style="--tone-near:#13232b; --tone-far:#0b0b0f;">
+                    <figure class="col__frame">
+                        <div class="col__media">
+                            <img class="col__photo" loading="lazy" decoding="async" data-src="https://res.cloudinary.com/diuqpckme/image/upload/f_auto,q_auto,w_1600/v1787684375/The_2pm_meeting_vkwcfj.jpg" alt="An Asian woman leading a meeting in a glass-walled conference room.">
+                        </div>
+                        <div class="col__grade"></div>
+                        <div class="col__edge"></div>
+                        <figcaption class="col__caption">
+                            <p class="col__kicker">The 2pm meeting</p>
+                            <div class="col__reveal"><div class="col__revealInner">
+                                <p class="col__line">You are fully in the room because home is already handled.</p>
+                            </div></div>
+                        </figcaption>
+                    </figure>
+                    <button class="col__hit" type="button" aria-expanded="false">
+                        <span class="visually-hidden">The 2pm meeting. You are fully in the room because home is already handled.</span>
                     </button>
                 </li>
 
